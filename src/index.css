@@ -5,6 +5,7 @@
 @theme {
   --font-primary: 'Anton', system-ui, Avenir, Helvetica, Arial, sans-serif;
   /* Custom text sizes for Anton font from figma please check figma nalang */
+  --text-*: initial;
   --text-sm-anton: 14px;
   --text-base-anton: 16px;
   --text-lg-anton: 18px;
@@ -17,11 +18,22 @@
   --text-sm-inter: 14px;
   --text-base-inter: 16px;
   --text-lg-inter: 18px;
-
+  
 
   --font-weight-normal: 400;
   --font-weight-medium: 500;
   --font-weight-bold: 700;
+
+
+  --color-*: initial;
+  --color-text: #FCF9F9;
+  --color-background: #222121;
+  --color-primary: #AA222B;
+  --color-secondary: #8C262D;
+  --color-accent: #E7D402;
+
+
+  
 }
 
 :root {
@@ -30,8 +42,8 @@
   font-weight: var(--font-weight-normal);
 
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  color: #FCF9F9;
+  background-color: var(--color-background);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
