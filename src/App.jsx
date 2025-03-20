@@ -5,10 +5,13 @@ function App() {
 
   return (
     <>
-        <div className='bg-red-100'>
-          <h1> 
+        <div >
+          <h1 className='text-8xl-anton'> 
             RED PC PH
           </h1>
+          <p className='text-base-inter'> 
+              Check out
+          </p>
         </div>
     </>
   )
