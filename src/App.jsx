@@ -5,7 +5,7 @@ function App() {
 
   return (
     <>
-        <div>
+        <div className='bg-red-100'>
           <h1> 
             RED PC PH
           </h1>
