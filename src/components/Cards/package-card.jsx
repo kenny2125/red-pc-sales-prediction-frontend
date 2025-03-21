@@ -1,10 +1,10 @@
-import packageSet from '../../assets/package-set.png';
-import cpu from '../../assets/cpu-icon.png'
-import mobo from '../../assets/mobo-icon.png'
-import ram from '../../assets/ram-icon.png'
-import gpu from '../../assets/gpu-icon.png'
-import checkbox from '../../assets/checkbox.png'
-import checkboxClicked from '../../assets/bx-checkbox-checked.png'
+import packageSet from '../../assets/package-assets/package-set.png';
+import cpu from '../../assets/package-assets/cpu-icon.png'
+import mobo from '../../assets/package-assets/mobo-icon.png'
+import ram from '../../assets/package-assets/ram-icon.png'
+import gpu from '../../assets/package-assets/gpu-icon.png'
+import checkbox from '../../assets/package-assets/checkbox.png'
+import checkboxClicked from '../../assets/package-assets/bx-checkbox-checked.png'
 import { useState } from 'react';
 
 function PackageCard() {
@@ -15,7 +15,7 @@ function PackageCard() {
   }
 
   return (
-    <div className='m-10 p-[10px] w-[220px] flex flex-col bg-prodcard rounded-[20px] shadow-[inset_0px_4px_4px_0px_rgba(0,0,0,0.25)]'>
+    <div className='m-10 p-[10px] w-[220px] flex flex-col bg-prodcard rounded-[20px] shadow-[inset_0px_4px_4px_0px_rgba(0,0,0,0.25)]package-assets/'>
       <div className='mb-0.5'>
         <img src={check ? checkboxClicked : checkbox} alt="checkbox" onClick={toggleCheck} className='cursor-pointer absolute w-[42px] h-[42px]'/>
         <img src="" alt="" />
