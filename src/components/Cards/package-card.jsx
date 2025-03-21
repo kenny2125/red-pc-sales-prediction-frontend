@@ -15,7 +15,7 @@ function PackageCard() {
   }
 
   return (
-    <div className='m-10 p-[10px] w-[220px] flex flex-col bg-prodcard rounded-[20px] shadow-[inset_0px_4px_4px_0px_rgba(0,0,0,0.25)]package-assets/'>
+    <div className='p-[10px] w-[220px] flex flex-col bg-prodcard rounded-[20px] shadow-[inset_0px_4px_4px_0px_rgba(0,0,0,0.25)] /'>
       <div className='mb-0.5'>
         <img src={check ? checkboxClicked : checkbox} alt="checkbox" onClick={toggleCheck} className='cursor-pointer absolute w-[42px] h-[42px]'/>
         <img src="" alt="" />
@@ -33,7 +33,7 @@ function PackageCard() {
 
         <div className='flex flex-col gap-[3px]'>
           <p className='text-[14px]'>Ryzen 7 5700g</p>
-          <p className='text-[14px'>Gigabyte B450m</p>
+          <p className='text-[14px' font-bold>Gigabyte B450m</p>
           <p className='text-[14px]'>Corsair DDR4 2666mhz</p>
           <p className='text-[14px]'>Radeon Vega 8</p>
         </div>
