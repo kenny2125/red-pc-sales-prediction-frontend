@@ -1,28 +1,34 @@
-import './App.css'
-import Cards from './components/cards/package-card'
-import PackageCard from './components/cards/package-card'
-import ProductCard from './components/cards/product-card'
-import UserCard from './components/cards/user-card'
-
-import {Component} from './components/Chart'
+import '@/App.css'
+import PackageCard from '@/components/cards/package-card'
+import ProductCard from '@/components/cards/product-card'
+import UserCard from '@/components/cards/user-card'
+import  {LineChartView}  from "@/components/LineChartMultiple"
+import { PieChartDonut } from "@/components/PieChartDonut"
+import { TableDemo } from '@/components/Table'
+import { LineChartInteractive } from '@/components/LineChartInterative'
+import Navbar05Page from './components/navbar-05/navbar-05'
+import Navbar01Page from './components/navbar-01/navbar-01'
 
 function App() {
   
   return (
     <>
     
-      <div className="flex gap-2 p-11">
-        
+      <div className="flex flex-wrap gap-2 p-11">
+        < Navbar05Page/>
+        {/* < Navbar01Page /> */}
         <div className='w-lg'>
-        <Component />
-        </div>
-        
-        <Cards />
+        <LineChartView />
+        </div>        
         
         <PackageCard />
-      <ProductCard />
-      <UserCard />
-        
+        <ProductCard />
+        <UserCard />
+        <PieChartDonut/>
+        <TableDemo/>
+        <div className='w-full'>
+        <LineChartInteractive/>
+        </div>
         
       </div>
     </>
