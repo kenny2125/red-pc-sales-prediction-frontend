@@ -1,0 +1,19 @@
+.frame {
+  display: flex;
+  width: 1920px;
+  padding: 0px 175px;
+  align-items: center;
+  gap: 310px;
+  flex-shrink: 0; 
+}
+
+.logo{
+  width: 174px;
+height: 76px;
+flex-shrink: 0;
+}
+
+.search {
+  width: 520px;
+height: 53px;
+}

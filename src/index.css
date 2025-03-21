@@ -31,13 +31,15 @@
   --color-primary: #AA222B;
   --color-secondary: #8C262D;
   --color-accent: #E7D402;
+  --color-input: #978D8D;
+  --color-prodcard: #3A3A3A
 
 
   
 }
 
 :root {
-  font-family: var(--font-primary);
+  font-family: var(--font-display);
   line-height: 1.5;
   font-weight: var(--font-weight-normal);
 
