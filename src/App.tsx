@@ -1,4 +1,3 @@
-import '@/App.css'
 import { ThemeProvider } from "@/components/theme-provider"
 import PackageCard from '@/components/cards/package-card'
 import ProductCard from '@/components/cards/product-card'
@@ -7,18 +6,17 @@ import  {LineChartView}  from "@/components/LineChartMultiple"
 import { PieChartDonut } from "@/components/PieChartDonut"
 import { TableDemo } from '@/components/Table'
 import { LineChartInteractive } from '@/components/LineChartInterative'
-import Navbar05Page from './components/navbar-05/navbar-05'
-import Navbar01Page from './components/navbar-01/navbar-01'
+import Header from './components/Header'
 
 function App() {
   
   return (
     <>
       <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+      
 
-      <div className="flex flex-wrap gap-2 p-11">
-        < Navbar05Page/>
-        {/* < Navbar01Page /> */}
+      <div className="flex flex-wrap justify-between align-top items-center gap-2 px-[175px]">
+      <Header/>  
         <div className='w-lg'>
         <LineChartView />
         </div>        
