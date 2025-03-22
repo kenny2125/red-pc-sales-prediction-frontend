@@ -7,6 +7,7 @@ import { PieChartDonut } from "@/components/PieChartDonut"
 import { TableDemo } from '@/components/Table'
 import { LineChartInteractive } from '@/components/LineChartInterative'
 import Header from './components/Header'
+import Footer from "./components/Footer"
 
 function App() {
   
@@ -29,7 +30,7 @@ function App() {
         <div className='w-full'>
         <LineChartInteractive/>
         </div>
-        
+        <Footer/>
       </div>
       </ThemeProvider>
     </>
