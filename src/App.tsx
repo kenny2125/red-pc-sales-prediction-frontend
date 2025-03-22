@@ -1,4 +1,5 @@
 import '@/App.css'
+import { ThemeProvider } from "@/components/theme-provider"
 import PackageCard from '@/components/cards/package-card'
 import ProductCard from '@/components/cards/product-card'
 import UserCard from '@/components/cards/user-card'
@@ -13,7 +14,8 @@ function App() {
   
   return (
     <>
-    
+      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+
       <div className="flex flex-wrap gap-2 p-11">
         < Navbar05Page/>
         {/* < Navbar01Page /> */}
@@ -31,6 +33,7 @@ function App() {
         </div>
         
       </div>
+      </ThemeProvider>
     </>
   )
 }

@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Logo } from "./logo";
 import { Search } from "lucide-react";
+import { ModeToggle } from "../mode-toggle";
 
 const Navbar05Page = () => {
   return (
@@ -34,6 +35,7 @@ const Navbar05Page = () => {
               Sign In
             </Button>
             <Button className="rounded-full">Get Started</Button>
+            <ModeToggle/>
           </div>
         </div>
       </nav>
