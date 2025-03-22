@@ -3,10 +3,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Arrow } from "@radix-ui/react-dropdown-menu";
 import { useState, useEffect } from "react";
-import { UserPen } from "lucide-react";
 import { ScrollText } from "lucide-react";
 import { ShoppingCart } from "lucide-react";
 import { Search } from "lucide-react";
+import { ProfileDialog } from "./ProfileDialog";
 
 type UserRole = "guest" | "customer" | "admin";
 
@@ -19,7 +19,6 @@ interface User {
 
 export default function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-  const [isAdmin, setAdmin] = useState<boolean>(false);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
 
   useEffect(() => {
@@ -34,7 +33,7 @@ export default function Header() {
           role: "customer",
         });
         setIsLoggedIn(true);
-        setAdmin(false);
+        
         break;
       case "admin":
         setCurrentUser({
@@ -44,11 +43,11 @@ export default function Header() {
           role: "admin",
         });
         setIsLoggedIn(true);
-        setAdmin(true);
+        
         break;
       default:
         setIsLoggedIn(false);
-        setAdmin(false);
+        
         setCurrentUser(null);
 
         break;
@@ -106,7 +105,7 @@ export default function Header() {
               </div>
               <div className="inline-flex items-center gap-2">
                 <ScrollText size={40} className="text-primary" />
-                <UserPen size={40} className="text-primary" />
+                <ProfileDialog/>
                 <ShoppingCart size={40} className="text-primary" />
               </div>
             </div>
