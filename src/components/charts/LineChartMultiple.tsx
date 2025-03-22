@@ -2,7 +2,7 @@
 
 
 import { CartesianGrid, Line, LineChart, XAxis } from "recharts";
-import { ChartLegend, ChartLegendContent } from "./ui/chart"
+import { ChartLegend, ChartLegendContent } from "../ui/chart"
 
 
 import {
@@ -12,13 +12,13 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "./ui/card";
+} from "../ui/card";
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "./ui/chart";
+} from "../ui/chart";
 const chartData = [
   { month: "January", desktop: 186, mobile: 80 },
   { month: "February", desktop: 305, mobile: 200 },

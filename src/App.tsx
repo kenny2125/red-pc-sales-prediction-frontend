@@ -4,10 +4,10 @@ import { ThemeProvider } from "@/components/theme-provider"
 import PackageCard from '@/components/cards/package-card'
 import ProductCard from '@/components/cards/product-card'
 import UserCard from '@/components/cards/user-card'
-import  {LineChartView}  from "@/components/LineChartMultiple"
-import { PieChartDonut } from "@/components/PieChartDonut"
+import  {LineChartView}  from "@/components/charts/LineChartMultiple"
+import { PieChartDonut } from "@/components/charts/PieChartDonut"
 import { TableDemo } from '@/components/Table'
-import { LineChartInteractive } from '@/components/LineChartInterative'
+import { LineChartInteractive } from '@/components/charts/LineChartInterative'
 
 
 
