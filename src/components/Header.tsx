@@ -3,10 +3,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Arrow } from "@radix-ui/react-dropdown-menu";
 import { useState, useEffect } from "react";
-import { ShoppingCart } from "lucide-react";
 import { Search } from "lucide-react";
 import { ProfileDialog } from "./dialogs/ProfileDialog";
 import { OrderDialog } from "./dialogs/OrderDialog";
+import { CartDialog } from "./dialogs/CartDialog";
 import { ModeToggle } from "./ui/mode-toggle";
 
 type UserRole = "guest" | "customer" | "admin";
@@ -107,7 +107,7 @@ export default function Header() {
               <div className="inline-flex items-center gap-2">                
                 <OrderDialog/>
                 <ProfileDialog/>
-                <ShoppingCart size={40} className="text-primary" />
+                <CartDialog/>
                 <ModeToggle/>
               </div>
             </div>
