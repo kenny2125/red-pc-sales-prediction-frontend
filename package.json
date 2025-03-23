@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "start": "serve -s dist",
-    "build": "tsc -b && vite build",
+    "build": "vite build", 
     "lint": "eslint .",
     "preview": "vite preview"
   },
@@ -50,5 +50,9 @@
   },
   "overrides": {
     "react-is": "^19.0.0-rc-69d4b800-20241021"
+  },
+  "engines": {
+    "node": ">=22.14.0",
+    "npm": ">=10.9.2"
   }
 }
