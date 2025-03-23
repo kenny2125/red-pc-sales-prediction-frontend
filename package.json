@@ -4,13 +4,11 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "preinstall": "npm config set legacy-peer-deps true",
     "dev": "vite",
     "start": "serve -s dist",
-    "build": "vite build",
+    "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview",
-    "heroku-postbuild": "npm install && npm run build"
+    "preview": "vite preview"
   },
   "dependencies": {
     "@radix-ui/react-accordion": "^1.2.3",
