@@ -51,6 +51,14 @@ const invoices = [
   },
 ];
 
+type UserRole = "guest" | "customer" | "admin";
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: UserRole;
+}
 export function CartDialog() {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
 
@@ -146,10 +154,10 @@ export function CartDialog() {
             </div>
             <div className="flex flex-row gap-12">
               <div className="flex flex-row ">
-                <ComboboxPopover label={"Payment Method"} />
+                <ComboboxPopover label={"Payment Method"} status="" />
               </div>
               <div className="flex flex-row">
-                <ComboboxPopover label={"Pickup Method"} />
+                <ComboboxPopover label={"Pickup Method"} status=""/>
               </div>
             </div>
             <div></div>
