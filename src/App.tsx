@@ -14,6 +14,7 @@ import ContactUs from "./pages/footer/ContactUs";
 import Terms_Conditions from "./pages/footer/Terms_Conditions";
 import PrivacyPolicy from "./pages/footer/PrivacyPolicy";
 import PurchasingGuide from "./pages/footer/PurchasingGuide";
+import Dashboard from "./pages/admin/Dashboard";
 
 const devUserType = "admin";
 
@@ -36,6 +37,10 @@ const App: React.FC = () => (
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
 
             <Route path="/purchasing-guide" element={<PurchasingGuide />} />
+
+            {/* routes for admins hehe */}
+            <Route path="/dashboard" element={<Dashboard />} />
+
           </Routes>
           <Footer />
         </div>
