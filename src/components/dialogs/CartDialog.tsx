@@ -26,6 +26,13 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { ComboboxPopover } from "../ui/combobox";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const invoices = [
   {
@@ -51,10 +58,7 @@ const invoices = [
   },
 ];
 
-
 export function CartDialog() {
-
-
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -72,55 +76,105 @@ export function CartDialog() {
           </DialogDescription>
         </DialogHeader>
 
-        <div className="flex flex-row gap-12 justify-between">
-          <div>
+        <div className="flex flex-row gap-8 justify-between">
+          <div className="flex-1 overflow-x-auto">
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead></TableHead>
-                  <TableHead className="w-[100px]">Picture</TableHead>
+                  <TableHead className="w-[50px]"></TableHead>
+                  <TableHead className="w-[100px]"></TableHead>
                   <TableHead>Product Name</TableHead>
-                  <TableHead>Quantity </TableHead>
+                  <TableHead>Quantity</TableHead>
                   <TableHead className="text-right">Amount</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {invoices.map((invoice) => (
-                  <TableRow key={invoice.id}>
-                    <Checkbox />
-                    <TableCell className="font-medium">
-                      {invoice.productUrl}
+                  <TableRow key={invoice.id} className="align-middle">
+                    <TableCell className="vertical-align-middle">
+                      <Checkbox />
                     </TableCell>
-                    <TableCell>{invoice.productName}</TableCell>
-                    <TableCell>{invoice.quantity}</TableCell>
+                    <TableCell>
+                      <img
+                        src="https://placehold.co/100"
+                        alt=""
+                        className="w-full"
+                      />
+                    </TableCell>
+                    <TableCell className="font-medium">
+                      {invoice.productName}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      {invoice.quantity}
+                    </TableCell>
                     <TableCell className="text-right">
-                      {invoice.price}
+                      ₱{invoice.price.toLocaleString()}
                     </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
-              <TableFooter>
-                <TableRow>
-                  <TableCell colSpan={4}>Total</TableCell>
-                  <TableCell className="text-right">$2,500.00</TableCell>
-                </TableRow>
-              </TableFooter>
             </Table>
           </div>
-          <div>
+
+          <div className="flex flex-col gap-2 justify-start align-bottom h-full">
             <h1>Customer Information</h1>
             <div>
               <h1>Order# </h1>
+              <p></p>
             </div>
-            <div className="flex flex-row gap-12">
-              <div className="flex flex-row ">
-                <ComboboxPopover label={"Payment Method"} status="" />
+            
+            <div className="flex flex-row gap-12 justify-between">
+              <div className="flex flex-row gap-2">
+                <Label>Payment Method</Label>
+                <Select>
+                  <SelectTrigger className="w-[200px]">
+                    <SelectValue placeholder="Select a Payment Method" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="cod">Cash on Delivery</SelectItem>
+                    <SelectItem value="gcash">GCASH</SelectItem>
+                    <SelectItem value="paymaya">PAYMAYA</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
-              <div className="flex flex-row">
-                <ComboboxPopover label={"Pickup Method"} status=""/>
+              <div className="flex flex-row gap-2">
+                <Label>Pickup Method</Label>
+                <Select>
+                  <SelectTrigger className="w-[200px]">
+                    <SelectValue placeholder="Select a Pickup Method" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="store">Store Pickup</SelectItem>
+                    <SelectItem value="delivery">Delivery</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
-            <div></div>
+            <div className="flex flex-row gap-8 justify-between ">
+              <div className="flex flex-row gap-4">
+                <h1>Customer Name</h1>
+                <p>John Kenny Reyes</p>
+              </div>
+
+              <div className="flex flex-row gap-4">
+                <h1>Contact Number</h1>
+                <p>09123456789</p>
+              </div>
+            </div>
+            <div>
+              <h1>Address</h1>
+              <p>Blk 1, Lot 2, San Bandangilid, Novaliches, Quezon City</p>
+            </div>
+            <div className="flex flex-row justify-between align-bottom">
+              <div>
+                <h1>Order Information</h1>
+                <p>Total Payment</p>
+              </div>
+              ₱
+              {invoices
+                .reduce((sum, invoice) => sum + invoice.price, 0)
+                .toLocaleString()}
+            </div>
           </div>
         </div>
 
