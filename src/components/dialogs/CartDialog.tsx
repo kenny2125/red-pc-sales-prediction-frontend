@@ -51,49 +51,9 @@ const invoices = [
   },
 ];
 
-type UserRole = "guest" | "customer" | "admin";
 
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  role: UserRole;
-}
 export function CartDialog() {
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
 
-  useEffect(() => {
-    const userType: UserRole = "customer";
-
-    switch (userType) {
-      case "customer":
-        setCurrentUser({
-          id: "2",
-          name: "Kenny",
-          email: "asdsadasd",
-          role: "customer",
-        });
-
-        break;
-      case "admin":
-        setCurrentUser({
-          id: "1",
-          name: "Kenny Admin",
-          email: "asdsadasd",
-          role: "admin",
-        });
-
-        break;
-      default:
-        setCurrentUser(null);
-
-        break;
-    }
-  }, []);
-
-  const handleLogout = () => {
-    setCurrentUser(null);
-  };
 
   return (
     <Dialog>
