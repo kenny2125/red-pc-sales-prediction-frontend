@@ -190,7 +190,7 @@ export default function Dashboard() {
           </Card>
           <Card className="w-full">
             <CardHeader>
-              <CardTitle>Sales Table</CardTitle>
+              <CardTitle>Stocks Monitoring</CardTitle>
             </CardHeader>
             <CardContent>
               <Table>
