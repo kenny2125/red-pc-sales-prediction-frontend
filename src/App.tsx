@@ -15,6 +15,7 @@ import Terms_Conditions from "./pages/footer/Terms_Conditions";
 import PrivacyPolicy from "./pages/footer/PrivacyPolicy";
 import PurchasingGuide from "./pages/footer/PurchasingGuide";
 import Dashboard from "./pages/admin/Dashboard";
+import { Inventory } from "./pages/admin/Inventory";
 
 const devUserType = "admin";
 
@@ -40,6 +41,7 @@ const App: React.FC = () => (
 
             {/* routes for admins hehe */}
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/inventory" element={<Inventory />} />
 
           </Routes>
           <Footer />
