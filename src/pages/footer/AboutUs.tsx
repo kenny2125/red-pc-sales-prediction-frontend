@@ -2,8 +2,8 @@ import React from 'react'
 
 function AboutUs() {
   return (
-    <div>Kay bobbie na to</div>
+    <div>Kenny pogi</div>
   )
 }
 
-export default AboutUs
+export default AboutUs 
