@@ -1,4 +1,3 @@
-import RedPcLogo from "../assets/redpcph.png";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Arrow } from "@radix-ui/react-dropdown-menu";
@@ -8,6 +7,8 @@ import { ProfileDialog } from "./dialogs/ProfileDialog";
 import { OrderDialog } from "./dialogs/OrderDialog";
 import { CartDialog } from "./dialogs/CartDialog";
 import { ModeToggle } from "./ui/mode-toggle";
+import { LogInDialog } from "./dialogs/LogInDialog";
+import Logo from "./Logo";
 
 type UserRole = "guest" | "customer" | "admin";
 
@@ -23,7 +24,7 @@ export default function Header() {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
 
   useEffect(() => {
-    const userType: UserRole = "admin";
+    const userType: UserRole = "guest";
 
     switch (userType) {
       case "customer":
@@ -62,10 +63,7 @@ export default function Header() {
 
   return (
     <div className="w-full h-[8rem] inline-flex justify-between items-center">
-      <div className="inline-flex justify-center items-center gap-2">
-        <img className="w-[76.13px] h-[76px]" src={RedPcLogo} />
-        <div className="text-4xl  font-['Anton']">RED PC</div>
-      </div>
+      <Logo/>
 
       {currentUser?.role == "admin" ? (
         <div className="inline-flex align-middle justify-center gap-12">
@@ -113,9 +111,7 @@ export default function Header() {
             </div>
           </>
         ) : (
-          <Button variant="outline" type="submit">
-            Log In/Sign Up
-          </Button>
+            <LogInDialog/>
         )}
       </div>
     </div>
