@@ -1,3 +1,4 @@
+import { UserProvider } from "./contexts/UserContext";
 import Header from './components/Header'
 import Footer from "./components/Footer"
 import { ThemeProvider } from "@/components/theme-provider"
@@ -12,9 +13,11 @@ import { LineChartInteractive } from '@/components/charts/LineChartInterative'
 
 
 function App() {
-  
+  // For development for noiw "customer", "admin", or null
+  const devUserType = "admin"; 
+
   return (
-    <>
+    <UserProvider initialUserType={devUserType}>
       <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       
 
@@ -36,7 +39,8 @@ function App() {
         <Footer/>
       </div>
       </ThemeProvider>
-    </>
+    </UserProvider>
+    
   )
 }
 

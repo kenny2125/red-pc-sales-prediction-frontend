@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Arrow } from "@radix-ui/react-dropdown-menu";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Search } from "lucide-react";
 import { ProfileDialog } from "./dialogs/ProfileDialog";
 import { OrderDialog } from "./dialogs/OrderDialog";
@@ -9,57 +8,10 @@ import { CartDialog } from "./dialogs/CartDialog";
 import { ModeToggle } from "./ui/mode-toggle";
 import { LogInDialog } from "./dialogs/LogInDialog";
 import Logo from "./Logo";
-
-type UserRole = "guest" | "customer" | "admin";
-
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  role: UserRole;
-}
+import { useUser } from "@/contexts/UserContext";
 
 export default function Header() {
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
-
-  useEffect(() => {
-    const userType: UserRole = "guest";
-
-    switch (userType) {
-      case "customer":
-        setCurrentUser({
-          id: "2",
-          name: "Kenny",
-          email: "asdsadasd",
-          role: "customer",
-        });
-        setIsLoggedIn(true);
-        
-        break;
-      case "admin":
-        setCurrentUser({
-          id: "1",
-          name: "Kenny Admin",
-          email: "asdsadasd",
-          role: "admin",
-        });
-        setIsLoggedIn(true);
-        
-        break;
-      default:
-        setIsLoggedIn(false);
-        
-        setCurrentUser(null);
-
-        break;
-    }
-  }, []);
-
-  const handleLogout = () => {
-    setIsLoggedIn(false);
-    setCurrentUser(null);
-  };
+  const { currentUser, isLoggedIn, logout } = useUser();
 
   return (
     <div className="w-full h-[8rem] inline-flex justify-between items-center">
@@ -93,7 +45,7 @@ export default function Header() {
       )}
 
       <div>
-        {/* <Button variant="link" type="submit">About Us</Button> */}
+
 
         {isLoggedIn ? (
           <>
@@ -107,6 +59,7 @@ export default function Header() {
                 <ProfileDialog/>
                 <CartDialog/>
                 <ModeToggle/>
+                <Button variant="outline" onClick={logout}>Logout</Button>
               </div>
             </div>
           </>
