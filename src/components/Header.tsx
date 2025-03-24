@@ -15,7 +15,7 @@ export default function Header() {
 
   return (
     <div className="w-full h-[8rem] inline-flex justify-between items-center">
-      <Logo/>
+      <Logo />
 
       {currentUser?.role == "admin" ? (
         <div className="inline-flex align-middle justify-center gap-12">

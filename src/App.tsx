@@ -1,47 +1,47 @@
+import { ThemeProvider } from "./components/theme-provider";
 import { UserProvider } from "./contexts/UserContext";
-import Header from './components/Header'
-import Footer from "./components/Footer"
-import { ThemeProvider } from "@/components/theme-provider"
-import PackageCard from '@/components/cards/package-card'
-import ProductCard from '@/components/cards/product-card'
-import UserCard from '@/components/cards/user-card'
-import  {LineChartView}  from "@/components/charts/LineChartMultiple"
-import { PieChartDonut } from "@/components/charts/PieChartDonut"
-import { TableDemo } from '@/components/Table'
-import { LineChartInteractive } from '@/components/charts/LineChartInterative'
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
+import Header from "./components/Header";
+import Footer from "./components/Footer";
 
+import Home from "./pages/Home";
+import Product from "./pages/Product";
 
-function App() {
-  // For development for noiw "customer", "admin", or null
-  const devUserType = "admin"; 
+import AboutUs from "./pages/footer/AboutUs";
+import FAQ from "./pages/footer/FAQ";
+import ContactUs from "./pages/footer/ContactUs";
+import Terms_Conditions from "./pages/footer/Terms_Conditions";
+import PrivacyPolicy from "./pages/footer/PrivacyPolicy";
+import PurchasingGuide from "./pages/footer/PurchasingGuide";
 
-  return (
-    <UserProvider initialUserType={devUserType}>
+const devUserType = "admin";
+
+const App: React.FC = () => (
+  <UserProvider initialUserType={devUserType}>
+    <BrowserRouter>
       <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-      
+        <div className="flex flex-wrap justify-between align-top items-center gap-2 px-[175px]">
+          <Header />
+          <Routes>
+            <Route index element={<Home />} />
+            <Route path="/product" element={<Product />} />
 
-      <div className="flex flex-wrap justify-between align-top items-center gap-2 px-[175px]">
-      <Header/>  
-        <div className='w-lg'>
-        <LineChartView />
-        </div>        
-        
-        <PackageCard />
-        <ProductCard />
-        <UserCard />
-        <PieChartDonut/>
-        <TableDemo/>
-        <div className='w-full'>
-        <LineChartInteractive/>
+            {/* routes ng footer ni bobby  */}
+            <Route path="/about-us" element={<AboutUs />} />
+            <Route path="/faq" element={<FAQ />} />
+            <Route path="/contact-us" element={<ContactUs />} />
+
+            <Route path="/terms&conditions" element={<Terms_Conditions />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+
+            <Route path="/purchasing-guide" element={<PurchasingGuide />} />
+          </Routes>
+          <Footer />
         </div>
-        
-        <Footer/>
-      </div>
       </ThemeProvider>
-    </UserProvider>
-    
-  )
-}
+    </BrowserRouter>
+  </UserProvider>
+);
 
-export default App
+export default App;

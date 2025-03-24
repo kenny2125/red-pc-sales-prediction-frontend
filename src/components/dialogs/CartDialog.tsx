@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { UserPen } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -10,7 +9,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ShoppingCart } from "lucide-react";
 import {
@@ -25,7 +23,6 @@ import {
 } from "@/components/ui/table";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
-import { ComboboxPopover } from "../ui/combobox";
 import {
   Select,
   SelectContent,
@@ -62,13 +59,12 @@ const invoices = [
 export function CartDialog() {
   const [paid, isPaid] = useState<boolean>(false);
 
-  function payment(params:type) {
+  function payment(params: type) {
     isPaid(true);
   }
-  
 
   return (
-    <Dialog>      
+    <Dialog>
       <DialogTrigger asChild>
         <ShoppingCart size={40} className="text-primary" />
       </DialogTrigger>
@@ -80,7 +76,8 @@ export function CartDialog() {
             <DialogTitle>My Cart</DialogTitle>
           </div>
           <DialogDescription>
-          (Papalitan neto hehe) Make changes to your profile here. Click save when you're done. 
+            (Papalitan neto hehe) Make changes to your profile here. Click save
+            when you're done.
           </DialogDescription>
         </DialogHeader>
         {paid == false ? (
@@ -189,16 +186,18 @@ export function CartDialog() {
               <h1>Thank you for paying!</h1>
             </div>
             <div className="flex flex-row justify-center">
-              <ProductCard/>
-              <ProductCard/>
-              <ProductCard/>
-              <ProductCard/>
+              <ProductCard />
+              <ProductCard />
+              <ProductCard />
+              <ProductCard />
             </div>
-            </div>
+          </div>
         )}
 
         <DialogFooter>
-          <Button type="submit" onClick={payment}>Place Order</Button>  
+          <Button type="submit" onClick={payment}>
+            Place Order
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
