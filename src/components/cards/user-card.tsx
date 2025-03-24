@@ -8,7 +8,7 @@ function UserCard() {
         <p className='text-xl-anton font-bold'>Minatozaki Sana</p>
         <p className='text-2xl-anton text-accent'>SALES DEPARTMENT</p>
       </div>
-      <button className='flex w-[178px] h-[47px] px-2.5 py-7 bg-primary items-center justify-center text-2xl-anton rounded-[20px] cursor-pointer'>Edit User</button>
+      <button className='flex w-[178px] h-[47px] px-2.5 py-7 bg-primary items-center justify-center text-2xl -anton rounded-[20px] cursor-pointer'>Edit User</button>
     </div>
   )
 }

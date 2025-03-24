@@ -3,7 +3,7 @@
 import { TrendingUp } from "lucide-react"
 import { Label, Pie, PieChart, Sector } from "recharts"
 import { PieSectorDataItem } from "recharts/types/polar/Pie"
-import { ChartLegend, ChartLegendContent } from "./ui/chart"
+import { ChartLegend, ChartLegendContent } from "../ui/chart"
 
 import {
   Card,
@@ -12,13 +12,13 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "../components/ui/card"
+} from "../ui/card"
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "../components/ui/chart"
+} from "../ui/chart"
 const chartData = [
   { browser: "chrome", visitors: 275, fill: "var(--color-chrome)" },
   { browser: "safari", visitors: 200, fill: "var(--color-safari)" },
