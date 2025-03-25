@@ -35,7 +35,6 @@ export function AreaChartView() {
   const [isLoading, setIsLoading] = useState(true);
   const [isPredicting, setIsPredicting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [usingCachedData, setUsingCachedData] = useState(false);
   
   // Check if device is mobile
   const isMobile = useMediaQuery("(max-width: 768px)");
@@ -70,9 +69,6 @@ export function AreaChartView() {
         });
         
         setChartData(transformedData);
-        
-        // Check for cached predictions that match our current data
-        checkCachedPredictions(transformedData);
       } catch (err) {
         console.error('Error fetching monthly sales data:', err);
         setError('Failed to load sales data: ' + (err instanceof Error ? err.message : String(err)));
@@ -83,71 +79,12 @@ export function AreaChartView() {
 
     fetchAllMonthlySales();
   }, []);
-  
-  // Function to check for cached predictions
-  const checkCachedPredictions = (actualSalesData: any[]) => {
-    try {
-      // Try to get cached predictions from localStorage
-      const cachedPredictionsJSON = localStorage.getItem('sales_predictions');
-      if (!cachedPredictionsJSON) return;
-      
-      const cachedData = JSON.parse(cachedPredictionsJSON);
-      
-      // Verify the cache is valid and not expired
-      if (!cachedData || !cachedData.timestamp || !cachedData.predictions || !cachedData.lastActualDataPoint) {
-        return;
-      }
-      
-      // Check if cache is fresh (less than 1 day old)
-      const cacheAge = Date.now() - cachedData.timestamp;
-      const oneDayInMs = 24 * 60 * 60 * 1000;
-      if (cacheAge > oneDayInMs) {
-        console.log('Cache expired, will request fresh predictions');
-        return;
-      }
-      
-      // Verify the last actual data point matches our current data
-      // This ensures we're not using predictions based on outdated actual data
-      const lastActual = actualSalesData[actualSalesData.length - 1];
-      const cachedLastActual = cachedData.lastActualDataPoint;
-      
-      if (lastActual.year === cachedLastActual.year && 
-          lastActual.monthIndex === cachedLastActual.monthIndex &&
-          lastActual.total_sales === cachedLastActual.total_sales) {
-        
-        console.log('Using cached predictions');
-        
-        // Use the cached predictions
-        setPredictionData(cachedData.predictions);
-        
-        // Merge cached predictions with actual data
-        const mergedData = [...actualSalesData];
-        cachedData.predictions.forEach((prediction: any) => {
-          mergedData.push({
-            month: `${prediction.month_name.slice(0, 3)} ${prediction.year}`,
-            total_sales: null,
-            predicted_sales: prediction.predicted_sales,
-            year: prediction.year,
-            monthIndex: prediction.month,
-            isPrediction: true,
-          });
-        });
-        
-        setChartData(mergedData);
-        setUsingCachedData(true);
-      }
-    } catch (error) {
-      console.error('Error parsing cached predictions:', error);
-      // Continue without using cache if there's an error
-    }
-  };
 
   // Function to predict future sales
   const predictFutureSales = async () => {
     try {
       setIsPredicting(true);
       setError(null);
-      setUsingCachedData(false);
       
       // Get the base data without predictions
       const baseData = chartData.filter(item => !item.isPrediction);
@@ -172,18 +109,6 @@ export function AreaChartView() {
       
       // Store prediction data
       setPredictionData(data.predictions);
-      
-      // Save predictions to localStorage with timestamp
-      const lastActualDataPoint = baseData[baseData.length - 1];
-      localStorage.setItem('sales_predictions', JSON.stringify({
-        predictions: data.predictions,
-        timestamp: Date.now(),
-        lastActualDataPoint: {
-          year: lastActualDataPoint.year,
-          monthIndex: lastActualDataPoint.monthIndex,
-          total_sales: lastActualDataPoint.total_sales
-        }
-      }));
       
       // Merge prediction with actual data for chart display
       const mergedData = [...baseData];
@@ -247,22 +172,21 @@ export function AreaChartView() {
           <CardTitle>Complete Sales Overview</CardTitle>
           <CardDescription>
             Total sales aggregated by month across all available data
-            {usingCachedData && " (using cached predictions)"}
           </CardDescription>
         </div>
         <Button 
           onClick={predictFutureSales} 
           disabled={isLoading || isPredicting}
-          variant={usingCachedData ? "secondary" : "outline"}
+          variant="outline"
         >
-          {isPredicting ? "Predicting..." : usingCachedData ? "Refresh Predictions" : "Predict Future Sales"}
+          {isPredicting ? "Predicting..." : "Predict Future Sales"}
         </Button>
       </CardHeader>
       <CardContent>
         {isLoading ? (
           <div className="flex justify-center items-center h-96">Loading chart data...</div>
         ) : error ? (
-          <div className="flex justify-center items-center h-96 text-red-500">{error}</div>
+          <div className="flex justify-center items-center h-96 ">{error}</div>
         ) : (
           <div className="h-[500px]">
             <ResponsiveContainer width="100%" height="100%">
@@ -275,7 +199,7 @@ export function AreaChartView() {
                   bottom: 30,
                 }}
               >
-                <CartesianGrid strokeDasharray="3 3" />
+                {/* <CartesianGrid /> */}
                 <XAxis
                   dataKey="month"
                   tickLine={true}
@@ -305,10 +229,6 @@ export function AreaChartView() {
                     <Area
                       dataKey="predicted_sales"
                       type="monotone"
-                      fill="#8884d8"
-                      fillOpacity={0.4}
-                      stroke="#8884d8"
-                      strokeWidth={2}
                       name="Predicted Sales"
                       connectNulls
                     />
@@ -316,10 +236,6 @@ export function AreaChartView() {
                       <Area
                         dataKey="total_sales"
                         type="monotone"
-                        fill="#82ca9d"
-                        fillOpacity={0.4}
-                        stroke="#82ca9d"
-                        strokeWidth={2}
                         name="Actual Sales"
                         connectNulls
                       />
@@ -330,10 +246,6 @@ export function AreaChartView() {
                     <Area
                       dataKey="total_sales"
                       type="monotone"
-                      fill="#82ca9d"
-                      fillOpacity={0.4}
-                      stroke="#82ca9d"
-                      strokeWidth={2}
                       name="Actual Sales"
                       connectNulls
                     />
@@ -341,10 +253,6 @@ export function AreaChartView() {
                       <Area
                         dataKey="predicted_sales"
                         type="monotone"
-                        fill="#8884d8"
-                        fillOpacity={0.4}
-                        stroke="#8884d8"
-                        strokeWidth={2}
                         name="Predicted Sales"
                         connectNulls
                       />
@@ -361,14 +269,14 @@ export function AreaChartView() {
           <div className="grid gap-2">
             <div className="flex items-center gap-2 font-medium leading-none">
               {trend.isUp ? (
-                <span className="text-green-500">Trending up by {trend.percentage}% over time <TrendingUp className="inline h-4 w-4 text-green-500" /></span>
+                <span className="text-primary">Trending up by {trend.percentage}% over time <TrendingUp className="inline h-4 w-4" /></span>
               ) : (
-                <span className="text-red-500">Trending down by {trend.percentage}% over time</span>
+                <span className="text-muted-foreground">Trending down by {trend.percentage}% over time</span>
               )}
             </div>
             <div className="flex items-center gap-2 leading-none text-muted-foreground">
               {getDateRangeText()}
-              {predictionData.length > 0 && ` (includes ${usingCachedData ? 'cached ' : ''}predictions)`}
+              {predictionData.length > 0 && " (includes predictions)"}
             </div>
           </div>
         </div>

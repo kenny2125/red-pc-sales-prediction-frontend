@@ -14,18 +14,23 @@ import { AreaChartView } from "@/components/charts/AreaChart";
 function Home() {
   return (<>
       
-        <div className='w-lg'>
+        <div className='flex flex-row w-full min-w-lg'>
+        <div className="min-w-3xl">
         <AreaChartView/>
+        </div>
+        <div className="min-w-3xl">
         <LineChartView />
+        </div>
         </div>        
-        <PackageCard />
-        <ProductCard />
-        <UserCard />
-        <PieChartDonut/>
+
+        {/* <PieChartDonut/> */}
         <TableDemo/>
         <div className='w-full'>
         <LineChartInteractive/>
         </div>
+        <PackageCard />
+        <ProductCard />
+        <UserCard />
         
         </>
 
