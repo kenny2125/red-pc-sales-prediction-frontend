@@ -35,6 +35,7 @@ export function AreaChartView() {
   const [isLoading, setIsLoading] = useState(true);
   const [isPredicting, setIsPredicting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [monthsAhead, setMonthsAhead] = useState(6);
   
   // Check if device is mobile
   const isMobile = useMediaQuery("(max-width: 768px)");
@@ -86,15 +87,8 @@ export function AreaChartView() {
       setIsPredicting(true);
       setError(null);
       
-      // Get the base data without predictions
-      const baseData = chartData.filter(item => !item.isPrediction);
-      
-      // Determine window size based on data (minimum 3, or 1/4 of available data)
-      const windowSize = Math.max(3, Math.floor(baseData.length / 4));
-      
-      // Call the prediction API
       const response = await fetch(
-        `http://localhost:3000/api/sales/predict?months_ahead=6&window_size=${windowSize}`
+        `http://localhost:3000/api/sales/predict?months_ahead=${monthsAhead}`
       );
       
       if (!response.ok) {
@@ -110,10 +104,11 @@ export function AreaChartView() {
       // Store prediction data
       setPredictionData(data.predictions);
       
+      // Define baseData excluding any previous predictions
+      const baseData = chartData.filter(item => !item.isPrediction);
+      
       // Merge prediction with actual data for chart display
       const mergedData = [...baseData];
-      
-      // Add prediction data as new points
       data.predictions.forEach((prediction: PredictionData) => {
         mergedData.push({
           month: `${prediction.month_name.slice(0, 3)} ${prediction.year}`,
@@ -125,7 +120,6 @@ export function AreaChartView() {
         });
       });
       
-      // Update chart data with the merged data
       setChartData(mergedData);
       
     } catch (err) {
@@ -174,13 +168,26 @@ export function AreaChartView() {
             Total sales aggregated by month across all available data
           </CardDescription>
         </div>
-        <Button 
-          onClick={predictFutureSales} 
-          disabled={isLoading || isPredicting}
-          variant="outline"
-        >
-          {isPredicting ? "Predicting..." : "Predict Future Sales"}
-        </Button>
+        <div className="flex items-center gap-2">
+          <label className="flex items-center gap-1 text-sm">
+            Months Ahead:
+            <input
+              type="number"
+              min="1"
+              max="12"
+              value={monthsAhead}
+              onChange={(e) => setMonthsAhead(parseInt(e.target.value))}
+              className="px-2 py-1 border rounded"
+            />
+          </label>
+          <Button 
+            onClick={predictFutureSales} 
+            disabled={isLoading || isPredicting}
+            variant="outline"
+          >
+            {isPredicting ? "Predicting..." : "Predict Future Sales"}
+          </Button>
+        </div>
       </CardHeader>
       <CardContent>
         {isLoading ? (
