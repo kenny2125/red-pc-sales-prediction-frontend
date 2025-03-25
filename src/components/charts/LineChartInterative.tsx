@@ -2,6 +2,8 @@
 
 import * as React from "react"
 import { CartesianGrid, Line, LineChart, XAxis } from "recharts"
+import { CalendarIcon } from "lucide-react"
+import { format } from "date-fns"
 
 import {
   Card,
@@ -16,103 +18,20 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
-const chartData = [
-  { date: "2024-04-01", actualsales: 222, predictedsales: 150 },
-  { date: "2024-04-02", actualsales: 97, predictedsales: 180 },
-  { date: "2024-04-03", actualsales: 167, predictedsales: 120 },
-  { date: "2024-04-04", actualsales: 242, predictedsales: 260 },
-  { date: "2024-04-05", actualsales: 373, predictedsales: 290 },
-  { date: "2024-04-06", actualsales: 301, predictedsales: 340 },
-  { date: "2024-04-07", actualsales: 245, predictedsales: 180 },
-  { date: "2024-04-08", actualsales: 409, predictedsales: 320 },
-  { date: "2024-04-09", actualsales: 59, predictedsales: 110 },
-  { date: "2024-04-10", actualsales: 261, predictedsales: 190 },
-  { date: "2024-04-11", actualsales: 327, predictedsales: 350 },
-  { date: "2024-04-12", actualsales: 292, predictedsales: 210 },
-  { date: "2024-04-13", actualsales: 342, predictedsales: 380 },
-  { date: "2024-04-14", actualsales: 137, predictedsales: 220 },
-  { date: "2024-04-15", actualsales: 120, predictedsales: 170 },
-  { date: "2024-04-16", actualsales: 138, predictedsales: 190 },
-  { date: "2024-04-17", actualsales: 446, predictedsales: 360 },
-  { date: "2024-04-18", actualsales: 364, predictedsales: 410 },
-  { date: "2024-04-19", actualsales: 243, predictedsales: 180 },
-  { date: "2024-04-20", actualsales: 89, predictedsales: 150 },
-  { date: "2024-04-21", actualsales: 137, predictedsales: 200 },
-  { date: "2024-04-22", actualsales: 224, predictedsales: 170 },
-  { date: "2024-04-23", actualsales: 138, predictedsales: 230 },
-  { date: "2024-04-24", actualsales: 387, predictedsales: 290 },
-  { date: "2024-04-25", actualsales: 215, predictedsales: 250 },
-  { date: "2024-04-26", actualsales: 75, predictedsales: 130 },
-  { date: "2024-04-27", actualsales: 383, predictedsales: 420 },
-  { date: "2024-04-28", actualsales: 122, predictedsales: 180 },
-  { date: "2024-04-29", actualsales: 315, predictedsales: 240 },
-  { date: "2024-04-30", actualsales: 454, predictedsales: 380 },
-  { date: "2024-05-01", actualsales: 165, predictedsales: 220 },
-  { date: "2024-05-02", actualsales: 293, predictedsales: 310 },
-  { date: "2024-05-03", actualsales: 247, predictedsales: 190 },
-  { date: "2024-05-04", actualsales: 385, predictedsales: 420 },
-  { date: "2024-05-05", actualsales: 481, predictedsales: 390 },
-  { date: "2024-05-06", actualsales: 498, predictedsales: 520 },
-  { date: "2024-05-07", actualsales: 388, predictedsales: 300 },
-  { date: "2024-05-08", actualsales: 149, predictedsales: 210 },
-  { date: "2024-05-09", actualsales: 227, predictedsales: 180 },
-  { date: "2024-05-10", actualsales: 293, predictedsales: 330 },
-  { date: "2024-05-11", actualsales: 335, predictedsales: 270 },
-  { date: "2024-05-12", actualsales: 197, predictedsales: 240 },
-  { date: "2024-05-13", actualsales: 197, predictedsales: 160 },
-  { date: "2024-05-14", actualsales: 448, predictedsales: 490 },
-  { date: "2024-05-15", actualsales: 473, predictedsales: 380 },
-  { date: "2024-05-16", actualsales: 338, predictedsales: 400 },
-  { date: "2024-05-17", actualsales: 499, predictedsales: 420 },
-  { date: "2024-05-18", actualsales: 315, predictedsales: 350 },
-  { date: "2024-05-19", actualsales: 235, predictedsales: 180 },
-  { date: "2024-05-20", actualsales: 177, predictedsales: 230 },
-  { date: "2024-05-21", actualsales: 82, predictedsales: 140 },
-  { date: "2024-05-22", actualsales: 81, predictedsales: 120 },
-  { date: "2024-05-23", actualsales: 252, predictedsales: 290 },
-  { date: "2024-05-24", actualsales: 294, predictedsales: 220 },
-  { date: "2024-05-25", actualsales: 201, predictedsales: 250 },
-  { date: "2024-05-26", actualsales: 213, predictedsales: 170 },
-  { date: "2024-05-27", actualsales: 420, predictedsales: 460 },
-  { date: "2024-05-28", actualsales: 233, predictedsales: 190 },
-  { date: "2024-05-29", actualsales: 78, predictedsales: 130 },
-  { date: "2024-05-30", actualsales: 340, predictedsales: 280 },
-  { date: "2024-05-31", actualsales: 178, predictedsales: 230 },
-  { date: "2024-06-01", actualsales: 178, predictedsales: 200 },
-  { date: "2024-06-02", actualsales: 470, predictedsales: 410 },
-  { date: "2024-06-03", actualsales: 103, predictedsales: 160 },
-  { date: "2024-06-04", actualsales: 439, predictedsales: 380 },
-  { date: "2024-06-05", actualsales: 88, predictedsales: 140 },
-  { date: "2024-06-06", actualsales: 294, predictedsales: 250 },
-  { date: "2024-06-07", actualsales: 323, predictedsales: 370 },
-  { date: "2024-06-08", actualsales: 385, predictedsales: 320 },
-  { date: "2024-06-09", actualsales: 438, predictedsales: 480 },
-  { date: "2024-06-10", actualsales: 155, predictedsales: 200 },
-  { date: "2024-06-11", actualsales: 92, predictedsales: 150 },
-  { date: "2024-06-12", actualsales: 492, predictedsales: 420 },
-  { date: "2024-06-13", actualsales: 81, predictedsales: 130 },
-  { date: "2024-06-14", actualsales: 426, predictedsales: 380 },
-  { date: "2024-06-15", actualsales: 307, predictedsales: 350 },
-  { date: "2024-06-16", actualsales: 371, predictedsales: 310 },
-  { date: "2024-06-17", actualsales: 475, predictedsales: 520 },
-  { date: "2024-06-18", actualsales: 107, predictedsales: 170 },
-  { date: "2024-06-19", actualsales: 341, predictedsales: 290 },
-  { date: "2024-06-20", actualsales: 408, predictedsales: 450 },
-  { date: "2024-06-21", actualsales: 169, predictedsales: 210 },
-  { date: "2024-06-22", actualsales: 317, predictedsales: 270 },
-  { date: "2024-06-23", actualsales: 480, predictedsales: 530 },
-  { date: "2024-06-24", actualsales: 132, predictedsales: 180 },
-  { date: "2024-06-25", actualsales: 141, predictedsales: 190 },
-  { date: "2024-06-26", actualsales: 434, predictedsales: 380 },
-  { date: "2024-06-27", actualsales: 448, predictedsales: 490 },
-  { date: "2024-06-28", actualsales: 149, predictedsales: 200 },
-  { date: "2024-06-29", actualsales: 103, predictedsales: 160 },
-  { date: "2024-06-30", actualsales: 446, predictedsales: 400 },
-]
+import { Skeleton } from "@/components/ui/skeleton"
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import { Calendar } from "@/components/ui/calendar"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
 
+// Chart config definition
 const chartConfig = {
   views: {
-    label: "Page Views",
+    label: "Sale Per Day",
   },
   actualsales: {
     label: "Actual Sales",
@@ -125,16 +44,80 @@ const chartConfig = {
 } satisfies ChartConfig
 
 export function LineChartInteractive() {
-  const [activeChart, setActiveChart] =
-    React.useState<keyof typeof chartConfig>("actualsales")
+  const [chartData, setChartData] = React.useState<any[]>([]);
+  const [loading, setLoading] = React.useState(true);
+  const [error, setError] = React.useState<string | null>(null);
+  const [activeChart, setActiveChart] = 
+    React.useState<keyof typeof chartConfig>("actualsales");
+  const [startDate, setStartDate] = React.useState<Date | undefined>(undefined);
+  const [endDate, setEndDate] = React.useState<Date | undefined>(undefined);
+
+  const fetchSalesData = React.useCallback(async () => {
+    try {
+      setLoading(true);
+      
+      // Build query parameters for date range
+      const params = new URLSearchParams();
+      if (startDate) {
+        params.append('start_date', format(startDate, 'yyyy-MM-dd'));
+      }
+      if (endDate) {
+        params.append('end_date', format(endDate, 'yyyy-MM-dd'));
+      }
+      
+      const url = `http://localhost:3000/api/sales/chart${params.toString() ? '?' + params.toString() : ''}`;
+      const response = await fetch(url);
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch sales data');
+      }
+      
+      const data = await response.json();
+      setChartData(data);
+      setError(null);
+    } catch (err) {
+      console.error('Error fetching sales data:', err);
+      setError('Failed to load sales data. Please try again later.');
+    } finally {
+      setLoading(false);
+    }
+  }, [startDate, endDate]);
+
+  React.useEffect(() => {
+    fetchSalesData();
+  }, [fetchSalesData]);
 
   const total = React.useMemo(
     () => ({
-      actualsales: chartData.reduce((acc, curr) => acc + curr.actualsales, 0),
-      predictedsales: chartData.reduce((acc, curr) => acc + curr.predictedsales, 0),
+      actualsales: chartData.reduce((acc, curr) => acc + (curr.actualsales || 0), 0),
+      predictedsales: chartData.reduce((acc, curr) => acc + (curr.predictedsales || 0), 0),
     }),
-    []
+    [chartData]
   )
+
+  // Calculate growth percentage (if applicable)
+  const growthPercentage = React.useMemo(() => {
+    if (chartData.length < 2) return 0;
+    
+    const firstDayActual = chartData[0]?.actualsales || 0;
+    const lastDayActual = chartData[chartData.length - 1]?.actualsales || 0;
+    
+    if (firstDayActual === 0) return 0;
+    
+    return ((lastDayActual - firstDayActual) / firstDayActual) * 100;
+  }, [chartData]);
+
+  if (error) {
+    return (
+      <Card>
+        <CardContent className="flex items-center justify-center p-6">
+          <div className="text-center text-red-500">
+            <p>{error}</p>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card>
@@ -142,8 +125,68 @@ export function LineChartInteractive() {
         <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
           <CardTitle>Sales Chart - Interactive</CardTitle>
           <CardDescription>
-            Showing total of 6.3% growth over past month
+            {loading ? (
+              <Skeleton className="h-4 w-[250px]" />
+            ) : (
+              `Showing total of ${growthPercentage.toFixed(1)}% growth over period`
+            )}
           </CardDescription>
+          <div className="flex space-x-2 mt-2">
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant={"outline"}
+                  className={cn(
+                    "w-[150px] justify-start text-left font-normal",
+                    !startDate && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {startDate ? format(startDate, "PPP") : "Start date"}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0">
+                <Calendar
+                  mode="single"
+                  selected={startDate}
+                  onSelect={setStartDate}
+                  initialFocus
+                />
+              </PopoverContent>
+            </Popover>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant={"outline"}
+                  className={cn(
+                    "w-[150px] justify-start text-left font-normal",
+                    !endDate && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {endDate ? format(endDate, "PPP") : "End date"}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0">
+                <Calendar
+                  mode="single"
+                  selected={endDate}
+                  onSelect={setEndDate}
+                  initialFocus
+                />
+              </PopoverContent>
+            </Popover>
+            <Button 
+              variant="secondary"
+              onClick={() => {
+                setStartDate(undefined);
+                setEndDate(undefined);
+              }}
+              className="whitespace-nowrap"
+            >
+              Reset
+            </Button>
+          </div>
         </div>
         <div className="flex">
           {["actualsales", "predictedsales"].map((key) => {
@@ -158,66 +201,76 @@ export function LineChartInteractive() {
                 <span className="text-xs text-muted-foreground">
                   {chartConfig[chart].label}
                 </span>
-                <span className="text-lg font-bold leading-none sm:text-3xl">
-                  {total[key as keyof typeof total].toLocaleString()}
-                </span>
+                {loading ? (
+                  <Skeleton className="h-8 w-[80px]" />
+                ) : (
+                  <span className="text-lg font-bold leading-none sm:text-3xl">
+                    {total[chart as keyof typeof total].toLocaleString()}
+                  </span>
+                )}
               </button>
             )
           })}
         </div>
       </CardHeader>
       <CardContent className="px-2 sm:p-6">
-        <ChartContainer
-          config={chartConfig}
-          className="aspect-auto h-[250px] w-full"
-        >
-          <LineChart
-            accessibilityLayer
-            data={chartData}
-            margin={{
-              left: 12,
-              right: 12,
-            }}
+        {loading ? (
+          <div className="flex justify-center items-center h-[250px]">
+            <Skeleton className="h-[200px] w-full" />
+          </div>
+        ) : (
+          <ChartContainer
+            config={chartConfig}
+            className="aspect-auto h-[250px] w-full"
           >
-            <CartesianGrid vertical={false} />
-            <XAxis
-              dataKey="date"
-              tickLine={false}
-              axisLine={false}
-              tickMargin={8}
-              minTickGap={32}
-              tickFormatter={(value) => {
-                const date = new Date(value)
-                return date.toLocaleDateString("en-US", {
-                  month: "short",
-                  day: "numeric",
-                })
+            <LineChart
+              accessibilityLayer
+              data={chartData}
+              margin={{
+                left: 12,
+                right: 12,
               }}
-            />
-            <ChartTooltip
-              content={
-                <ChartTooltipContent
-                  className="w-[150px]"
-                  nameKey="views"
-                  labelFormatter={(value) => {
-                    return new Date(value).toLocaleDateString("en-US", {
-                      month: "short",
-                      day: "numeric",
-                      year: "numeric",
-                    })
-                  }}
-                />
-              }
-            />
-            <Line
-              dataKey={activeChart}
-              type="monotone"
-              stroke={`var(--color-${activeChart})`}
-              strokeWidth={2}
-              dot={false}
-            />
-          </LineChart>
-        </ChartContainer>
+            >
+              <CartesianGrid vertical={false} />
+              <XAxis
+                dataKey="date"
+                tickLine={false}
+                axisLine={false}
+                tickMargin={8}
+                minTickGap={32}
+                tickFormatter={(value) => {
+                  const date = new Date(value)
+                  return date.toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                  })
+                }}
+              />
+              <ChartTooltip
+                content={
+                  <ChartTooltipContent
+                    className="w-[150px]"
+                    nameKey="views"
+                    labelFormatter={(value) => {
+                      return new Date(value).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                      })
+                    }}
+                  />
+                }
+              />
+              <Line
+                dataKey={activeChart}
+                type="monotone"
+                stroke={`var(--color-${activeChart})`}
+                strokeWidth={2}
+                dot={false}
+              />
+            </LineChart>
+          </ChartContainer>
+        )}
       </CardContent>
     </Card>
   )
