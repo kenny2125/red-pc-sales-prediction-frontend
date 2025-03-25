@@ -8,12 +8,14 @@ import  {LineChartView}  from "@/components/charts/LineChartMultiple"
 import { PieChartDonut } from "@/components/charts/PieChartDonut"
 import { TableDemo } from '@/components/Table'
 import { LineChartInteractive } from '@/components/charts/LineChartInterative'
+import { AreaChartView } from "@/components/charts/AreaChart";
 
 
 function Home() {
   return (<>
       
         <div className='w-lg'>
+        <AreaChartView/>
         <LineChartView />
         </div>        
         <PackageCard />
