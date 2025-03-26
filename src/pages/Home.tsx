@@ -15,6 +15,9 @@ import brand10 from '../assets/brand-logos/ovation.png';
 import brand11 from '../assets/brand-logos/pny.png';
 import brand12 from '../assets/brand-logos/ramsta.png';
 import brand13 from '../assets/brand-logos/teamgroup.png';
+import PackageCard from '@/components/cards/package-card';
+import ProductCard from '@/components/cards/product-card';
+import logo from '../assets/redpcph.png'
 
 function Home() {
   const brandImages = [
@@ -75,8 +78,53 @@ function Home() {
         </div>
       </section>
 
+      <section className='flex flex-col items-center justify-evenly '>
+        <div className='flex gap-[20px]'>
+          <div className='flex flex-col items-center '>
+            <div className='p-[30px]'>
+              <h1 className='text-4xl font-bold'>INTEL PC BUILDS</h1>
+            </div>
+            <div className='flex gap-[10px]'>
+                <PackageCard />
+              <PackageCard />
+              <PackageCard />
+            </div>
+          </div>
 
-      
+          <div className='flex flex-col items-center'>
+            <div className='p-[30px]'>
+              <h1 className='text-4xl font-bold'>AMD PC BUILDS</h1>
+            </div>
+            <div className='flex gap-[10px]'>
+              <PackageCard />
+              <PackageCard />
+              <PackageCard />
+            </div>
+          </div>
+        </div>     
+        <Button className='text-xl p-5 m-6'>See More</Button>
+      </section>
+
+      <section className='flex flex-col items-center'>
+        <h1 className='text-4xl font-bold mt-10'>Check our latest product in the store!</h1>
+
+        <div className='flex px-15 gap-2.5 mt-8'>
+          <ProductCard />
+          <ProductCard />
+          <ProductCard />
+          <ProductCard />
+          <ProductCard />
+          <ProductCard />
+        </div>
+      </section>
+
+      <section className='flex flex-col items-center px-[170px] py-7'>
+        <h1 className='text-4xl font-bold'>WHO ARE WE?</h1>
+        <div className='flex p-10 items-center gap-10'>
+          <img className='w-[300px]' src={logo} alt="logo" />
+          <p className='text-xl font-bold'>Founded in 2019, RED PC PH started during the pandemic by selling second-hand computer products. Over time, we expanded to offer custom-built gaming PCs, budget-friendly computer systems, and refurbished devices, along with essential repair and maintenance services.</p>
+        </div>
+      </section>
     </main>
   );
 }
