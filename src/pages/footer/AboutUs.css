@@ -1,0 +1,19 @@
+.content ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.content ul li {
+  font-size: 16px;
+  padding: 5px 0;
+  position: relative;
+  padding-left: 25px;
+}
+
+.content ul li::before {
+  content: "✔️";
+  position: absolute;
+  left: 0;
+  color: #ffcc00;
+  font-size: 18px;
+}

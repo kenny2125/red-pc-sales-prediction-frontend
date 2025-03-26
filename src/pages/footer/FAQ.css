@@ -1,0 +1,55 @@
+/* General Page Styling */
+.page-container {
+    max-width: 80%;
+    margin: auto;
+    padding: 20px;
+    color: #fff;
+    font-family: Arial, sans-serif;
+}
+
+/* Title Bar Styling */
+.section-title {
+    background: linear-gradient(to right, #002147, #5a0000);
+    color: #ffcc00;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+/* Content Styling */
+.section-content {
+    background-color: #1a0d0d;
+    padding: 20px;
+    border-radius: 5px;
+}
+
+.section-content h2 {
+    color: #ffcc00;
+    font-size: 20px;
+    margin-top: 15px;
+}
+
+.section-content ul {
+    list-style: none;
+    padding: 0;
+}
+
+.section-content li {
+    margin-bottom: 15px;
+    padding-left: 20px;
+    position: relative;
+}
+
+.section-content li strong {
+    color: #ffcc00;
+    font-size: 16px;
+}
+
+.section-content li p {
+    margin-top: 5px;
+    font-size: 14px;
+    color: #ddd;
+}
