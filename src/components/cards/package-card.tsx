@@ -7,18 +7,19 @@ import checkbox from '../../assets/package-assets/checkbox.png'
 import checkboxClicked from '../../assets/package-assets/bx-checkbox-checked.png'
 import { useState } from 'react';
 
-function PackageCard() {
+function PackageCard({inCart}) {
   const [check, setCheck] = useState(false)
+
+  
 
   const toggleCheck = () => {
     setCheck(!check)
   }
 
   return (
-    <div className='p-[10px] w-[220px] flex flex-col bg-prodcard rounded-[20px] shadow-[inset_0px_4px_4px_0px_rgba(0,0,0,0.25)] /'>
+    <div className='p-[10px] w-[240px] flex flex-col bg-prodcard rounded-[20px] shadow-[inset_0px_4px_4px_0px_rgba(0,0,0,0.25)] /'>
       <div className='mb-0.5'>
-        <img src={check ? checkboxClicked : checkbox} alt="checkbox" onClick={toggleCheck} className='cursor-pointer absolute w-[42px] h-[42px]'/>
-        <img src="" alt="" />
+        {inCart == true ? <img src={check ? checkboxClicked : checkbox} alt="checkbox" onClick={toggleCheck} className='cursor-pointer absolute w-[42px] h-[42px]'/> : null} 
         <img src={packageSet} alt="package img" />
         <h3 className='text-[14px] text-center font-bold'>RYZEN 7 5700g Full PC Set</h3>
       </div>

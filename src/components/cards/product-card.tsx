@@ -6,7 +6,7 @@ function ProductCard() {
       <img src={product} alt="product image" />
       <div className='flex flex-col items-center'>
         <p className='text-[14px] font-bold'>GEFORCE RTX 4090 MSI</p>
-        <p className='text-[14px] font-bold'>GAMING TRIO 24GB GDDR6X</p>
+        <p className='text-[13px] font-bold'>GAMING TRIO 24GB GDDR6X</p>
         <p className='text-[14px] font-bold'>TRIPLE FAN RGB</p>
       </div>
       

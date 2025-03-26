@@ -21,8 +21,9 @@ const App: React.FC = () => (
   <UserProvider initialUserType={devUserType}>
     <BrowserRouter>
       <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-        <div className="flex flex-wrap justify-between align-top items-center gap-2 px-[175px]">
+        <div className="px-[175px]">
           <Header />
+        </div>
           <Routes>
             <Route index element={<Home />} />
             <Route path="/product" element={<Product />} />
@@ -37,8 +38,12 @@ const App: React.FC = () => (
 
             <Route path="/purchasing-guide" element={<PurchasingGuide />} />
           </Routes>
-          <Footer />
-        </div>
+
+          <div className="px-[175px]">
+            <Footer />
+          </div>
+            
+        
       </ThemeProvider>
     </BrowserRouter>
   </UserProvider>
