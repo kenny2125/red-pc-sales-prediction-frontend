@@ -27,7 +27,7 @@ const App: React.FC = () => (
       <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
         <div className="px-[175px]">
           <Header />
-        </div>
+        
           <Routes>
             <Route index element={<Home />} />
             <Route path="/product" element={<Product />} />
@@ -51,10 +51,10 @@ const App: React.FC = () => (
 
           </Routes>
 
-          <div className="px-[175px]">
+          
             <Footer />
+         
           </div>
-            
         
       </ThemeProvider>
     </BrowserRouter>

@@ -46,7 +46,9 @@ function Home() {
           backgroundPosition: "center",
           height: "90vh",
           position: "relative",
-          width: "100%", // Changed from 'full' to '100%'
+          width: "100vw", // Changed from 'full' to '100%'
+          marginLeft: "calc(-175px)",
+          marginRight: "calc(-175px)",
         }}
       >
         {/* Dark overlay to make background less bright */}
