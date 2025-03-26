@@ -18,6 +18,7 @@ import Dashboard from "./pages/admin/Dashboard";
 import { Inventory } from "./pages/admin/Inventory";
 import { Orders } from "./pages/admin/Orders";
 import Sales from "./pages/admin/Sales";
+import TestView from "./pages/Test";
 
 const devUserType = "admin";
 
@@ -47,6 +48,7 @@ const App: React.FC = () => (
             <Route path="/inventory" element={<Inventory />} />
             <Route path="/sales" element={<Sales />} />
             <Route path="/orders" element={<Orders />} />
+            <Route path="/test" element={<TestView />} />
             
 
           </Routes>
