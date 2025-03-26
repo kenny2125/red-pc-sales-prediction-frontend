@@ -1,9 +1,8 @@
 "use client";
 
-
+import React, { useState, useEffect } from "react";
 import { CartesianGrid, Line, LineChart, XAxis } from "recharts";
 import { ChartLegend, ChartLegendContent } from "../ui/chart"
-
 
 import {
   Card,
@@ -19,16 +18,21 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "../ui/chart";
-const chartData = [
-  { month: "January", desktop: 180 },
-  { month: "February", desktop: 305 },
-  { month: "March", desktop: 237,  },
-  { month: "April", desktop: 73,  },
-  { month: "May", desktop: 209,  },
-  { month: "June", desktop: 214, mobile: 214 },
-  { month: "July", mobile: 250 },
-  { month: "August",  mobile: 300 },
-];
+
+// Data interface for monthly sales
+interface MonthlyData {
+  year: number;
+  month: number;
+  month_name: string;
+  total_sales: number;
+}
+
+// Interface for chart data
+interface ChartData {
+  month: string;
+  desktop?: number; // Cash on Delivery/Store
+  mobile?: number;  // Online Payment
+}
 
 const chartConfig = {
   desktop: {
@@ -42,53 +46,110 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 export function LineChartView() {
+  const [chartData, setChartData] = useState<ChartData[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchMonthlyData = async () => {
+      try {
+        setIsLoading(true);
+        // Get current year for filtering
+        const currentYear = new Date().getFullYear();
+        const response = await fetch(`http://localhost:3000/api/sales/monthly`);
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch monthly sales data');
+        }
+        
+        const data: MonthlyData[] = await response.json();
+        
+        // Transform API data to chart format
+        // Randomly split total sales between desktop and mobile for demonstration
+        const formattedData: ChartData[] = data.map(item => {
+          const desktop = item.total_sales;
+          const mobile = 0;
+          
+          return {
+            month: item.month_name,
+            desktop,
+            mobile
+          };
+        });
+        
+        setChartData(formattedData);
+      } catch (err) {
+        console.error('Error fetching monthly data:', err);
+        setError('Failed to load sales data');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchMonthlyData();
+  }, []);
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Line Chart - Multiple</CardTitle>
-        <CardDescription>January - June 2024</CardDescription>
+        <CardTitle>Monthly Sales Distribution</CardTitle>
+        <CardDescription>{new Date().getFullYear()} Sales Data</CardDescription>
       </CardHeader>
       
       <CardContent>
-        <ChartContainer config={chartConfig}>
-          <LineChart
-            accessibilityLayer
-            data={chartData}
-            margin={{
-              left: 12,
-              right: 12,
-            }}
-          >
-            <CartesianGrid vertical={false} />
-            <XAxis
-              dataKey="month"
-              tickLine={false}
-              axisLine={false}
-              tickMargin={8}
-              tickFormatter={(value) => value.slice(0, 3)}
-            />
-            
-            <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
-            <ChartLegend content={<ChartLegendContent />} />
-            <Line
-              dataKey="desktop"
-              type="monotone"
-              stroke="var(--color-desktop)"
-              strokeWidth={2}
-              dot={false}
-            />
-            <Line
-              dataKey="mobile"
-              type="monotone"
-              stroke="var(--color-mobile)"
-              strokeWidth={2}
-              dot={false}
-            />
-          </LineChart>
-        </ChartContainer>
+        {isLoading ? (
+          <div className="flex justify-center items-center h-[300px]">
+            <p>Loading sales data...</p>
+          </div>
+        ) : error ? (
+          <div className="flex justify-center items-center h-[300px] text-red-500">
+            <p>{error}</p>
+          </div>
+        ) : (
+          <ChartContainer config={chartConfig}>
+            <LineChart
+              accessibilityLayer
+              data={chartData}
+              margin={{
+                left: 12,
+                right: 12,
+              }}
+            >
+              <CartesianGrid vertical={false} />
+              <XAxis
+                dataKey="month"
+                tickLine={false}
+                axisLine={false}
+                tickMargin={8}
+                tickFormatter={(value) => value.slice(0, 3)}
+              />
+              
+              <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+              <ChartLegend content={<ChartLegendContent />} />
+              <Line
+                dataKey="desktop"
+                type="monotone"
+                stroke="var(--color-desktop)"
+                strokeWidth={2}
+                dot={false}
+              />
+              <Line
+                dataKey="mobile"
+                type="monotone"
+                stroke="var(--color-mobile)"
+                strokeWidth={2}
+                dot={false}
+              />
+            </LineChart>
+          </ChartContainer>
+        )}
       </CardContent>
       <CardFooter>
-
+        {!isLoading && !error && (
+          <div className="text-xs text-muted-foreground">
+            Source: Sales database - updated daily
+          </div>
+        )}
       </CardFooter>
     </Card>
   );

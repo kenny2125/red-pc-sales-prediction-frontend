@@ -14,6 +14,10 @@ import ContactUs from "./pages/footer/ContactUs";
 import Terms_Conditions from "./pages/footer/Terms_Conditions";
 import PrivacyPolicy from "./pages/footer/PrivacyPolicy";
 import PurchasingGuide from "./pages/footer/PurchasingGuide";
+import Dashboard from "./pages/admin/Dashboard";
+import { Inventory } from "./pages/admin/Inventory";
+import { Orders } from "./pages/admin/Orders";
+import Sales from "./pages/admin/Sales";
 
 const devUserType = "admin";
 
@@ -37,6 +41,14 @@ const App: React.FC = () => (
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
 
             <Route path="/purchasing-guide" element={<PurchasingGuide />} />
+
+            {/* routes for admins hehe */}
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/inventory" element={<Inventory />} />
+            <Route path="/sales" element={<Sales />} />
+            <Route path="/orders" element={<Orders />} />
+            
+
           </Routes>
 
           <div className="px-[175px]">

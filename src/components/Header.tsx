@@ -9,6 +9,7 @@ import { ModeToggle } from "./ui/mode-toggle";
 import { LogInDialog } from "./dialogs/LogInDialog";
 import Logo from "./Logo";
 import { useUser } from "@/contexts/UserContext";
+import { Outlet, Link } from "react-router-dom";
 
 export default function Header() {
   const { currentUser, isLoggedIn, logout } = useUser();
@@ -19,18 +20,18 @@ export default function Header() {
 
       {currentUser?.role == "admin" ? (
         <div className="inline-flex align-middle justify-center gap-12">
-          <Button className="text-foreground text-1xl" variant="link">
+          <Link to="/dashboard">
             Dashboard
-          </Button>
-          <Button className="text-foreground text-1xl" variant="link">
+          </Link>
+          <Link to="/inventory">
             Inventory
-          </Button>
-          <Button className="text-foreground text-1xl" variant="link">
+          </Link>
+          <Link to="/sales">
             Sales
-          </Button>
-          <Button className="text-foreground text-1xl" variant="link">
+          </Link>
+          <Link to="/orders">
             Orders
-          </Button>
+          </Link>
         </div>
       ) : (
         <div className="flex justify-start items-center gap-[18px]">
