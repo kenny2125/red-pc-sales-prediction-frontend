@@ -45,7 +45,7 @@ export function AreaChartView() {
       try {
         setIsLoading(true);
         // Get all monthly data without year filter
-        const response = await fetch(`http://localhost:3000/api/sales/monthly`);
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/sales/monthly`);
         
         if (!response.ok) {
           throw new Error('Failed to fetch monthly sales data');
@@ -88,7 +88,7 @@ export function AreaChartView() {
       setError(null);
       
       const response = await fetch(
-        `http://localhost:3000/api/sales/predict?months_ahead=${monthsAhead}`
+        `${import.meta.env.VITE_API_URL}/api/sales/predict?months_ahead=${monthsAhead}`
       );
       
       if (!response.ok) {

@@ -56,7 +56,7 @@ export function LineChartView() {
         setIsLoading(true);
         // Get current year for filtering
         const currentYear = new Date().getFullYear();
-        const response = await fetch(`http://localhost:3000/api/sales/monthly`);
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/sales/monthly`);
         
         if (!response.ok) {
           throw new Error('Failed to fetch monthly sales data');
