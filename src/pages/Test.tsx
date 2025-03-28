@@ -7,7 +7,7 @@ export default function TestView() {
     <>
     <AreaChartView/>
     <LineChartInteractive/>
-    <LineChartView/>
+    {/* <LineChartView/> */}
     </>
   )
 }
