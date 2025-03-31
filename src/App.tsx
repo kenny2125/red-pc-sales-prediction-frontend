@@ -15,9 +15,10 @@ import Terms_Conditions from "./pages/footer/Terms_Conditions";
 import PrivacyPolicy from "./pages/footer/PrivacyPolicy";
 import PurchasingGuide from "./pages/footer/PurchasingGuide";
 import Dashboard from "./pages/admin/Dashboard";
-import { Inventory } from "./pages/admin/Inventory";
-import { Orders } from "./pages/admin/Orders";
+import Inventory from "./pages/admin/Inventory";
+import Orders from "./pages/admin/Orders";
 import Sales from "./pages/admin/Sales";
+import TestView from "./pages/Test";
 
 const devUserType = "admin";
 
@@ -27,35 +28,26 @@ const App: React.FC = () => (
       <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
         <div className="px-[175px]">
           <Header />
-        </div>
+
           <Routes>
             <Route index element={<Home />} />
             <Route path="/product" element={<Product />} />
-
-            {/* routes ng footer ni bobby  */}
             <Route path="/about-us" element={<AboutUs />} />
             <Route path="/faq" element={<FAQ />} />
             <Route path="/contact-us" element={<ContactUs />} />
-
             <Route path="/terms&conditions" element={<Terms_Conditions />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-
             <Route path="/purchasing-guide" element={<PurchasingGuide />} />
 
-            {/* routes for admins hehe */}
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/inventory" element={<Inventory />} />
             <Route path="/sales" element={<Sales />} />
             <Route path="/orders" element={<Orders />} />
-            
-
+            <Route path="/test" element={<TestView />} />
           </Routes>
 
-          <div className="px-[175px]">
-            <Footer />
-          </div>
-            
-        
+          <Footer />
+        </div>
       </ThemeProvider>
     </BrowserRouter>
   </UserProvider>

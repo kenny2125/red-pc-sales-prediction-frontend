@@ -65,7 +65,7 @@ export function LineChartInteractive() {
         params.append('end_date', format(endDate, 'yyyy-MM-dd'));
       }
       
-      const url = `http://localhost:3000/api/sales/chart${params.toString() ? '?' + params.toString() : ''}`;
+      const url = `${import.meta.env.VITE_API_URL}/api/sales/chart${params.toString() ? '?' + params.toString() : ''}`;
       const response = await fetch(url);
       
       if (!response.ok) {

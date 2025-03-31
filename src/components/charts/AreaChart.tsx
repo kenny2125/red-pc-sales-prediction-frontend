@@ -1,7 +1,7 @@
 "use client"
 
 import { TrendingUp } from "lucide-react"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis, Legend } from "recharts"
 
 import {
@@ -14,6 +14,9 @@ import {
 } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { useMediaQuery } from "@/hooks/use-media-query"
+import { Progress } from "@/components/ui/progress"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 
 interface MonthlyData {
   year: number
@@ -29,6 +32,18 @@ interface PredictionData {
   predicted_sales: number
 }
 
+interface TrainingProgress {
+  iterations: number
+  totalIterations: number
+  progress: number
+  error: number
+}
+
+interface ValidationMetrics {
+  mse: string
+  mape: string
+}
+
 export function AreaChartView() {
   const [chartData, setChartData] = useState<any[]>([]);
   const [predictionData, setPredictionData] = useState<PredictionData[]>([]);
@@ -36,6 +51,13 @@ export function AreaChartView() {
   const [isPredicting, setIsPredicting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [monthsAhead, setMonthsAhead] = useState(6);
+  const [iterations, setIterations] = useState(5000); // Default to 25000
+  const [windowSize, setWindowSize] = useState(12); // Default to 12
+  
+  // Training progress state
+  const [trainingProgress, setTrainingProgress] = useState<TrainingProgress | null>(null);
+  const [validationMetrics, setValidationMetrics] = useState<ValidationMetrics | null>(null);
+  const eventSourceRef = useRef<EventSource | null>(null);
   
   // Check if device is mobile
   const isMobile = useMediaQuery("(max-width: 768px)");
@@ -45,7 +67,7 @@ export function AreaChartView() {
       try {
         setIsLoading(true);
         // Get all monthly data without year filter
-        const response = await fetch(`http://localhost:3000/api/sales/monthly`);
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/sales/monthly`);
         
         if (!response.ok) {
           throw new Error('Failed to fetch monthly sales data');
@@ -81,54 +103,109 @@ export function AreaChartView() {
     fetchAllMonthlySales();
   }, []);
 
-  // Function to predict future sales
+  // Function to predict future sales using SSE
   const predictFutureSales = async () => {
     try {
+      // Clean up any existing event source
+      if (eventSourceRef.current) {
+        eventSourceRef.current.close();
+      }
+      
       setIsPredicting(true);
       setError(null);
+      setTrainingProgress(null);
+      setValidationMetrics(null);
       
-      const response = await fetch(
-        `http://localhost:3000/api/sales/predict?months_ahead=${monthsAhead}`
-      );
+      const url = `${import.meta.env.VITE_API_URL}/api/sales/predict?months_ahead=${monthsAhead}&iterations=${iterations}&window_size=${windowSize}`;
+      eventSourceRef.current = new EventSource(url);
       
-      if (!response.ok) {
-        throw new Error('Failed to fetch prediction data');
-      }
+      eventSourceRef.current.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        
+        switch (data.type) {
+          case 'progress':
+            setTrainingProgress({
+              iterations: data.iterations,
+              totalIterations: data.totalIterations,
+              progress: data.progress,
+              error: data.error
+            });
+            break;
+            
+          case 'validation':
+            setValidationMetrics({
+              mse: data.mse,
+              mape: data.mape
+            });
+            break;
+            
+          case 'complete':
+            // Store prediction data
+            setPredictionData(data.predictions);
+            
+            // Define baseData excluding any previous predictions
+            const baseData = chartData.filter(item => !item.isPrediction);
+            
+            // Merge prediction with actual data for chart display
+            const mergedData = [...baseData];
+            data.predictions.forEach((prediction: PredictionData) => {
+              mergedData.push({
+                month: `${prediction.month_name.slice(0, 3)} ${prediction.year}`,
+                total_sales: null, // No actual data for future months
+                predicted_sales: prediction.predicted_sales,
+                year: prediction.year,
+                monthIndex: prediction.month,
+                isPrediction: true,
+              });
+            });
+            
+            setChartData(mergedData);
+            setIsPredicting(false);
+            
+            // Close the connection
+            if (eventSourceRef.current) {
+              eventSourceRef.current.close();
+              eventSourceRef.current = null;
+            }
+            break;
+            
+          case 'error':
+            setError('Error during prediction: ' + data.message);
+            setIsPredicting(false);
+            
+            if (eventSourceRef.current) {
+              eventSourceRef.current.close();
+              eventSourceRef.current = null;
+            }
+            break;
+        }
+      };
       
-      const data = await response.json();
-      
-      if (!data.predictions || !Array.isArray(data.predictions)) {
-        throw new Error('Invalid prediction data format');
-      }
-      
-      // Store prediction data
-      setPredictionData(data.predictions);
-      
-      // Define baseData excluding any previous predictions
-      const baseData = chartData.filter(item => !item.isPrediction);
-      
-      // Merge prediction with actual data for chart display
-      const mergedData = [...baseData];
-      data.predictions.forEach((prediction: PredictionData) => {
-        mergedData.push({
-          month: `${prediction.month_name.slice(0, 3)} ${prediction.year}`,
-          total_sales: null, // No actual data for future months
-          predicted_sales: prediction.predicted_sales,
-          year: prediction.year,
-          monthIndex: prediction.month,
-          isPrediction: true,
-        });
-      });
-      
-      setChartData(mergedData);
+      eventSourceRef.current.onerror = () => {
+        setError('Connection error. Please try again later.');
+        setIsPredicting(false);
+        
+        if (eventSourceRef.current) {
+          eventSourceRef.current.close();
+          eventSourceRef.current = null;
+        }
+      };
       
     } catch (err) {
       console.error('Error predicting sales:', err);
       setError('Failed to predict sales: ' + (err instanceof Error ? err.message : String(err)));
-    } finally {
       setIsPredicting(false);
     }
   };
+
+  // Cleanup event source on component unmount
+  useEffect(() => {
+    return () => {
+      if (eventSourceRef.current) {
+        eventSourceRef.current.close();
+      }
+    };
+  }, []);
 
   // Calculate overall trend
   const calculateTrend = () => {
@@ -168,7 +245,7 @@ export function AreaChartView() {
             Total sales aggregated by month across all available data
           </CardDescription>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <label className="flex items-center gap-1 text-sm">
             Months Ahead:
             <input
@@ -177,7 +254,30 @@ export function AreaChartView() {
               max="12"
               value={monthsAhead}
               onChange={(e) => setMonthsAhead(parseInt(e.target.value))}
-              className="px-2 py-1 border rounded"
+              className="px-2 py-1 border rounded w-16"
+            />
+          </label>
+          <label className="flex items-center gap-1 text-sm">
+            Window Size:
+            <input
+              type="number"
+              min="3"
+              max="24"
+              value={windowSize}
+              onChange={(e) => setWindowSize(parseInt(e.target.value))}
+              className="px-2 py-1 border rounded w-16"
+            />
+          </label>
+          <label className="flex items-center gap-1 text-sm">
+            Iterations:
+            <input
+              type="number"
+              min="1000"
+              max="100000"
+              step="1000"
+              value={iterations}
+              onChange={(e) => setIterations(parseInt(e.target.value))}
+              className="px-2 py-1 border rounded w-20"
             />
           </label>
           <Button 
@@ -190,6 +290,42 @@ export function AreaChartView() {
         </div>
       </CardHeader>
       <CardContent>
+        {/* Training Progress Display */}
+        {isPredicting && trainingProgress && (
+          <Dialog open>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Training Neural Network</DialogTitle>
+              </DialogHeader>
+              <div className="flex justify-between mb-1 text-sm">
+                <span>Progress: {trainingProgress.progress}%</span>
+                <span>Iteration: {trainingProgress.iterations.toLocaleString()} / {trainingProgress.totalIterations.toLocaleString()}</span>
+              </div>
+              <Progress value={trainingProgress.progress} className="mb-2" />
+              <p className="text-sm text-muted-foreground">
+                Current Error Rate: {trainingProgress.error.toFixed(6)}
+              </p>
+            </DialogContent>
+          </Dialog>
+        )}
+        
+        {/* Validation Metrics Display */}
+        {validationMetrics && (
+          <Alert className="mb-4">
+            <AlertTitle>Model Validation Metrics</AlertTitle>
+            <AlertDescription>
+              <div className="grid grid-cols-2 gap-2 mt-2">
+                <div>
+                  <span className="font-medium">MSE:</span> {validationMetrics.mse}
+                </div>
+                <div>
+                  <span className="font-medium">MAPE:</span> {validationMetrics.mape}%
+                </div>
+              </div>
+            </AlertDescription>
+          </Alert>
+        )}
+        
         {isLoading ? (
           <div className="flex justify-center items-center h-96">Loading chart data...</div>
         ) : error ? (
@@ -237,6 +373,8 @@ export function AreaChartView() {
                       dataKey="predicted_sales"
                       type="monotone"
                       name="Predicted Sales"
+                      stroke="#8884d8"
+                      fill="#8884d8"
                       connectNulls
                     />
                     {predictionData.length > 0 && (
@@ -244,6 +382,8 @@ export function AreaChartView() {
                         dataKey="total_sales"
                         type="monotone"
                         name="Actual Sales"
+                        stroke="#82ca9d"
+                        fill="#82ca9d"
                         connectNulls
                       />
                     )}
@@ -254,6 +394,8 @@ export function AreaChartView() {
                       dataKey="total_sales"
                       type="monotone"
                       name="Actual Sales"
+                      stroke="#82ca9d"
+                      fill="#82ca9d"
                       connectNulls
                     />
                     {predictionData.length > 0 && (
@@ -261,6 +403,8 @@ export function AreaChartView() {
                         dataKey="predicted_sales"
                         type="monotone"
                         name="Predicted Sales"
+                        stroke="#8884d8"
+                        fill="#8884d8"
                         connectNulls
                       />
                     )}
@@ -268,6 +412,31 @@ export function AreaChartView() {
                 )}
               </AreaChart>
             </ResponsiveContainer>
+          </div>
+        )}
+        
+        {/* Prediction Results Table */}
+        {predictionData.length > 0 && (
+          <div className="mt-4 border rounded-md p-4">
+            <h3 className="font-medium mb-2">Sales Predictions</h3>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b">
+                    <th className="text-left py-2">Period</th>
+                    <th className="text-right py-2">Predicted Sales</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {predictionData.map((pred, index) => (
+                    <tr key={index} className="border-b last:border-0">
+                      <td className="py-2">{pred.month_name} {pred.year}</td>
+                      <td className="text-right py-2">${pred.predicted_sales.toLocaleString()}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
       </CardContent>
