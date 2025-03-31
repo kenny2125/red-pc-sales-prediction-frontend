@@ -96,7 +96,7 @@ function Home() {
             {brandImages.map((brand, index) => (
               <img
                 key={`first-${index}`}
-                className="h-9 self-stretch"
+                className="h-9 self-stretch dark:invert"
                 src={brand}
                 alt={`Brand logo ${index + 1}`}
               />
