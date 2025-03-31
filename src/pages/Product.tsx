@@ -4,7 +4,7 @@ import {
   CardDescription,
   CardHeader,
 } from "@/components/ui/card";
-import React from "react";
+
 
 function Product() {
   return (
