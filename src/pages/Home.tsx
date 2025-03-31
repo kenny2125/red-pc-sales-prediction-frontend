@@ -46,7 +46,7 @@ function Home() {
           backgroundPosition: "center",
           height: "90vh",
           position: "relative",
-          width: "100vw", // Changed from 'full' to '100%'
+          width: "99vw", // Changed from 'full' to '100%'
           marginLeft: "calc(-175px)",
           marginRight: "calc(-175px)",
         }}

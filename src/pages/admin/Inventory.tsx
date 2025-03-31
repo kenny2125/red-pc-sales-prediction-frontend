@@ -398,3 +398,4 @@ export function Inventory() {
     </div>
   )
 }
+export default Inventory;

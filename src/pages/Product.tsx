@@ -6,7 +6,7 @@ import {
 } from "@/components/ui/card";
 import React from "react";
 
-export default function Product() {
+function Product() {
   return (
     <>
       <div className="flex flex-col gap-4">
@@ -43,3 +43,5 @@ export default function Product() {
     </>
   );
 }
+
+export default Product;
