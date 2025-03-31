@@ -2,27 +2,30 @@ import { LucidePhone, LucideMail, LucideMessageSquareText } from "lucide-react";
 
 const ContactUs: React.FC = () => {
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-white text-white">
+    <div className="max-w-4xl mx-auto p-6 ">
       <h1 className="text-4xl font-['Anton'] text-black dark:text-white mb-4">Contact Us</h1>
 
-      <div className="space-y-2">
+      <div className="space-y-4">
         <h2 className="text-2xl font-['Anton'] text-black dark:text-white">Contact Information</h2>
         <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
-          <LucidePhone className="text-blue-500" />
-          <p>RED PC Customer Support</p>
+          <LucidePhone className="text-gray-500 dark:text-gray-400" />
+          <p className="text-gray-700 dark:text-gray-300">RED PC Customer Support</p>
         </div>
         <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
-          <LucideMail className="text-blue-500" />
+          <LucideMail className="text-gray-500 dark:text-gray-400" />
           <a
             href="mailto:redpccomputer@gmail.com"
-            className="hover:underline text-blue-400 dark:text-blue-500"
+            className="hover:underline text-orange-500 dark:text-orange-400"
           >
             redpccomputer@gmail.com
           </a>
         </div>
         <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
-          <LucideMessageSquareText className="text-blue-500" />
-          <a href="#" className="hover:underline text-blue-400 dark:text-blue-500">
+          <LucideMessageSquareText className="text-gray-500 dark:text-gray-400" />
+          <a
+            href="#"
+            className="hover:underline text-orange-500 dark:text-orange-400"
+          >
             RED PC PM
           </a>
         </div>
