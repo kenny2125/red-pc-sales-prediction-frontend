@@ -2,19 +2,19 @@ import gif from "../assets/home-gif.gif";
 import PackageSet from "../assets/package-pic.png";
 import { Button } from "@/components/ui/button";
 import { CircleArrowRight } from "lucide-react";
-import brand1 from "../assets/brand-logos/amd.png";
-import brand2 from "../assets/brand-logos/amdradeon.png";
-import brand3 from "../assets/brand-logos/amdryzen.png";
-import brand4 from "../assets/brand-logos/darkflash.png";
-import brand5 from "../assets/brand-logos/gamdias.png";
-import brand6 from "../assets/brand-logos/idcooling.png";
-import brand7 from "../assets/brand-logos/intel.png";
-import brand8 from "../assets/brand-logos/nvidia.png";
-import brand9 from "../assets/brand-logos/nvision.png";
-import brand10 from "../assets/brand-logos/ovation.png";
-import brand11 from "../assets/brand-logos/pny.png";
-import brand12 from "../assets/brand-logos/ramsta.png";
-import brand13 from "../assets/brand-logos/teamgroup.png";
+import brand1 from "../assets/brand-logos/amd.svg";
+import brand2 from "../assets/brand-logos/amdradeon.svg";
+import brand3 from "../assets/brand-logos/amdryzen.svg";
+import brand4 from "../assets/brand-logos/darkflash.svg";
+import brand5 from "../assets/brand-logos/gamdias.svg";
+import brand6 from "../assets/brand-logos/idcooling.svg";
+import brand7 from "../assets/brand-logos/intel.svg";
+import brand8 from "../assets/brand-logos/nvidia.svg";
+import brand9 from "../assets/brand-logos/nvision.svg";
+import brand10 from "../assets/brand-logos/ovation.svg";
+import brand11 from "../assets/brand-logos/pny.svg";
+import brand12 from "../assets/brand-logos/ramsta.svg";
+import brand13 from "../assets/brand-logos/teamgroup.svg";
 import PackageCard from "@/components/cards/package-card";
 import ProductCard from "@/components/cards/product-card";
 import logo from "../assets/redpcph.png";
@@ -96,7 +96,7 @@ function Home() {
             {brandImages.map((brand, index) => (
               <img
                 key={`first-${index}`}
-                className="h-9 self-stretch"
+                className="h-9 self-stretch dark:invert"
                 src={brand}
                 alt={`Brand logo ${index + 1}`}
               />
