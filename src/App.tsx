@@ -19,6 +19,7 @@ import Inventory from "./pages/admin/Inventory";
 import Orders from "./pages/admin/Orders";
 import Sales from "./pages/admin/Sales";
 import TestView from "./pages/Test";
+import Search from "./pages/Search";
 
 const devUserType = "admin";
 
@@ -31,6 +32,7 @@ const App: React.FC = () => (
 
           <Routes>
             <Route index element={<Home />} />
+            <Route path="/search" element={<Search />} />
             <Route path="/product" element={<Product />} />
             <Route path="/about-us" element={<AboutUs />} />
             <Route path="/faq" element={<FAQ />} />

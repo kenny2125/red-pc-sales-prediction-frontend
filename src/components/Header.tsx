@@ -14,6 +14,24 @@ import { Outlet, Link } from "react-router-dom";
 export default function Header() {
   const { currentUser, isLoggedIn, logout } = useUser();
 
+  function productSearch(){
+    try {
+      const searchInput = document.querySelector('input[type="email"]') as HTMLInputElement;
+      const searchValue = searchInput.value.trim();
+      if (searchValue) {
+        // Redirect to the search page with the search value as a query parameter
+        window.location.href = `/search?query=${encodeURIComponent(searchValue)}`;
+      } else {
+        alert("Please enter a product name to search.");
+      }
+      
+    } catch (error) {
+      console.error("Error during product search:", error);
+      
+    }
+
+  }
+
   return (
     <div className="w-full h-[8rem] inline-flex justify-between items-center">
       <Logo />
@@ -37,7 +55,7 @@ export default function Header() {
         <div className="flex justify-start items-center gap-[18px]">
           <div className="flex w-[520px] h-[53px] items-center gap-2">
             <Input type="email" placeholder="Search" />
-            <Button type="submit">
+            <Button type="submit" onClick={productSearch}>
               <Search />
               Search
             </Button>
