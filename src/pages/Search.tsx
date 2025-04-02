@@ -18,23 +18,35 @@ import ProductCard from "@/components/cards/product-card";
 export default function Search() {
   return (
     <>
-      <div className="flex flex-row w-full justify-between gap-4">
-        <div className=" bg-accent flex flex-col w-fit  p-4 rounded-lg justify-center align-top gap-4">
+      <div className="flex gap-4">
+        <Card className="flex flex-col mt-13 w-fit h-fit p-4 rounded-lg justify-center align-top gap-4">
           <h2>By Category</h2>
           <div>
             <h1>Computer Parts</h1>
             <div className="flex flex-col">
               <div className="flex p-2">
-                <Checkbox /> <p>CPU</p>
+                <Checkbox id="cpu1" />{" "}
+                <Label htmlFor="cpu1" className="ml-2">
+                  CPU
+                </Label>
               </div>
               <div className="flex p-2">
-                <Checkbox /> <p>CPU</p>
+                <Checkbox id="cpu2" />{" "}
+                <Label htmlFor="cpu2" className="ml-2">
+                  GPU
+                </Label>
               </div>
               <div className="flex p-2">
-                <Checkbox /> <p>CPU</p>
+                <Checkbox id="cpu3" />{" "}
+                <Label htmlFor="cpu3" className="ml-2">
+                  Motherboard
+                </Label>
               </div>
               <div className="flex p-2">
-                <Checkbox /> <p>CPU</p>
+                <Checkbox id="cpu4" />{" "}
+                <Label htmlFor="cpu4" className="ml-2">
+                  RAM
+                </Label>
               </div>
             </div>
           </div>
@@ -42,64 +54,88 @@ export default function Search() {
             <h1>Peripherals & Extras</h1>
             <div className="flex flex-col">
               <div className="flex p-2">
-                <Checkbox /> <p>Keyboard</p>
+                <Checkbox id="peripheral1" />{" "}
+                <Label htmlFor="peripheral1" className="ml-2">
+                  Keyboard
+                </Label>
               </div>
               <div className="flex p-2">
-                <Checkbox /> <p>Keyboard</p>
+                <Checkbox id="peripheral2" />{" "}
+                <Label htmlFor="peripheral2" className="ml-2">
+                  Mouse
+                </Label>
               </div>
               <div className="flex p-2">
-                <Checkbox /> <p>Keyboard</p>
+                <Checkbox id="peripheral3" />{" "}
+                <Label htmlFor="peripheral3" className="ml-2">
+                  Monitor
+                </Label>
               </div>
               <div className="flex p-2">
-                <Checkbox /> <p>Keyboard</p>
+                <Checkbox id="peripheral4" />{" "}
+                <Label htmlFor="peripheral4" className="ml-2">
+                  Headset
+                </Label>
               </div>
             </div>
           </div>
-          <Button>Check out our PC Builds</Button>
-          <h1>Adjust Price Range </h1>
+          <Button
+            onClick={() => {
+              window.location.href = "/builds";
+            }}
+          >
+            Check out our PC Builds
+          </Button>
+          <h1>Adjust Price Range</h1>
           <Slider defaultValue={[33]} max={100} step={1} />
-        </div>
-        <div className="flex flex-col w-full justify-start gap-4">
-          <div className="flex">
+        </Card>
+
+        <div className="flex flex-col w-full justify-betwee gap-4">
+          <div className="flex flex-row justify-between gap-4 ">
             <h1>Results for: </h1>
+
+            <div className="flex gap-4">
+              <div className="gap-2">
+                <Select>
+                  <SelectTrigger>
+                    <SelectValue placeholder="A-Z" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="asc">A-Z</SelectItem>
+                    <SelectItem value="dsc">Z-A</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="gap-2">
+                <Select>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Lowest-Highest" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="asc">Lowest-Highest</SelectItem>
+                    <SelectItem value="dsc">Highest-Lowest</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
           </div>
-          <div className="flex flex-row gap-4 justify-end">
-            <div className="gap-2">
-              <Select>
-                <SelectTrigger>
-                  <SelectValue placeholder="A-Z" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="asc">A-Z</SelectItem>
-                  <SelectItem value="dsc">Z-A</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="gap-2">
-              <Select>
-                <SelectTrigger>
-                  <SelectValue placeholder="Lowest-Highest" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="asc">Lowest-Highest</SelectItem>
-                  <SelectItem value="dsc">Highest-Lowest</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+          <div className="flex flex-wrap gap-4 w-full">
+            <ProductCard />
+            <ProductCard />
+            <ProductCard />
+            <ProductCard />
+            <ProductCard />
+            <ProductCard />
+            <ProductCard />
+            <ProductCard />
+            <ProductCard />
+            <ProductCard />
+            <ProductCard />
+            <ProductCard />
+            <ProductCard />
+            <ProductCard />
+            <ProductCard />
           </div>
-            <div className="flex flex-wrap gap-4 w-full">
-            <ProductCard/>
-            <ProductCard/>
-            <ProductCard/>
-            <ProductCard/>
-            <ProductCard/>
-            <ProductCard/>
-            <ProductCard/>
-            <ProductCard/>
-            <ProductCard/>
-            <ProductCard/>
-            
-            </div>
         </div>
       </div>
     </>
