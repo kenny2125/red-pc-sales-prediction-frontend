@@ -52,12 +52,12 @@ function Home() {
         }}
       >
         {/* Dark overlay to make background less bright */}
-        <div 
+        <div
           className="absolute inset-0 bg-black opacity-40"
           style={{ zIndex: 1 }}
         ></div>
-      
-{/* CTO */}
+
+        {/* CTO */}
         <div className="relative z-10 flex justify-between px-[5%] md:px-[10%] lg:px-[150px] text-white items-center h-[90vh] w-full">
           <div className="max-w-[600px]">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-7">
@@ -85,7 +85,6 @@ function Home() {
             />
           </div>
         </div>
-        
       </section>
 
       {/* Brand Logos Section */}
@@ -138,7 +137,14 @@ function Home() {
             </div>
           </div>
         </div>
-        <Button className="text-xl p-5 m-6">See More</Button>
+        <Button
+          className="text-xl p-5 m-6"
+          onClick={() => {
+            window.location.href = "/builds";
+          }}
+        >
+          See More
+        </Button>
       </section>
 
       <section className="flex flex-col items-center">
