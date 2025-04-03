@@ -17,6 +17,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
+import PackageList from "@/components/PackageList";
 
 export default function PackageDetail() {
   return (
@@ -33,12 +34,11 @@ export default function PackageDetail() {
                   alt="Package set"
                 />
               </div>
-              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4">Php 145,800</h1>
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4">
+                Php 145,800
+              </h1>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                <Button variant="destructive" className="w-full sm:w-auto px-6">
-                  Add to Cart
-                </Button>
-                <Button className="w-full sm:w-auto px-6">Buy Now</Button>
+                <Button className="w-full sm:w-auto px-6">Add to Cart</Button>
               </div>
             </div>
           </div>
@@ -52,7 +52,7 @@ export default function PackageDetail() {
                 </h2>
               </CardHeader>
             </Card>
-            
+
             <Card className="shadow-sm">
               <div className="p-4 sm:p-6">
                 <CardTitle className="mb-4">Description:</CardTitle>
@@ -67,8 +67,12 @@ export default function PackageDetail() {
 
                     <div className="flex flex-col gap-2">
                       <p className="text-sm sm:text-base">Ryzen 7 5700g</p>
-                      <p className="text-sm sm:text-base font-bold">Gigabyte B450m</p>
-                      <p className="text-sm sm:text-base">Corsair DDR4 2666mhz</p>
+                      <p className="text-sm sm:text-base font-bold">
+                        Gigabyte B450m
+                      </p>
+                      <p className="text-sm sm:text-base">
+                        Corsair DDR4 2666mhz
+                      </p>
                       <p className="text-sm sm:text-base">Radeon Vega 8</p>
                     </div>
                   </div>
@@ -78,10 +82,11 @@ export default function PackageDetail() {
                 </CardDescription>
               </div>
             </Card>
-            
-
           </div>
         </div>
+      </div>
+      <div className="mt-8">
+        <PackageList />
       </div>
     </div>
   );

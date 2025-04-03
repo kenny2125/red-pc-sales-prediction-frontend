@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import {
@@ -57,6 +57,16 @@ export function CartDialog() {
       return acc;
     }, {} as Record<number, number>)
   );
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const handleCheckout = () => {
     setOpen(false); // Close the dialog
@@ -93,7 +103,7 @@ export function CartDialog() {
         <ShoppingCart size={40} className="text-primary" />
       </DialogTrigger>
 
-      <DialogContent className="flex flex-col sm:max-w-[1570px] min-h-[577px] max-h-[90vh] overflow-y-auto">
+      <DialogContent className="flex flex-col sm:max-w-[1000px] min-h-[577px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <div className="flex flex-row align-middle items-center gap-">
             <ShoppingCart size={40} className="text-primary" />
@@ -110,7 +120,7 @@ export function CartDialog() {
               <TableRow>
                 <TableHead className="w-[50px]"></TableHead>
                 <TableHead className="w-[100px] hidden md:table-cell"></TableHead>
-                <TableHead>Product Name</TableHead>
+                <TableHead className="max-w-[150px] sm:max-w-[180px] md:max-w-none">Product Name</TableHead>
                 <TableHead>Quantity</TableHead>
                 <TableHead className="text-right">Amount</TableHead>
               </TableRow>
@@ -138,10 +148,10 @@ export function CartDialog() {
                     />
                   </TableCell>
                   <TableCell 
-                    className="font-medium cursor-pointer" 
+                    className="font-medium cursor-pointer max-w-[150px] sm:max-w-[180px] md:max-w-none py-4" 
                     onClick={() => toggleItemSelection(invoice.id)}
                   >
-                    <span className="md:inline line-clamp-2">
+                    <span className="block line-clamp-2 md:line-clamp-none">
                       {invoice.productName}
                     </span>
                   </TableCell>
@@ -161,7 +171,12 @@ export function CartDialog() {
             </TableBody>
             <TableFooter>
               <TableRow>
-                <TableCell colSpan={4} className="text-right font-bold">Total</TableCell>
+                <TableCell 
+                  colSpan={isMobile ? 3 : 4} 
+                  className="text-right font-bold"
+                >
+                  Total
+                </TableCell>
                 <TableCell className="text-right font-bold">
                   ₱{getTotal().toLocaleString()}
                 </TableCell>
