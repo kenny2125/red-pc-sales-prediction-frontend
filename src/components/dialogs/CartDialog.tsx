@@ -30,7 +30,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import ProductCard from "../cards/product-card";
+import ProductCard from "../cards/ProductCard";
 
 const invoices = [
   {

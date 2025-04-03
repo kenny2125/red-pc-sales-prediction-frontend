@@ -5,14 +5,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import brand1 from "../assets/brand-logos/nvidia.svg";
+import brand1 from "@/assets/brand-logos/nvidia.svg";
 import sample from "../assets/sample5090.jpg";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
 
-function Product() {
+function ProductDetail() {
   const brandImages = [brand1];
   return (
     <>
@@ -76,15 +76,18 @@ function Product() {
           </div>
 
           <div className="flex flex-col w-full h-full justify-center items-center">
-            <div>
-              <img src={sample} className="h-[480px] w-full rounded-2xl" alt="" />
-              <h1>Php 145,800</h1>
-              <div className="flex flex-row ">
-                <Button variant={"destructive"} >
-                  {" "}
+            <div className="w-full text-center">
+              <img
+                src={sample}
+                className="h-[480px] w-full rounded-2xl object-cover mb-4"
+                alt=""
+              />
+              <h1 className="text-4xl font-bold mb-4">Php 145,800</h1>
+              <div className="flex flex-row gap-4 justify-center">
+                <Button variant="destructive" className="w-32">
                   Add to Cart
                 </Button>
-                <Button > Buy Now</Button>
+                <Button className="w-32">Buy Now</Button>
               </div>
             </div>
           </div>
@@ -135,4 +138,4 @@ function Product() {
   );
 }
 
-export default Product;
+export default ProductDetail;

@@ -1,5 +1,5 @@
 import RedPcLogo from "../assets/redpcph.png";
-import { Facebook } from "lucide-react";
+import { Facebook, FacebookIcon } from "lucide-react";
 import { MailIcon } from "lucide-react";
 import { MapPinIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -18,10 +18,11 @@ export default function Footer() {
           </Link>
 
           <div className="flex flex-col items-start">
-            <div>
-              <div className="flex flex-col items-start">
-                <h1>Follow Us</h1>
-                <Facebook size={35} className="text-primary" />
+            <div className="inline-block">
+              <h1>Contact Us</h1>
+              <div className="inline-flex items-center gap-2">
+                <FacebookIcon size={35} className="text-primary" />
+                <p>Red PC PH</p>
               </div>
             </div>
             <div className="inline-block">
@@ -37,8 +38,8 @@ export default function Footer() {
             <div className="inline-flex align-middle gap-2 ">
               <MapPinIcon size={35} className="text-primary" />
               <p className="max-w-3xs">
-                Novaliches Store Blk 3 lot 21 jamaica street, foresthills subd.,
-                brgy. Sta. Monica, novaliches, quezon city, 1117
+                Blk 3 Lot 21, Jamaica Street, Foresthills Subdivision, Brgy.
+                Santa Monica, Novaliches, Quezon City
               </p>
             </div>
           </div>

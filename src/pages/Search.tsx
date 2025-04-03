@@ -13,7 +13,7 @@ import {
 
 import React from "react";
 import { Card } from "@/components/ui/card";
-import ProductCard from "@/components/cards/product-card";
+import ProductCard from "@/components/cards/ProductCard";
 
 export default function Search() {
   return (
@@ -81,7 +81,7 @@ export default function Search() {
           </div>
           <Button
             onClick={() => {
-              window.location.href = "/builds";
+              window.location.href = "/pc-builds";
             }}
           >
             Check out our PC Builds
