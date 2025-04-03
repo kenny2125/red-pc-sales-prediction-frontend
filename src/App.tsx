@@ -29,7 +29,7 @@ const App: React.FC = () => (
   <UserProvider initialUserType={devUserType}>
     <BrowserRouter>
       <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-        <div className="sm:px-[175px] md:px-[175px] ">
+        <div className="sm:px-[175px] md:px-[100px] lg:px-[175px]  ">
           <Header />
 
           <Routes>
@@ -58,6 +58,19 @@ const App: React.FC = () => (
 
           <Footer />
         </div>
+        {/* Global styles for brand logos animation speeds */}
+        <style>
+          {`
+            .brand-logos {
+              animation-duration: 10s;
+            }
+            @media (max-width: 768px) {
+              .brand-logos {
+                animation-duration: 15s;
+              }
+            }
+          `}
+        </style>
       </ThemeProvider>
     </BrowserRouter>
   </UserProvider>

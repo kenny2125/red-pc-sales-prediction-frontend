@@ -1,76 +1,83 @@
 import RedPcLogo from "../assets/redpcph.png";
-import { Facebook, FacebookIcon } from "lucide-react";
+import { FacebookIcon } from "lucide-react";
 import { MailIcon } from "lucide-react";
 import { MapPinIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Outlet, Link } from "react-router-dom";
 
 export default function Footer() {
   return (
     <>
-      <div className=" w-full h-[8rem] flex flex-col py-12 mt-16">
-        <div className=" flex flex-row justify-between items-top ">
-          <Link to="/">
-            <div className="inline-blockitems-start justify-center gap-2">
-              <img className="w-[76.13px] h-[76px]" src={RedPcLogo} />
-              <div className="text-2xl  font-['Anton']">RED PC</div>
+      <footer className="w-full py-8 mt-16">
+        {/* Main footer content */}
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col md:flex-row justify-between gap-8">
+            {/* Logo section */}
+            <div className="flex flex-col items-center md:items-start">
+              <Link to="/" className="flex flex-col items-center md:items-start">
+                <img className="w-[76px] h-[76px]" src={RedPcLogo} alt="RED PC Logo" />
+                <div className="text-2xl font-['Anton']">RED PC</div>
+              </Link>
             </div>
-          </Link>
 
-          <div className="flex flex-col items-start">
-            <div className="inline-block">
-              <h1>Contact Us</h1>
-              <div className="inline-flex items-center gap-2">
-                <FacebookIcon size={35} className="text-primary" />
+            {/* Contact section */}
+            <div className="flex flex-col items-center md:items-start gap-4">
+              <h1 className="text-lg font-bold">Contact Us</h1>
+              <div className="flex items-center gap-2">
+                <FacebookIcon size={24} className="text-primary" />
                 <p>Red PC PH</p>
               </div>
-            </div>
-            <div className="inline-block">
-              <h1>Contact Us</h1>
-              <div className="inline-flex items-center gap-2">
-                <MailIcon size={35} className="text-primary" />
+              <div className="flex items-center gap-2">
+                <MailIcon size={24} className="text-primary" />
                 <p>redpcnova2020@gmail.com</p>
               </div>
             </div>
-          </div>
-          <div className="flex flex-col items-start">
-            <h1>Location</h1>
-            <div className="inline-flex align-middle gap-2 ">
-              <MapPinIcon size={35} className="text-primary" />
-              <p className="max-w-3xs">
-                Blk 3 Lot 21, Jamaica Street, Foresthills Subdivision, Brgy.
-                Santa Monica, Novaliches, Quezon City
-              </p>
-            </div>
-          </div>
-          <div className="flex flex-row align-top gap-20">
-            <div className="flex flex-col items-start gap-4">
-              <h1>Who are we?</h1>
-              <div className="flex flex-col items-start gap-4 w-full">
-                <Link to="/about-us">About Us</Link>
-                <Link to="/faq">FAQ</Link>
-                <Link to="/contact-us">Contact Us</Link>
+
+            {/* Location section */}
+            <div className="flex flex-col items-center md:items-start gap-2">
+              <h1 className="text-lg font-bold">Location</h1>
+              <div className="flex gap-2 max-w-xs">
+                <MapPinIcon size={24} className="text-primary flex-shrink-0" />
+                <p className="text-sm text-center md:text-left">
+                  Blk 3 Lot 21, Jamaica Street, Foresthills Subdivision, Brgy.
+                  Santa Monica, Novaliches, Quezon City
+                </p>
               </div>
             </div>
-            <div className="flex flex-col items-start gap-4">
-              <h1>Legal Terms</h1>
-              <div className="flex flex-col items-start gap-4 w-full">
-                <Link to="/terms&conditions">Terms & Conditions</Link>
-                <Link to="/privacy-policy">Privacy Policy</Link>
+
+            {/* Links section */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
+              <div className="flex flex-col items-center md:items-start gap-2">
+                <h1 className="text-lg font-bold">Who are we?</h1>
+                <div className="flex flex-col items-center md:items-start gap-2">
+                  <Link to="/about-us">About Us</Link>
+                  <Link to="/faq">FAQ</Link>
+                  <Link to="/contact-us">Contact Us</Link>
+                </div>
               </div>
-            </div>
-            <div className="flex flex-col items-start gap-4">
-              <h1>Others</h1>
-              <div className="flex flex-col items-start gap-4 w-full">
-                <Link to="/purchasing-guide">Purchasing Guide</Link>
+              
+              <div className="flex flex-col items-center md:items-start gap-2">
+                <h1 className="text-lg font-bold">Legal Terms</h1>
+                <div className="flex flex-col items-center md:items-start gap-2">
+                  <Link to="/terms&conditions">Terms & Conditions</Link>
+                  <Link to="/privacy-policy">Privacy Policy</Link>
+                </div>
+              </div>
+              
+              <div className="flex flex-col items-center md:items-start gap-2">
+                <h1 className="text-lg font-bold">Others</h1>
+                <div className="flex flex-col items-center md:items-start gap-2">
+                  <Link to="/purchasing-guide">Purchasing Guide</Link>
+                </div>
               </div>
             </div>
           </div>
         </div>
-        <p className="flex flex-row justify-center align-middle py-12">
+        
+        {/* Copyright section */}
+        <p className="text-center py-8 mt-4">
           © 2025 RED PC Computer Company All Rights Reserved.
         </p>
-      </div>
+      </footer>
       <Outlet />
     </>
   );

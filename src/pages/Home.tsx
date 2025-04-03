@@ -115,8 +115,8 @@ function Home() {
       </section>
 
       <section className="flex flex-col items-center my-12">
-        <div className="p-[30px]">
-          <h1 className="text-4xl font-bold">Check out Computer Builds</h1>
+        <div>
+          <h1 className="text-4xl font-bold text-center">Check our Computer Builds</h1>
         </div>
 
         {/* Scrollable container with custom scrollbar */}
@@ -150,17 +150,27 @@ function Home() {
       </section>
 
       <section className="flex flex-col items-center">
-        <h1 className="text-4xl font-bold mt-10">
+        <h1 className="text-4xl font-bold mt-10 text-center">
           Check our latest product in the store!
         </h1>
-
-        <div className="flex px-15 gap-2.5 mt-8">
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
+        {/* Updated scrollable container for Product Cards */}
+        <div className="w-full max-w-[90vw] relative mt-8">
+          <div className="overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-primary scrollbar-track-secondary">
+            <div className="flex gap-4 min-w-max px-4">
+              <ProductCard />
+              <ProductCard />
+              <ProductCard />
+              <ProductCard />
+              <ProductCard />
+              <ProductCard />
+              <ProductCard />
+              <ProductCard />
+              <ProductCard />
+              <ProductCard />
+              <ProductCard />
+              <ProductCard />
+            </div>
+          </div>
         </div>
       </section>
 
@@ -169,12 +179,10 @@ function Home() {
         <h1 className="text-4xl font-bold mb-8">Connect With Us</h1>
         <div className="flex flex-col items-center gap-8 w-full">
           {/* Timeline embed */}
-          <div className="w-full max-w-[500px] rounded-lg overflow-hidden shadow-lg flex justify-center">
+          <div className="w-full max-w-[500px] rounded-lg overflow-hidden shadow-lg flex justify-center items-center">
             <iframe 
-              src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2FREDPCPH&tabs=timeline&width=500&height=600&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true" 
-              width="500" 
-              height="600" 
-              style={{ border: 'none', overflow: 'hidden' }} 
+              src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2FREDPCPH&tabs=timeline&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true" 
+              style={{ border: 'none', overflow: 'hidden', width: '100%', height: '600px' }} 
               scrolling="no" 
               frameBorder="0" 
               allowFullScreen={true} 
