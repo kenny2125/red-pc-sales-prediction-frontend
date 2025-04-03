@@ -23,7 +23,7 @@ import Search from "./pages/Search";
 import PackageView from "./pages/Package";
 import PackageDetail from "./pages/PackageDetail";
 
-const devUserType = "admin";
+const devUserType = "customer";
 
 const App: React.FC = () => (
   <UserProvider initialUserType={devUserType}>

@@ -44,12 +44,9 @@ function Home() {
           backgroundImage: `url(${gif})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
-          height: "75vh",
           position: "relative",
-          width: "99vw", // Changed from 'full' to '100%'
-          marginLeft: "calc(-175px)",
-          marginRight: "calc(-175px)",
         }}
+        className="mx-0 md:mx-[-175px] h-auto md:h-[75vh]"
       >
         {/* Dark overlay to make background less bright */}
         <div
@@ -58,18 +55,26 @@ function Home() {
         ></div>
 
         {/* CTO */}
-        <div className="relative z-10 flex justify-between px-[5%] md:px-[10%] lg:px-[150px] items-center h-[75vh] w-full">
-          <div className="max-w-[600px]">
+        <div className="relative z-10 flex flex-col md:flex-row items-center justify-between px-[5%] md:px-[10%] lg:px-[150px] h-full w-full">
+          {/* Image container: responsive size and lower z-index on small screens */}
+          <div className="order-1 md:order-2 z-0">
+            <img
+              className="w-full max-w-[250px] md:max-w-md h-auto" // smaller on sm, larger on md+
+              src={PackageSet}
+              alt="Package Set"
+            />
+          </div>
+
+          {/* Text container: ensure it remains above the image */}
+          <div className="order-2 md:order-1 max-w-[600px] text-center md:text-left z -10 h-full flex flex-col justify-center">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-7">
               Empowering Your <br /> Digital Experience
             </h1>
             <p className="text-[17px] -2xl">
-              Providing Quality Computers and Accessories Across the
-              Philippines.
+              Providing Quality Computers and Accessories Across the Philippines.
             </p>
             <p className="text-[17px] -2xl">
-              Starting at <span className="text-2xl font-bold">₱17,399</span>{" "}
-              per computer Set
+              Starting at <span className="text-2xl font-bold">₱17,399</span> per computer Set
             </p>
             <Button
               className="mt-7 font-bold text-2xl p-6 cursor-pointer"
@@ -77,22 +82,14 @@ function Home() {
                 window.location.href = "/search";
               }}
             >
-              Shop Now <CircleArrowRight />
+              Shop Now <CircleArrowRight  />
             </Button>
-          </div>
-
-          <div className="hidden md:block">
-            <img
-              className="w-[420px] lg:w-[520px] h-auto lg:h-[680px] aspect-[581/822]"
-              src={PackageSet}
-              alt="Package Set"
-            />
           </div>
         </div>
       </section>
 
       {/* Brand Logos Section */}
-      <section className="py-[30px]">
+      <section className="py-[30px] mt-5">
         <div className="overflow-hidden self-stretch">
           <div className="flex items-center gap-12 animate-move-left-right">
             {/* First set of logos */}
