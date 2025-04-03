@@ -22,6 +22,7 @@ import TestView from "./pages/Test";
 import Search from "./pages/Search";
 import PackageView from "./pages/Package";
 import PackageDetail from "./pages/PackageDetail";
+import Checkout from "./pages/Checkout";
 
 const devUserType = "customer";
 
@@ -39,8 +40,7 @@ const App: React.FC = () => (
 
             <Route path="/product" element={<ProductDetail />} />
             <Route path="/build" element={<PackageDetail />} />
-
-
+            <Route path="/checkout" element={<Checkout />} />
 
             <Route path="/about-us" element={<AboutUs />} />
             <Route path="/faq" element={<FAQ />} />

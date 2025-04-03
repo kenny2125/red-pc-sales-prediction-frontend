@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 import {
   Dialog,
   DialogContent,
@@ -9,12 +10,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
 import { ShoppingCart } from "lucide-react";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableFooter,
   TableHead,
@@ -22,15 +21,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Badge } from "@/components/ui/badge";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import ProductCard from "../cards/ProductCard";
+import { QuantityInput } from "@/components/ui/quantity-input";
 
 const invoices = [
   {
@@ -57,14 +48,47 @@ const invoices = [
 ];
 
 export function CartDialog() {
-  const [paid, isPaid] = useState<boolean>(false);
+  const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
+  const [selectedItems, setSelectedItems] = useState<number[]>([]);
+  const [quantities, setQuantities] = useState(
+    invoices.reduce((acc, invoice) => {
+      acc[invoice.id] = invoice.quantity;
+      return acc;
+    }, {} as Record<number, number>)
+  );
 
-  function payment(params: any) {
-    isPaid(true);
-  }
+  const handleCheckout = () => {
+    setOpen(false); // Close the dialog
+    navigate('/checkout'); // Navigate to checkout page
+  };
+
+  const toggleItemSelection = (invoiceId: number) => {
+    setSelectedItems(prev => {
+      if (prev.includes(invoiceId)) {
+        return prev.filter(id => id !== invoiceId);
+      } else {
+        return [...prev, invoiceId];
+      }
+    });
+  };
+
+  const handleQuantityChange = (invoiceId: number, newQuantity: number) => {
+    setQuantities(prev => ({
+      ...prev,
+      [invoiceId]: newQuantity
+    }));
+  };
+
+  const getTotal = () => {
+    return invoices.reduce(
+      (sum, invoice) => sum + invoice.price * quantities[invoice.id], 
+      0
+    );
+  };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <ShoppingCart size={40} className="text-primary" />
       </DialogTrigger>
@@ -76,131 +100,79 @@ export function CartDialog() {
             <DialogTitle>My Cart</DialogTitle>
           </div>
           <DialogDescription>
-            (Papalitan neto hehe) Make changes to your profile here. Click save
-            when you're done.
+            Review your cart items before proceeding to checkout.
           </DialogDescription>
         </DialogHeader>
-        {paid == false ? (
-          <div className="flex flex-col md:flex-row gap-8 justify-between">
-            <div className="flex-1 overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="w-[50px]"></TableHead>
-                    <TableHead className="w-[100px] hidden md:table-cell"></TableHead>
-                    <TableHead>Product Name</TableHead>
-                    <TableHead>Quantity</TableHead>
-                    <TableHead className="text-right">Amount</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {invoices.map((invoice) => (
-                    <TableRow key={invoice.id} className="align-middle">
-                      <TableCell className="vertical-align-middle">
-                        <Checkbox />
-                      </TableCell>
-                      <TableCell className="hidden md:table-cell">
-                        <img
-                          src="https://placehold.co/100"
-                          alt=""
-                          className="w-full"
-                        />
-                      </TableCell>
-                      <TableCell className="font-medium">
-                        <span className="md:inline line-clamp-2">
-                          {invoice.productName}
-                        </span>
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {invoice.quantity}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        ₱{invoice.price.toLocaleString()}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-            <div className="flex flex-col gap-2 justify-start align-bottom md:w-auto w-full">
-              <h1 className="text-lg font-semibold">Customer Information</h1>
-              <div>
-                <h1>Order# </h1>
-                <p></p>
-              </div>
-              <div className="flex flex-col md:flex-row gap-4 md:gap-12 justify-between">
-                <div className="flex flex-row gap-2 items-center">
-                  <Label>Payment Method</Label>
-                  <Select>
-                    <SelectTrigger className="w-full md:w-[200px]">
-                      <SelectValue placeholder="Select a Payment Method" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="cod">Cash on Delivery</SelectItem>
-                      <SelectItem value="gcash">GCASH</SelectItem>
-                      <SelectItem value="paymaya">PAYMAYA</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="flex flex-row gap-2 items-center">
-                  <Label>Pickup Method</Label>
-                  <Select>
-                    <SelectTrigger className="w-full md:w-[200px]">
-                      <SelectValue placeholder="Select a Pickup Method" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="store">Store Pickup</SelectItem>
-                      <SelectItem value="delivery">Delivery</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-              <div className="flex flex-col md:flex-row gap-4 md:gap-8 justify-between">
-                <div className="flex flex-row gap-4">
-                  <h1 className="font-medium">Customer Name</h1>
-                  <p>John Kenny Reyes</p>
-                </div>
+        
+        <div className="flex-1 overflow-x-auto">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-[50px]"></TableHead>
+                <TableHead className="w-[100px] hidden md:table-cell"></TableHead>
+                <TableHead>Product Name</TableHead>
+                <TableHead>Quantity</TableHead>
+                <TableHead className="text-right">Amount</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {invoices.map((invoice) => (
+                <TableRow key={invoice.id} className="align-middle">
+                  <TableCell 
+                    className="vertical-align-middle cursor-pointer" 
+                    onClick={() => toggleItemSelection(invoice.id)}
+                  >
+                    <Checkbox 
+                      checked={selectedItems.includes(invoice.id)}
+                      onCheckedChange={() => toggleItemSelection(invoice.id)}
+                    />
+                  </TableCell>
+                  <TableCell 
+                    className="hidden md:table-cell cursor-pointer" 
+                    onClick={() => toggleItemSelection(invoice.id)}
+                  >
+                    <img
+                      src="https://placehold.co/100"
+                      alt=""
+                      className="w-full"
+                    />
+                  </TableCell>
+                  <TableCell 
+                    className="font-medium cursor-pointer" 
+                    onClick={() => toggleItemSelection(invoice.id)}
+                  >
+                    <span className="md:inline line-clamp-2">
+                      {invoice.productName}
+                    </span>
+                  </TableCell>
+                  <TableCell className="text-center">
+                    <QuantityInput 
+                      value={quantities[invoice.id]} 
+                      onChange={(newValue) => handleQuantityChange(invoice.id, newValue)}
+                      min={1}
+                      max={99}
+                    />
+                  </TableCell>
+                  <TableCell className="text-right">
+                    ₱{(invoice.price * quantities[invoice.id]).toLocaleString()}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+            <TableFooter>
+              <TableRow>
+                <TableCell colSpan={4} className="text-right font-bold">Total</TableCell>
+                <TableCell className="text-right font-bold">
+                  ₱{getTotal().toLocaleString()}
+                </TableCell>
+              </TableRow>
+            </TableFooter>
+          </Table>
+        </div>
 
-                <div className="flex flex-row gap-4">
-                  <h1 className="font-medium">Contact Number</h1>
-                  <p>09123456789</p>
-                </div>
-              </div>
-              <div>
-                <h1 className="font-medium">Address</h1>
-                <p>Blk 1, Lot 2, San Bandangilid, Novaliches, Quezon City</p>
-              </div>
-              <div className="flex flex-row justify-between align-bottom mt-4">
-                <div>
-                  <h1 className="font-semibold">Order Information</h1>
-                  <p>Total Payment</p>
-                </div>
-                <div className="font-bold text-lg">
-                  ₱
-                  {invoices
-                    .reduce((sum, invoice) => sum + invoice.price, 0)
-                    .toLocaleString()}
-                </div>
-              </div>
-            </div>
-          </div>
-        ) : (
-          <div className="flex flex-col w-full gap-8 justify-center">
-            <div className="flex justify-center">
-              <h1>Thank you for paying!</h1>
-            </div>
-            <div className="flex flex-row flex-wrap justify-center gap-4">
-              <ProductCard />
-              <ProductCard />
-              <ProductCard />
-              <ProductCard />
-            </div>
-          </div>
-        )}
-
-        <DialogFooter>
-          <Button type="submit" onClick={payment} className="w-full md:w-auto">
-            Place Order
+        <DialogFooter className="mt-4">
+          <Button type="button" onClick={handleCheckout} className="w-full md:w-auto">
+            Proceed to Checkout
           </Button>
         </DialogFooter>
       </DialogContent>
