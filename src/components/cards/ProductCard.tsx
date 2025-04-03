@@ -3,6 +3,7 @@ import product from '../../assets/product.png'
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { useNavigate } from 'react-router-dom'
 import { Button } from "@/components/ui/button"
+import { ShoppingCart, Trash2 } from 'lucide-react'
 
 function ProductCard() {
   const navigate = useNavigate();
@@ -36,7 +37,7 @@ function ProductCard() {
           size="sm" 
           onClick={handleAddToCart}
         >
-          {isInCart ? "Remove from Cart" : "Add to Cart"}
+          {isInCart ? <Trash2 size={16} /> : <ShoppingCart size={16} />}
         </Button>
       </CardFooter>
     </Card>

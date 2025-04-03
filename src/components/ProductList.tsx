@@ -7,7 +7,7 @@ export default function ProductList() {
 
   return (
     <>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 w-full">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 w-full">
         <ProductCard/>
         <ProductCard/>
         <ProductCard/>
@@ -20,7 +20,7 @@ export default function ProductList() {
         <ProductCard/>  
         <ProductCard/>  
         <ProductCard/>  
-        <ProductCard/>  
+        
       </div>
     </>
   )

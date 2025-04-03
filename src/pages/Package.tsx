@@ -7,8 +7,8 @@ export default function PackageView() {
     <>
       <div>
         <div className="flex flex-col justify-between items-center gap-4 py-2">
-          <h1 className="text-6xl font-['Anton']">Computer Builds</h1>
-          <p>
+          <h1 className="text-6xl text-center font-['Anton']">Computer Builds</h1>
+          <p className="text-center">
             Looking for a budget-friendly yet powerful gaming setup? Check out
             our PC BUIDS with FREE SET of peripherals
           </p>

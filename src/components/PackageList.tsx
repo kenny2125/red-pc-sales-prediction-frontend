@@ -18,10 +18,8 @@ export default function PackageList() {
 
   return (
     <>
-      <div className="flex flex-row justify-between gap-4 w-full">
-        <h1>Results for: </h1>
-
-        <div className="flex gap-4">
+      <div className="flex flex-col md:flex-row justify-between gap-4 w-full">
+        <div className="flex justify-center gap-4">
           <div className="gap-2">
             <Select>
               <SelectTrigger>
@@ -42,7 +40,7 @@ export default function PackageList() {
                 <SelectValue placeholder="Lowest-Highest" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="asc">Lowest-Highest</SelectItem>
+                <SelectItem value="asc">Lowest-Highest</SelectItem> 
                 <SelectItem value="dsc">Highest-Lowest</SelectItem>
               </SelectContent>
             </Select>
@@ -50,7 +48,7 @@ export default function PackageList() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 w-full">
+      <div className="grid grid-rows-3 grid-flow-col auto-cols-fr gap-4 w-full sm:grid-flow-row sm:grid-cols-2 sm:[grid-template-rows:auto] md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
         <PackageCard />
         <PackageCard />
         <PackageCard />
