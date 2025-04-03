@@ -31,46 +31,36 @@ interface User {
   role: UserRole;
 }
 
-const invoices = [
+const orders = [
   {
-    invoice: "INV001",
-    paymentStatus: "Paid",
-    paymentMethod: "Paymaya",
-    custName: "John Kenny Q. Reyes",
+    orderNumber: "ORD001",
+    productName: "Gaming Mouse",
     paidAt: "March 22, 2025",
-    totalAmount: "Php250.00",
+    amount: "Php250.00",
   },
   {
-    invoice: "INV001",
-    paymentStatus: "Paid",
-    paymentMethod: "Paymaya",
-    custName: "John Kenny Q. Reyes",
-    paidAt: "March 22, 2025",
-    totalAmount: "Php250.00",
+    orderNumber: "ORD002",
+    productName: "Mechanical Keyboard",
+    paidAt: "March 23, 2025",
+    amount: "Php1,200.00",
   },
   {
-    invoice: "INV001",
-    paymentStatus: "Paid",
-    paymentMethod: "Paymaya",
-    custName: "John Kenny Q. Reyes",
-    paidAt: "March 22, 2025",
-    totalAmount: "Php250.00",
+    orderNumber: "ORD003",
+    productName: "Gaming Headset",
+    paidAt: "March 24, 2025",
+    amount: "Php800.00",
   },
   {
-    invoice: "INV001",
-    paymentStatus: "Paid",
-    paymentMethod: "Paymaya",
-    custName: "John Kenny Q. Reyes",
-    paidAt: "March 22, 2025",
-    totalAmount: "Php250.00",
+    orderNumber: "ORD004",
+    productName: "Monitor Stand",
+    paidAt: "March 25, 2025",
+    amount: "Php350.00",
   },
   {
-    invoice: "INV001",
-    paymentStatus: "Paid",
-    paymentMethod: "Paymaya",
-    custName: "John Kenny Q. Reyes",
-    paidAt: "March 22, 2025",
-    totalAmount: "Php250.00",
+    orderNumber: "ORD005",
+    productName: "USB Hub",
+    paidAt: "March 26, 2025",
+    amount: "Php150.00",
   },
 ];
 
@@ -97,32 +87,28 @@ export function OrderDialog() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[100px]">Invoice</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Method</TableHead>
-              <TableHead>Customer Name</TableHead>
+              <TableHead className="w-[100px]">Order#</TableHead>
+              <TableHead>Product Name</TableHead>
               <TableHead>Paid At</TableHead>
               <TableHead className="text-right">Amount</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {invoices.map((invoice) => (
-              <TableRow key={invoice.invoice}>
-                <TableCell className="font-medium">{invoice.invoice}</TableCell>
-                <TableCell>{invoice.paymentStatus}</TableCell>
-                <TableCell>{invoice.paymentMethod}</TableCell>
-                <TableCell>{invoice.custName}</TableCell>
-                <TableCell>{invoice.paidAt}</TableCell>
+            {orders.map((order) => (
+              <TableRow key={order.orderNumber}>
+                <TableCell className="font-medium">{order.orderNumber}</TableCell>
+                <TableCell>{order.productName}</TableCell>
+                <TableCell>{order.paidAt}</TableCell>
                 <TableCell className="text-right">
-                  {invoice.totalAmount}
+                  {order.amount}
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
           <TableFooter>
             <TableRow>
-              <TableCell colSpan={5}>Total</TableCell>
-              <TableCell className="text-right">$2,500.00</TableCell>
+              <TableCell colSpan={3}>Total</TableCell>
+              <TableCell className="text-right">Php2,750.00</TableCell>
             </TableRow>
           </TableFooter>
         </Table>

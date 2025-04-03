@@ -6,19 +6,10 @@ import { Label } from "@/components/ui/label";
 import React, { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { useSearchParams } from "react-router-dom";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from "@/components/ui/select";
 
 export default function Search() {
   const [searchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState("");
-  const [nameSort, setNameSort] = useState<'asc' | 'dsc'>('asc');
-  const [priceSort, setPriceSort] = useState<'asc' | 'dsc'>('asc');
 
   useEffect(() => {
     const query = searchParams.get("query");
@@ -32,35 +23,6 @@ export default function Search() {
       <div className="flex gap-4">
         <Card className="flex flex-col mt-13 w-fit h-fit p-4 rounded-lg justify-center align-top gap-4">
           <h2>By Category</h2>
-          
-          <div className="mb-4">
-            <h3>Sort By</h3>
-            <div className="flex flex-col gap-2 mt-2">
-              <div className="gap-2">
-                <Select value={nameSort} onValueChange={(value) => setNameSort(value as 'asc' | 'dsc')}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="A-Z" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="asc">A-Z</SelectItem>
-                    <SelectItem value="dsc">Z-A</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="gap-2 mt-2">
-                <Select value={priceSort} onValueChange={(value) => setPriceSort(value as 'asc' | 'dsc')}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Lowest-Highest" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="asc">Lowest-Highest</SelectItem>
-                    <SelectItem value="dsc">Highest-Lowest</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-          </div>
-          
           <div>
             <h1>Computer Parts</h1>
             <div className="flex flex-col">

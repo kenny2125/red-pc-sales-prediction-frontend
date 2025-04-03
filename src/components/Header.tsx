@@ -100,6 +100,7 @@ export default function Header() {
                 </Button>
                 {isLoggedIn ? (
                   <div className="flex items-center gap-2">
+                    <OrderDialog />
                     <CartDialog />
                     <ProfileDialog />
                   </div>
