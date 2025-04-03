@@ -44,7 +44,7 @@ function Home() {
           backgroundImage: `url(${gif})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
-          height: "90vh",
+          height: "75vh",
           position: "relative",
           width: "99vw", // Changed from 'full' to '100%'
           marginLeft: "calc(-175px)",
@@ -53,12 +53,12 @@ function Home() {
       >
         {/* Dark overlay to make background less bright */}
         <div
-          className="absolute inset-0 bg-black dark:bg-black opacity-100 dark:opacity-40 bg-white/70 dark:bg-black/40"
+          className="absolute inset-0 bg-black dark:bg-black opacity-100 dark:opacity-100 bg-white/70 dark:bg-black/70"
           style={{ zIndex: 1 }}
         ></div>
 
         {/* CTO */}
-        <div className="relative z-10 flex justify-between px-[5%] md:px-[10%] lg:px-[150px] items-center h-[90vh] w-full">
+        <div className="relative z-10 flex justify-between px-[5%] md:px-[10%] lg:px-[150px] items-center h-[75vh] w-full">
           <div className="max-w-[600px]">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-7">
               Empowering Your <br /> Digital Experience
