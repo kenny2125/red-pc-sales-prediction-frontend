@@ -3,6 +3,9 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
+import React, { useEffect, useState } from "react";
+import { Card } from "@/components/ui/card";
+import { useSearchParams } from "react-router-dom";
 import {
   Select,
   SelectTrigger,
@@ -11,16 +14,53 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 
-import React from "react";
-import { Card } from "@/components/ui/card";
-import ProductCard from "@/components/cards/ProductCard";
-
 export default function Search() {
+  const [searchParams] = useSearchParams();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [nameSort, setNameSort] = useState<'asc' | 'dsc'>('asc');
+  const [priceSort, setPriceSort] = useState<'asc' | 'dsc'>('asc');
+
+  useEffect(() => {
+    const query = searchParams.get("query");
+    if (query) {
+      setSearchQuery(query);
+    }
+  }, [searchParams]);
+
   return (
     <>
       <div className="flex gap-4">
         <Card className="flex flex-col mt-13 w-fit h-fit p-4 rounded-lg justify-center align-top gap-4">
           <h2>By Category</h2>
+          
+          <div className="mb-4">
+            <h3>Sort By</h3>
+            <div className="flex flex-col gap-2 mt-2">
+              <div className="gap-2">
+                <Select value={nameSort} onValueChange={(value) => setNameSort(value as 'asc' | 'dsc')}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="A-Z" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="asc">A-Z</SelectItem>
+                    <SelectItem value="dsc">Z-A</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="gap-2 mt-2">
+                <Select value={priceSort} onValueChange={(value) => setPriceSort(value as 'asc' | 'dsc')}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Lowest-Highest" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="asc">Lowest-Highest</SelectItem>
+                    <SelectItem value="dsc">Highest-Lowest</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </div>
+          
           <div>
             <h1>Computer Parts</h1>
             <div className="flex flex-col">
@@ -90,52 +130,13 @@ export default function Search() {
           <Slider defaultValue={[33]} max={100} step={1} />
         </Card>
 
-        <div className="flex flex-col w-full justify-betwee gap-4">
-          <div className="flex flex-row justify-between gap-4 ">
-            <h1>Results for: </h1>
-
-            <div className="flex gap-4">
-              <div className="gap-2">
-                <Select>
-                  <SelectTrigger>
-                    <SelectValue placeholder="A-Z" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="asc">A-Z</SelectItem>
-                    <SelectItem value="dsc">Z-A</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="gap-2">
-                <Select>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Lowest-Highest" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="asc">Lowest-Highest</SelectItem>
-                    <SelectItem value="dsc">Highest-Lowest</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
+        <div className="flex flex-col w-full justify-between gap-4">
+          <div className="mb-4">
+            <h1>
+              Results for: <span className="font-bold">{searchQuery}</span>
+            </h1>
           </div>
-          <div className="flex flex-wrap gap-4 w-full">
-            <ProductCard />
-            <ProductCard />
-            <ProductCard />
-            <ProductCard />
-            <ProductCard />
-            <ProductCard />
-            <ProductCard />
-            <ProductCard />
-            <ProductCard />
-            <ProductCard />
-            <ProductCard />
-            <ProductCard />
-            <ProductCard />
-            <ProductCard />
-            <ProductCard />
-          </div>
+          <ProductList />
         </div>
       </div>
     </>

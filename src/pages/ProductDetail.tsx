@@ -11,6 +11,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
+import ProductList from "@/components/ProductList";
 
 function ProductDetail() {
   const brandImages = [brand1];
@@ -133,6 +134,7 @@ function ProductDetail() {
             </div>
           </div>
         </div>
+        <ProductList/>
       </div>
     </>
   );

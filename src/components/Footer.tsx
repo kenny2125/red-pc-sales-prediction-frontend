@@ -8,7 +8,7 @@ import { Outlet, Link } from "react-router-dom";
 export default function Footer() {
   return (
     <>
-      <div className=" w-full h-[8rem] flex flex-col py-12">
+      <div className=" w-full h-[8rem] flex flex-col py-12 mt-16">
         <div className=" flex flex-row justify-between items-top ">
           <Link to="/">
             <div className="inline-blockitems-start justify-center gap-2">

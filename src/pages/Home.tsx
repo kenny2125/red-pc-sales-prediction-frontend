@@ -68,11 +68,15 @@ function Home() {
               Philippines.
             </p>
             <p className="text-[17px] -2xl">
-              Starting at{" "}
-              <span className="text-2xl font-bold">₱17,399</span>{" "}
+              Starting at <span className="text-2xl font-bold">₱17,399</span>{" "}
               per computer Set
             </p>
-            <Button className="mt-7 font-bold text-2xl p-6 cursor-pointer">
+            <Button
+              className="mt-7 font-bold text-2xl p-6 cursor-pointer"
+              onClick={() => {
+                window.location.href = "/search";
+              }}
+            >
               Shop Now <CircleArrowRight />
             </Button>
           </div>
@@ -117,31 +121,31 @@ function Home() {
         <div className="p-[30px]">
           <h1 className="text-4xl font-bold">Check out Computer Builds</h1>
         </div>
-        
+
         {/* Scrollable container with custom scrollbar */}
         <div className="w-full max-w-[90vw] relative">
           <div className="overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-primary scrollbar-track-secondary">
-        <div className="flex gap-4 min-w-max px-4">
-          <PackageCard />
-          <PackageCard />
-          <PackageCard />
-          <PackageCard />
-          <PackageCard />
-          <PackageCard />
-          <PackageCard />
-          <PackageCard />
-          <PackageCard />
-          <PackageCard />
-          <PackageCard />
-          <PackageCard />
-        </div>
+            <div className="flex gap-4 min-w-max px-4">
+              <PackageCard />
+              <PackageCard />
+              <PackageCard />
+              <PackageCard />
+              <PackageCard />
+              <PackageCard />
+              <PackageCard />
+              <PackageCard />
+              <PackageCard />
+              <PackageCard />
+              <PackageCard />
+              <PackageCard />
+            </div>
           </div>
         </div>
-        
+
         <Button
           className="text-xl p-5 m-6"
           onClick={() => {
-        window.location.href = "/pc-builds";
+            window.location.href = "/pc-builds";
           }}
         >
           See More <CircleArrowRight className="ml-2" />
@@ -162,6 +166,29 @@ function Home() {
           <ProductCard />
         </div>
       </section>
+
+      {/* Facebook Page Embed Section */}
+      <section className="flex flex-col items-center my-16 px-4">
+        <h1 className="text-4xl font-bold mb-8">Connect With Us</h1>
+        <div className="flex flex-col items-center gap-8 w-full">
+          {/* Timeline embed */}
+          <div className="w-full max-w-[500px] rounded-lg overflow-hidden shadow-lg flex justify-center">
+            <iframe 
+              src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2FREDPCPH&tabs=timeline&width=500&height=600&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true" 
+              width="500" 
+              height="600" 
+              style={{ border: 'none', overflow: 'hidden' }} 
+              scrolling="no" 
+              frameBorder="0" 
+              allowFullScreen={true} 
+              allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+              title="RED PC Facebook Timeline"            
+            ></iframe>
+          </div>
+          
+        </div>
+      </section>
+      
     </main>
   );
 }
