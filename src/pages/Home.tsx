@@ -179,7 +179,7 @@ function Home() {
         <h1 className="text-4xl font-bold mb-8">Connect With Us</h1>
         <div className="flex flex-col items-center gap-8 w-full">
           {/* Timeline embed */}
-          <div className="w-full max-w-[500px] rounded-lg overflow-hidden shadow-lg flex justify-center items-center">
+          <div className="rounded-lg overflow-hidden shadow-lg flex justify-center items-center">
             <iframe 
               src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2FREDPCPH&tabs=timeline&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true" 
               style={{ border: 'none', overflow: 'hidden', width: '100%', height: '600px' }} 
