@@ -15,8 +15,8 @@ import brand10 from "../assets/brand-logos/ovation.svg";
 import brand11 from "../assets/brand-logos/pny.svg";
 import brand12 from "../assets/brand-logos/ramsta.svg";
 import brand13 from "../assets/brand-logos/teamgroup.svg";
-import PackageCard from "@/components/cards/package-card";
-import ProductCard from "@/components/cards/product-card";
+import PackageCard from "@/components/cards/PackageCard";
+import ProductCard from "@/components/cards/ProductCard";
 import logo from "../assets/redpcph.png";
 
 function Home() {
@@ -53,12 +53,12 @@ function Home() {
       >
         {/* Dark overlay to make background less bright */}
         <div
-          className="absolute inset-0 bg-black opacity-40"
+          className="absolute inset-0 bg-black dark:bg-black opacity-100 dark:opacity-40 bg-white/70 dark:bg-black/40"
           style={{ zIndex: 1 }}
         ></div>
 
         {/* CTO */}
-        <div className="relative z-10 flex justify-between px-[5%] md:px-[10%] lg:px-[150px] text-white items-center h-[90vh] w-full">
+        <div className="relative z-10 flex justify-between px-[5%] md:px-[10%] lg:px-[150px] items-center h-[90vh] w-full">
           <div className="max-w-[600px]">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-7">
               Empowering Your <br /> Digital Experience
@@ -69,7 +69,7 @@ function Home() {
             </p>
             <p className="text-[17px] -2xl">
               Starting at{" "}
-              <span className="text-2xl font-bold text-amber-400">₱17,399</span>{" "}
+              <span className="text-2xl font-bold">₱17,399</span>{" "}
               per computer Set
             </p>
             <Button className="mt-7 font-bold text-2xl p-6 cursor-pointer">
@@ -113,37 +113,38 @@ function Home() {
         </div>
       </section>
 
-      <section className="flex flex-col items-center justify-evenly ">
-        <div className="flex gap-[20px]">
-          <div className="flex flex-col items-center ">
-            <div className="p-[30px]">
-              <h1 className="text-4xl font-bold">INTEL PC BUILDS</h1>
-            </div>
-            <div className="flex gap-[10px]">
-              <PackageCard inCart={false} />
-              <PackageCard inCart={false} />
-              <PackageCard inCart={false} />
-            </div>
-          </div>
-
-          <div className="flex flex-col items-center">
-            <div className="p-[30px]">
-              <h1 className="text-4xl font-bold">AMD PC BUILDS</h1>
-            </div>
-            <div className="flex gap-[10px]">
-              <PackageCard inCart={false} />
-              <PackageCard inCart={false} />
-              <PackageCard inCart={false} />
-            </div>
+      <section className="flex flex-col items-center my-12">
+        <div className="p-[30px]">
+          <h1 className="text-4xl font-bold">Check out Computer Builds</h1>
+        </div>
+        
+        {/* Scrollable container with custom scrollbar */}
+        <div className="w-full max-w-[90vw] relative">
+          <div className="overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-primary scrollbar-track-secondary">
+        <div className="flex gap-4 min-w-max px-4">
+          <PackageCard />
+          <PackageCard />
+          <PackageCard />
+          <PackageCard />
+          <PackageCard />
+          <PackageCard />
+          <PackageCard />
+          <PackageCard />
+          <PackageCard />
+          <PackageCard />
+          <PackageCard />
+          <PackageCard />
+        </div>
           </div>
         </div>
+        
         <Button
           className="text-xl p-5 m-6"
           onClick={() => {
-            window.location.href = "/builds";
+        window.location.href = "/pc-builds";
           }}
         >
-          See More
+          See More <CircleArrowRight className="ml-2" />
         </Button>
       </section>
 
@@ -159,20 +160,6 @@ function Home() {
           <ProductCard />
           <ProductCard />
           <ProductCard />
-        </div>
-      </section>
-
-      <section className="flex flex-col items-center px-[170px] py-7">
-        <h1 className="text-4xl font-bold">WHO ARE WE?</h1>
-        <div className="flex p-10 items-center gap-10">
-          <img className="w-[300px]" src={logo} alt="logo" />
-          <p className="text-xl font-bold">
-            Founded in 2019, RED PC PH started during the pandemic by selling
-            second-hand computer products. Over time, we expanded to offer
-            custom-built gaming PCs, budget-friendly computer systems, and
-            refurbished devices, along with essential repair and maintenance
-            services.
-          </p>
         </div>
       </section>
     </main>
