@@ -58,9 +58,11 @@ export function LogInDialog() {
         <>
           <DialogHeader className="flex flex-col items-center">
             <Logo />
-            <DialogTitle>
-              {isLoggedIn ? <>{isLogin ? "Login" : "Create Account"}</> : <></>}
-            </DialogTitle>
+            {!isLoggedIn && (
+              <DialogTitle>
+                {isLogin ? "Login" : "Create Account"}
+              </DialogTitle>
+            )}
           </DialogHeader>
 
           {isLoading && (
