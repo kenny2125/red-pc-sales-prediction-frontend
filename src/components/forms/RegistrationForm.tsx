@@ -124,11 +124,11 @@ export function RegistrationForm({
         return;
       }
       
-      // On success, show success overlay similar to LoginForm
+      // On success, show success overlay and then switch back to the login form
       setRegistrationStatus('success');
       setShowSuccessOverlay(true);
       setTimeout(() => {
-        onSuccess();
+        onToggleMode(); // switch back to login form
         setTimeout(() => {
           setShowSuccessOverlay(false);
         }, 500);
