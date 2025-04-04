@@ -1,17 +1,16 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RegistrationData } from "@/contexts/UserContext";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, CheckCircle } from "lucide-react";
 
 interface RegistrationFormProps {
   onToggleMode: () => void;
   isLoading: boolean;
   error: string | null;
-  register: (data: RegistrationData) => Promise<void>;
   onSuccess: () => void;
 }
 
@@ -19,7 +18,6 @@ export function RegistrationForm({
   onToggleMode,
   isLoading,
   error,
-  register,
   onSuccess,
 }: RegistrationFormProps) {
   const [regData, setRegData] = useState<RegistrationData>({
@@ -37,6 +35,16 @@ export function RegistrationForm({
   const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [registrationStatus, setRegistrationStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [showSuccessOverlay, setShowSuccessOverlay] = useState(false);
+
+  useEffect(() => {
+    const registerUrl = `${import.meta.env.VITE_API_URL}/api/auth/register`;
+    fetch(registerUrl)
+      .then(response => response.json())
+      .then(data => console.log("Registration endpoint response:", data))
+      .catch(err => console.error("Error fetching registration endpoint:", err));
+  }, []);
 
   const validateField = (field: string, value: string): string => {
     switch (field) {
@@ -100,9 +108,35 @@ export function RegistrationForm({
       return;
     }
     
-    await register(regData);
-    if (!error) {
-      onSuccess();
+    setRegistrationStatus('loading');
+    const registerUrl = `${import.meta.env.VITE_API_URL}/api/auth/register`;
+    try {
+      const res = await fetch(registerUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(regData)
+      });
+      
+      if (!res.ok) {
+        const result = await res.json();
+        console.error(result);
+        setRegistrationStatus('error');
+        return;
+      }
+      
+      // On success, show success overlay similar to LoginForm
+      setRegistrationStatus('success');
+      setShowSuccessOverlay(true);
+      setTimeout(() => {
+        onSuccess();
+        setTimeout(() => {
+          setShowSuccessOverlay(false);
+        }, 500);
+      }, 2000);
+      
+    } catch (err) {
+      console.error(err);
+      setRegistrationStatus('error');
     }
   };
 
@@ -175,6 +209,15 @@ export function RegistrationForm({
       confirmPassword: error
     }));
   };
+
+  if (showSuccessOverlay) {
+    return (
+      <div className="h-fit flex flex-col items-center justify-center z-50 animate-fadeIn mb-16">
+        <CheckCircle className="w-20 h-20 text-green-500 " />
+        <h2 className="text-2xl font-bold text-green-600">Registration Successful!</h2>
+      </div>
+    );
+  }
 
   return (
     <form onSubmit={handleRegister} className="flex flex-col">
@@ -373,6 +416,12 @@ export function RegistrationForm({
         </div>
       </div>
       
+      {registrationStatus === 'error' && (
+        <div className="w-full text-center py-2 px-4 text-destructive text-sm">
+          Registration failed. Please try again.
+        </div>
+      )}
+      
       {error && <p className="text-sm text-red-500 text-center">{error}</p>}
       
       <DialogDescription className="flex flex-row justify-center items-center">
@@ -381,8 +430,8 @@ export function RegistrationForm({
       </DialogDescription>
       
       <DialogFooter className="flex flex-col items-center">
-        <Button className="w-full" type="submit" disabled={isLoading}>
-          {isLoading ? "Registering..." : "Register"}
+        <Button className="w-full" type="submit" disabled={registrationStatus === 'loading'}>
+          {registrationStatus === 'loading' ? "Registering..." : "Register"}
         </Button>
       </DialogFooter>
     </form>
