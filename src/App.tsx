@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 import Home from "./pages/Home";
 import ProductDetail from "./pages/ProductDetail";
@@ -23,6 +24,8 @@ import Search from "./pages/Search";
 import PackageView from "./pages/Package";
 import PackageDetail from "./pages/PackageDetail";
 import Checkout from "./pages/Checkout";
+import Unauthorized from "./pages/Unauthorized";
+import NotFound from "./pages/NotFound";
 
 const devUserType = "customer";
 
@@ -48,12 +51,20 @@ const App: React.FC = () => (
             <Route path="/terms&conditions" element={<Terms_Conditions />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/purchasing-guide" element={<PurchasingGuide />} />
-
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/inventory" element={<Inventory />} />
-            <Route path="/sales" element={<Sales />} />
-            <Route path="/orders" element={<Orders />} />
+            <Route path="/unauthorized" element={<Unauthorized />} />
+            
+            {/* Protected Admin Routes */}
+            <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/inventory" element={<Inventory />} />
+              <Route path="/sales" element={<Sales />} />
+              <Route path="/orders" element={<Orders />} />
+            </Route>
+            
             <Route path="/test" element={<TestView />} />
+            
+            {/* 404 Route - This should always be the last route */}
+            <Route path="*" element={<NotFound />} />
           </Routes>
 
           <Footer />
