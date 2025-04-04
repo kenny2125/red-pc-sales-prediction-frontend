@@ -27,10 +27,8 @@ import Checkout from "./pages/Checkout";
 import Unauthorized from "./pages/Unauthorized";
 import NotFound from "./pages/NotFound";
 
-const devUserType = "customer";
-
 const App: React.FC = () => (
-  <UserProvider initialUserType={devUserType}>
+  <UserProvider>
     <BrowserRouter>
       <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
         <div className="sm:px-[175px] md:px-[100px] lg:px-[175px]  ">
