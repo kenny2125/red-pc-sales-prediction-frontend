@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { DialogDescription } from "@/components/ui/dialog";
-import { CheckCircle } from "lucide-react"; // Import CheckCircle icon
+import { CheckCircle, Eye } from "lucide-react"; // Import CheckCircle and Eye icons
 
 interface LoginFormProps {
   onToggleMode: () => void;
@@ -15,6 +15,7 @@ interface LoginFormProps {
 export function LoginForm({ onToggleMode, isLoading, error, login }: LoginFormProps) {
   const [credential, setCredential] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false); // new state for password visibility
   const [loginStatus, setLoginStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [loginResponse, setLoginResponse] = useState<any>(null);
   const [showSuccessOverlay, setShowSuccessOverlay] = useState(false);
@@ -87,39 +88,48 @@ export function LoginForm({ onToggleMode, isLoading, error, login }: LoginFormPr
 
   return (
     <form onSubmit={handleLogin} className="flex flex-col gap-8">
-      <div className="flex flex-row justify-between gap-8">
+      <div className="flex flex-col md:flex-row justify-between gap-8">
         <div className="flex flex-col align-top py-4 w-full gap-8">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="credential" className="text-right">
+          <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4">
+            <Label htmlFor="credential" className="text-left md:text-right">
               Username/Email
             </Label>
             <Input
               id="credential"
               placeholder="Enter username or email"
-              className="col-span-3"
+              className="w-full md:col-span-3"
               value={credential}
               onChange={(e) => setCredential(e.target.value)}
               required
             />
           </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="password" className="text-right">
+          <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4">
+            <Label htmlFor="password" className="text-left md:text-right">
               Password
             </Label>
-            <Input
-              id="password"
-              type="password"
-              placeholder="Enter password"
-              className="col-span-3"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
+            <div className="relative w-full md:col-span-3">
+              <Input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                placeholder="Enter password"
+                className="w-full"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+              <button 
+                type="button"
+                onClick={() => setShowPassword(prev => !prev)}
+                className="absolute inset-y-0 right-0 pr-3 flex items-center"
+              >
+                <Eye className="w-5 h-5" />
+              </button>
+            </div>
           </div>
         </div>
       </div>
       
-      <DialogDescription className="flex flex-row justify-center items-center">
+      <DialogDescription className="flex flex-col md:flex-row justify-center items-center">
         <div>Don't have an account?</div>
         <Button type="button" variant="link" onClick={onToggleMode}>Create New Account</Button>
       </DialogDescription>
