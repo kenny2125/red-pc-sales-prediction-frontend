@@ -102,8 +102,22 @@ export function ProfileDialog() {
     window.location.href = '/';
     localStorage.removeItem('token');
     setCurrentUser(null);
-    
-    
+  };
+
+  // Reset form data to original user data
+  const handleCancel = () => {
+    if (currentUser) {
+      setFormData({
+        username: currentUser.username || "",
+        email: currentUser.email || "",
+        first_name: currentUser.first_name || "",
+        last_name: currentUser.last_name || "",
+        address: currentUser.address || "",
+        phone: currentUser.phone || "",
+      });
+    }
+    setEditing(false);
+    setError(null);
   };
 
   const handleSave = async () => {
@@ -128,11 +142,31 @@ export function ProfileDialog() {
       });
       
       if (!response.ok) {
-        throw new Error('Failed to update profile');
+        const errorData = await response.json();
+        
+        // Check for specific error types
+        if (errorData.code === 'DUPLICATE_EMAIL') {
+          setError("This email is already being used by another account");
+          return;
+        } else if (errorData.code === 'DUPLICATE_USERNAME') {
+          setError("This username is already being used by another account");
+          return;
+        }
+        
+        throw new Error(errorData.message || 'Failed to update profile');
       }
       
       const data = await response.json();
       setCurrentUser(data.user);
+      // Update form data with the returned user data
+      setFormData({
+        username: data.user.username || "",
+        email: data.user.email || "",
+        first_name: data.user.first_name || "",
+        last_name: data.user.last_name || "",
+        address: data.user.address || "",
+        phone: data.user.phone || "",
+      });
       setEditing(false);
       setSuccessMessage("Profile updated successfully");
       
@@ -142,7 +176,7 @@ export function ProfileDialog() {
       }, 3000);
     } catch (error) {
       console.error('Error updating profile:', error);
-      setError("Failed to update profile");
+      setError(error instanceof Error ? error.message : "Failed to update profile");
     } finally {
       setLoading(false);
     }
@@ -272,7 +306,7 @@ export function ProfileDialog() {
                 <Button type="button" onClick={handleSave} disabled={loading}>
                   {loading ? "Saving..." : "Save"}
                 </Button>
-                <Button type="button" variant="outline" onClick={() => setEditing(false)}>
+                <Button type="button" variant="outline" onClick={handleCancel}>
                   Cancel
                 </Button>
               </>
