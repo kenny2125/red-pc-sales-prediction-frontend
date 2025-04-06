@@ -12,7 +12,7 @@ import { useUser } from "@/contexts/UserContext";
 import { Outlet, Link } from "react-router-dom";
 
 export default function Header() {
-  const { currentUser, isLoggedIn, logout } = useUser();
+  const { currentUser, isLoggedIn } = useUser();
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
 
   function productSearch() {
@@ -52,7 +52,6 @@ export default function Header() {
                   <ProfileDialog />
                   <CartDialog />
                   <ModeToggle />
-                  <Button variant="outline" onClick={logout}>Logout</Button>
                 </div>
               </>
             ) : (
@@ -82,7 +81,6 @@ export default function Header() {
                   <ProfileDialog />
                   <CartDialog />
                   <ModeToggle />
-                  <Button variant="outline" onClick={logout}>Logout</Button>
                 </div>
               ) : (
                 <LogInDialog />
