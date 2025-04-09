@@ -18,8 +18,41 @@ import brand13 from "../assets/brand-logos/teamgroup.svg";
 import PackageCard from "@/components/cards/PackageCard";
 import ProductCard from "@/components/cards/ProductCard";
 import logo from "../assets/redpcph.png";
+import { useEffect, useState } from "react";
+
+interface Product {
+  product_id: string;
+  category: string;
+  brand: string;
+  product_name: string;
+  status: string;
+  quantity: number;
+  store_price: number;
+  image_url: string;
+}
 
 function Home() {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch('http://localhost:3000/api/product');
+        if (!response.ok) throw new Error('Failed to fetch products');
+        const data = await response.json();
+        // Take only the first 12 products for the homepage display
+        setProducts(data.slice(0, 12));
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
   const brandImages = [
     brand1,
     brand2,
@@ -50,7 +83,7 @@ function Home() {
       >
         {/* Dark overlay to make background less bright */}
         <div
-          className="absolute inset-0 bg-black dark:bg-black opacity-100 dark:opacity-100 bg-white/70 dark:bg-black/70"
+          className="absolute inset-0 bg-white/70 dark:bg-black/70"
           style={{ zIndex: 1 }}
         ></div>
 
@@ -157,21 +190,30 @@ function Home() {
         <div className="w-full max-w-[90vw] relative mt-8">
           <div className="overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-primary scrollbar-track-secondary">
             <div className="flex gap-4 min-w-max px-4">
-              <ProductCard />
-              <ProductCard />
-              <ProductCard />
-              <ProductCard />
-              <ProductCard />
-              <ProductCard />
-              <ProductCard />
-              <ProductCard />
-              <ProductCard />
-              <ProductCard />
-              <ProductCard />
-              <ProductCard />
+              {loading ? (
+                <div className="flex items-center justify-center w-full py-8">
+                  Loading products...
+                </div>
+              ) : products.length > 0 ? (
+                products.map((product) => (
+                  <ProductCard key={product.product_id} product={product} />
+                ))
+              ) : (
+                <div className="flex items-center justify-center w-full py-8">
+                  No products available
+                </div>
+              )}
             </div>
           </div>
         </div>
+        <Button
+          className="text-xl p-5 m-6"
+          onClick={() => {
+            window.location.href = "/search";
+          }}
+        >
+          See More Products <CircleArrowRight className="ml-2" />
+        </Button>
       </section>
 
       {/* Facebook Page Embed Section */}

@@ -14,7 +14,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table"
 import { ArrowUpDown, ChevronDown, MoreHorizontal, Plus } from "lucide-react"
-import { Boxes, ImagePlus, Trash } from "lucide-react"
+import { Boxes } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
@@ -51,8 +51,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
-import { Separator } from "@/components/ui/separator"
-import { Label } from "@/components/ui/label"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
@@ -151,6 +149,24 @@ export const columns: ColumnDef<Inventory>[] = [
     },
   },
   {
+    accessorKey: "image_url",
+    header: "Image",
+    cell: ({ row }) => {
+      const imageUrl = row.getValue("image_url") as string;
+      return imageUrl ? (
+        <img 
+          src={imageUrl} 
+          alt={row.getValue("product_name")} 
+          className="w-16 h-16 object-cover rounded-md"
+        />
+      ) : (
+        <div className="w-16 h-16 bg-gray-100 rounded-md flex items-center justify-center">
+          No image
+        </div>
+      );
+    },
+  },
+  {
     id: "actions",
     cell: ({ row }) => {
       const product = row.original
@@ -245,10 +261,11 @@ interface ProductFormProps {
 
 function ProductForm({ initialData, onSuccess, mode }: ProductFormProps) {
   const [formMessage, setFormMessage] = React.useState<{ type: 'success' | 'error', message: string } | null>(null);
-  const [previewUrl, setPreviewUrl] = React.useState<string | null>(initialData?.image_url || null);
 
   const formatPrice = (price: number | string): string => {
-    if (typeof price === 'string') return price;
+    if (typeof price === 'string') {
+      return price;
+    }
     return price.toLocaleString('en-US', {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
@@ -271,40 +288,37 @@ function ProductForm({ initialData, onSuccess, mode }: ProductFormProps) {
     },
   });
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setPreviewUrl(url);
-    }
-  };
-
   async function onSubmit(values: FormSchema) {
     try {
       const token = localStorage.getItem('token');
-      const endpoint = mode === 'add' 
-        ? `${API_URL}/api/product`
-        : `${API_URL}/api/product/${values.product_id}`;
-      
       const formData = new FormData();
-      formData.append('product_id', values.product_id);
-      formData.append('category', values.category);
-      formData.append('brand', values.brand);
-      formData.append('product_name', values.product_name);
-      formData.append('status', values.status);
-      formData.append('quantity', values.quantity.toString());
-      formData.append('store_price', values.store_price.replace(/,/g, ''));
       
+      // Append all text fields
+      Object.entries(values).forEach(([key, value]) => {
+        if (key !== 'image') {
+          if (key === 'store_price') {
+            formData.append(key, String(Number(value.replace(/,/g, ''))));
+          } else {
+            formData.append(key, String(value));
+          }
+        }
+      });
+      
+      // Append image if exists
       if (values.image?.[0]) {
         formData.append('image', values.image[0]);
       }
+
+      const endpoint = mode === 'add' 
+        ? `${API_URL}/api/product`
+        : `${API_URL}/api/product/${values.product_id}`;
 
       const response = await fetch(endpoint, {
         method: mode === 'add' ? 'POST' : 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
         },
-        body: formData,
+        body: formData
       });
 
       if (!response.ok) {
@@ -338,194 +352,156 @@ function ProductForm({ initialData, onSuccess, mode }: ProductFormProps) {
             {formMessage.message}
           </div>
         )}
-        
-        <div className="flex gap-6">
-          {/* Left Column - Image Management */}
-          <div className="w-1/3 space-y-4">
-            <div className="aspect-square rounded-lg border-2 border-dashed border-gray-200 flex flex-col items-center justify-center overflow-hidden">
-              {previewUrl ? (
-                <div className="relative w-full h-full">
-                  <img
-                    src={previewUrl}
-                    alt="Product preview"
-                    className="w-full h-full object-cover"
+        <FormField
+          control={form.control}
+          name="product_id"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Product ID</FormLabel>
+              <FormControl>
+                <Input {...field} disabled={mode === 'edit'} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="category"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Category</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="brand"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Brand</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="product_name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Product Name</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="status"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Status</FormLabel>
+              <FormControl>
+                <select 
+                  {...field}
+                  className="w-full p-2 border rounded"
+                >
+                  <option value="In Stock">In Stock</option>
+                  <option value="Out of Stock">Out of Stock</option>
+                </select>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="quantity"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Quantity</FormLabel>
+              <FormControl>
+                <Input 
+                  type="number" 
+                  {...field} 
+                  onChange={e => field.onChange(parseInt(e.target.value))}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="store_price"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Store Price</FormLabel>
+              <FormControl>
+                <Input
+                  {...field}
+                  type="text"
+                  placeholder="0.00"
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (/^[\d,]*\.?\d*$/.test(value) || value === '') {
+                      const plainNumber = value.replace(/,/g, '');
+                      if (plainNumber === '') {
+                        field.onChange('');
+                        return;
+                      }
+                      
+                      const number = parseFloat(plainNumber);
+                      if (!isNaN(number)) {
+                        const formattedValue = formatPrice(number);
+                        field.onChange(formattedValue);
+                      }
+                    }
+                  }}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="image"
+          render={({ field: { onChange, value, ...field } }) => (
+            <FormItem>
+              <FormLabel>Product Image</FormLabel>
+              <FormControl>
+                <div className="space-y-4">
+                  <Input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => onChange(e.target.files)}
+                    {...field}
                   />
-                  <Button
-                    type="button"
-                    variant="destructive"
-                    size="icon"
-                    className="absolute top-2 right-2"
-                    onClick={() => setPreviewUrl(null)}
-                  >
-                    <Trash className="h-4 w-4" />
-                  </Button>
+                  {initialData?.image_url && (
+                    <div className="w-32 h-32">
+                      <img
+                        src={initialData.image_url}
+                        alt="Current product"
+                        className="w-full h-full object-cover rounded-md"
+                      />
+                    </div>
+                  )}
                 </div>
-              ) : (
-                <div className="text-center">
-                  <ImagePlus className="mx-auto h-12 w-12 text-gray-400" />
-                  <div className="mt-2">No image selected</div>
-                </div>
-              )}
-            </div>
-            
-            <FormField
-              control={form.control}
-              name="image"
-              render={({ field: { value, onChange, ...field } }) => (
-                <FormItem>
-                  <FormLabel>Product Image</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => {
-                        onChange(e.target.files);
-                        handleImageChange(e);
-                      }}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-
-          {/* Separator */}
-          <Separator orientation="vertical" className="h-auto" />
-
-          {/* Right Column - Product Details */}
-          <div className="flex-1 space-y-4">
-            <FormField
-              control={form.control}
-              name="product_id"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Product ID</FormLabel>
-                  <FormControl>
-                    <Input {...field} disabled={mode === 'edit'} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            <FormField
-              control={form.control}
-              name="category"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Category</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            <FormField
-              control={form.control}
-              name="brand"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Brand</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            <FormField
-              control={form.control}
-              name="product_name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Product Name</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            <FormField
-              control={form.control}
-              name="status"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Status</FormLabel>
-                  <FormControl>
-                    <select 
-                      {...field}
-                      className="w-full p-2 border rounded-md"
-                    >
-                      <option value="In Stock">In Stock</option>
-                      <option value="Out of Stock">Out of Stock</option>
-                    </select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            <FormField
-              control={form.control}
-              name="quantity"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Quantity</FormLabel>
-                  <FormControl>
-                    <Input 
-                      type="number" 
-                      {...field} 
-                      onChange={e => field.onChange(parseInt(e.target.value))}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            <FormField
-              control={form.control}
-              name="store_price"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Store Price</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      type="text"
-                      placeholder="0.00"
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        if (/^[\d,]*\.?\d*$/.test(value) || value === '') {
-                          const plainNumber = value.replace(/,/g, '');
-                          if (plainNumber === '') {
-                            field.onChange('');
-                            return;
-                          }
-                          
-                          const number = parseFloat(plainNumber);
-                          if (!isNaN(number)) {
-                            const formattedValue = formatPrice(number);
-                            field.onChange(formattedValue);
-                          }
-                        }
-                      }}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-        </div>
-
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <DialogFooter>
           <Button type="submit" disabled={formMessage?.type === 'success'}>
             {mode === 'add' ? 'Add Product' : 'Update Product'}
@@ -533,7 +509,7 @@ function ProductForm({ initialData, onSuccess, mode }: ProductFormProps) {
         </DialogFooter>
       </form>
     </Form>
-  );
+  )
 }
 
 export function Inventory() {
