@@ -135,20 +135,22 @@ export default function Search() {
   return (
     <>
       {/* Desktop View */}
-      <div className="hidden md:flex gap-4">
+      <div className="hidden md:flex gap-4 p-4">
         <FilterCard />
-        <div className="flex flex-col w-full justify-between gap-4">
-          <div className="mb-4">
+        <div className="flex-1">
+          <div>
             <h1>
               Results for: <span className="font-bold">{searchQuery}</span>
             </h1>
           </div>
-          <ProductList 
-            searchQuery={searchQuery}
-            selectedCategories={selectedCategories.length > 0 ? selectedCategories : undefined}
-            priceRange={priceRange ? [0, priceRange[0]] : undefined}
-            sortBy={sortBy}
-          />
+          <div className="mt-4">
+            <ProductList 
+              searchQuery={searchQuery}
+              selectedCategories={selectedCategories.length > 0 ? selectedCategories : undefined}
+              priceRange={priceRange ? [0, priceRange[0]] : undefined}
+              sortBy={sortBy}
+            />
+          </div>
         </div>
       </div>
       {/* Mobile View with Tabs */}
