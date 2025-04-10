@@ -186,25 +186,23 @@ function Home() {
         <h1 className="text-4xl font-bold mt-10 text-center">
           Check our latest product in the store!
         </h1>
-        {/* Updated scrollable container for Product Cards */}
-        <div className="w-full max-w-[90vw] relative mt-8">
-          <div className="overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-primary scrollbar-track-secondary">
-            <div className="flex gap-4 min-w-max px-4">
-              {loading ? (
-                <div className="flex items-center justify-center w-full py-8">
-                  Loading products...
-                </div>
-              ) : products.length > 0 ? (
-                products.map((product) => (
-                  <ProductCard key={product.product_id} product={product} />
-                ))
-              ) : (
-                <div className="flex items-center justify-center w-full py-8">
-                  No products available
-                </div>
-              )}
+        {/* Responsive grid container for Product Cards */}
+        <div className="w-full max-w-[90vw] mt-8">
+          {loading ? (
+            <div className="flex items-center justify-center w-full py-8">
+              Loading products...
             </div>
-          </div>
+          ) : products.length > 0 ? (
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3 sm:gap-4">
+              {products.map((product) => (
+                <ProductCard key={product.product_id} product={product} />
+              ))}
+            </div>
+          ) : (
+            <div className="flex items-center justify-center w-full py-8">
+              No products available
+            </div>
+          )}
         </div>
         <Button
           className="text-xl p-5 m-6"

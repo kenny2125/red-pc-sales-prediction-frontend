@@ -127,7 +127,7 @@ export default function Search() {
 
   // Extracted FilterCard component for reuse
   const FilterCard = () => (
-    <Card className="flex flex-col mt-13 w-fit h-fit p-4 rounded-lg justify-center align-top gap-4">
+    <Card className="flex flex-col w-fit h-fit p-4 rounded-lg justify-center align-top gap-4">
       <h2 className="text-xl font-bold">Filters</h2>
       {/* Computer Parts */}
       <div>
@@ -206,7 +206,7 @@ export default function Search() {
                     <p className="text-lg text-gray-500">No products found matching your criteria</p>
                   </div>
                 ) : (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                  <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3 sm:gap-4">
                     {filteredProducts.map((product) => (
                       <ProductCard key={product.product_id} product={product} />
                     ))}
@@ -251,7 +251,7 @@ export default function Search() {
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-2 gap-4">
                   {filteredProducts.length === 0 ? (
                     <div className="text-center py-8 col-span-full">
                       <p className="text-lg text-gray-500">No products found matching your criteria</p>

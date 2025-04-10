@@ -47,10 +47,10 @@ function ProductCard({ product }: ProductCardProps) {
 
   return (
     <Card 
-      className="w-full max-w-[280px] flex flex-col justify-between h-full cursor-pointer transition-all hover:shadow-lg hover:scale-[1.02] active:scale-100"
+      className="w-full sm:max-w-[200px] md:max-w-[220px] lg:max-w-[240px] xl:max-w-[260px] flex flex-col justify-between h-full cursor-pointer transition-all hover:shadow-lg hover:scale-[1.02] active:scale-100"
       onClick={handleCardClick}
     >
-      <CardContent className="p-4 flex flex-col gap-4">
+      <CardContent className="p-3 sm:p-4 flex flex-col gap-3 sm:gap-4">
         <div className="aspect-square w-full relative bg-background/50 flex items-center justify-center">
           <img 
             src={imageError ? defaultImage : product.image_url} 
@@ -59,12 +59,12 @@ function ProductCard({ product }: ProductCardProps) {
             onError={() => setImageError(true)}
           />
         </div>
-        <div className='space-y-2'>
-          <p className="text-sm text-muted-foreground text-center">{product.brand}</p>
-          <h3 className='font-medium text-sm sm:text-base min-h-[2.5rem] line-clamp-2 text-center'>
+        <div className='space-y-1.5 sm:space-y-2'>
+          <p className="text-xs sm:text-sm text-muted-foreground text-center">{product.brand}</p>
+          <h3 className='font-medium text-xs sm:text-sm md:text-base min-h-[2.5rem] line-clamp-2 text-center'>
             {product.product_name}
           </h3>
-          <p className='text-lg sm:text-xl md:text-2xl font-bold text-center text-primary'>
+          <p className='text-base sm:text-lg md:text-xl font-bold text-center text-primary'>
             {formattedPrice}
           </p>
         </div>
