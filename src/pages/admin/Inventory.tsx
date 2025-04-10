@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import * as React from "react";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -12,11 +12,11 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-} from "@tanstack/react-table"
-import { ArrowUpDown, ChevronDown, MoreHorizontal, Plus } from "lucide-react"
-import { Boxes } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+} from "@tanstack/react-table";
+import { ArrowUpDown, ChevronDown, MoreHorizontal, Plus } from "lucide-react";
+import { Boxes } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -24,7 +24,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
+} from "@/components/ui/table";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -33,7 +33,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 import {
   Dialog,
   DialogContent,
@@ -42,7 +42,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
+} from "@/components/ui/dialog";
 import {
   Form,
   FormControl,
@@ -50,33 +50,33 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import * as z from "zod"
-import { useNavigate } from "react-router-dom"
+} from "@/components/ui/form";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { useNavigate } from "react-router-dom";
 
 export type Inventory = {
-  product_id: string
-  category: string
-  brand: string
-  product_name: string
-  status: "In Stock" | "Out of Stock" 
-  quantity: number
-  store_price: number
-  image_url?: string
-}
+  product_id: string;
+  category: string;
+  brand: string;
+  product_name: string;
+  status: "In Stock" | "Out of Stock";
+  quantity: number;
+  store_price: number;
+  image_url?: string;
+};
 
 type FormData = {
-  product_id: string
-  category: string
-  brand: string
-  product_name: string
-  status: "In Stock" | "Out of Stock"
-  quantity: number
-  store_price: string // Store as string in form, transform to number on submit
-  image?: FileList
-}
+  product_id: string;
+  category: string;
+  brand: string;
+  product_name: string;
+  status: "In Stock" | "Out of Stock";
+  quantity: number;
+  store_price: string; // Store as string in form, transform to number on submit
+  image?: FileList;
+};
 
 const formSchema = z.object({
   product_id: z.string().min(2).max(20),
@@ -85,9 +85,8 @@ const formSchema = z.object({
   product_name: z.string().min(2).max(255),
   status: z.enum(["In Stock", "Out of Stock"]),
   quantity: z.coerce.number().min(0),
-  store_price: z.string()
-    .regex(/^[\d,]*\.?\d*$/, 'Invalid price format'),
-  image: z.instanceof(FileList).optional()
+  store_price: z.string().regex(/^[\d,]*\.?\d*$/, "Invalid price format"),
+  image: z.instanceof(FileList).optional(),
 });
 
 type FormSchema = z.infer<typeof formSchema>;
@@ -139,12 +138,12 @@ export const columns: ColumnDef<Inventory>[] = [
     accessorKey: "store_price",
     header: () => <div className="text-right">Amount</div>,
     cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("store_price"))
+      const amount = parseFloat(row.getValue("store_price"));
       const formatted = new Intl.NumberFormat("en-PH", {
         style: "currency",
         currency: "PHP",
-      }).format(amount)
-      return <div className="text-right font-medium">{formatted}</div>
+      }).format(amount);
+      return <div className="text-right font-medium">{formatted}</div>;
     },
   },
   {
@@ -153,9 +152,9 @@ export const columns: ColumnDef<Inventory>[] = [
     cell: ({ row }) => {
       const imageUrl = row.getValue("image_url") as string;
       return imageUrl ? (
-        <img 
-          src={imageUrl} 
-          alt={row.getValue("product_name")} 
+        <img
+          src={imageUrl}
+          alt={row.getValue("product_name")}
           className="w-16 h-16 object-cover rounded-md"
         />
       ) : (
@@ -168,30 +167,37 @@ export const columns: ColumnDef<Inventory>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
-      const product = row.original
-      const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false)
-      const [isEditDialogOpen, setIsEditDialogOpen] = React.useState(false)
+      const product = row.original;
+      const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false);
+      const [isEditDialogOpen, setIsEditDialogOpen] = React.useState(false);
+      const [isDeleting, setIsDeleting] = React.useState(false);
       const navigate = useNavigate();
 
       const handleDelete = async () => {
         try {
-          const token = localStorage.getItem('token');
-          const response = await fetch(`${import.meta.env.VITE_API_URL}/api/product/${product.product_id}`, {
-            method: 'DELETE',
-            headers: {
-              'Authorization': `Bearer ${token}`
+          setIsDeleting(true);
+          const token = localStorage.getItem("token");
+          const response = await fetch(
+            `${import.meta.env.VITE_API_URL}/api/product/${product.product_id}`,
+            {
+              method: "DELETE",
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
             }
-          });
+          );
 
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
           }
 
-          navigate('/inventory');
+          navigate("/inventory");
         } catch (error) {
-          console.error('Failed to delete product:', error);
+          console.error("Failed to delete product:", error);
+        } finally {
+          setIsDeleting(false);
         }
-      }
+      };
 
       return (
         <>
@@ -208,28 +214,49 @@ export const columns: ColumnDef<Inventory>[] = [
                 Edit Product
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem 
+              <DropdownMenuItem
                 onClick={() => setIsDeleteDialogOpen(true)}
-                className="text-red-600">
+                className="text-red-600"
+              >
                 Delete Product
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+          <Dialog
+            open={isDeleteDialogOpen}
+            onOpenChange={setIsDeleteDialogOpen}
+          >
             <DialogContent>
               <DialogHeader>
                 <DialogTitle>Delete Product</DialogTitle>
                 <DialogDescription>
-                  Are you sure you want to delete {product.product_name}? This action cannot be undone.
+                  Are you sure you want to delete {product.product_name}? This
+                  action cannot be undone.
                 </DialogDescription>
               </DialogHeader>
               <DialogFooter>
-                <Button variant="outline" onClick={() => setIsDeleteDialogOpen(false)}>
+                <Button
+                  variant="outline"
+                  onClick={() => setIsDeleteDialogOpen(false)}
+                  disabled={isDeleting}
+                >
                   Cancel
                 </Button>
-                <Button variant="destructive" onClick={handleDelete}>
-                  Delete
+                <Button 
+                  variant="destructive" 
+                  onClick={handleDelete}
+                  disabled={isDeleting}
+                  className="relative"
+                >
+                  {isDeleting && (
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    </div>
+                  )}
+                  <span className={isDeleting ? "opacity-0" : "opacity-100"}>
+                    Delete
+                  </span>
                 </Button>
               </DialogFooter>
             </DialogContent>
@@ -240,34 +267,38 @@ export const columns: ColumnDef<Inventory>[] = [
               <DialogHeader>
                 <DialogTitle>Edit Product</DialogTitle>
               </DialogHeader>
-              <ProductForm 
-                initialData={product} 
-                onSuccess={() => setIsEditDialogOpen(false)} 
-                mode="edit" 
+              <ProductForm
+                initialData={product}
+                onSuccess={() => setIsEditDialogOpen(false)}
+                mode="edit"
               />
             </DialogContent>
           </Dialog>
         </>
-      )
+      );
     },
   },
-]
+];
 
 interface ProductFormProps {
-  initialData?: Inventory
-  onSuccess?: () => void
-  mode: 'add' | 'edit'
+  initialData?: Inventory;
+  onSuccess?: () => void;
+  mode: "add" | "edit";
 }
 
 function ProductForm({ initialData, onSuccess, mode }: ProductFormProps) {
   const navigate = useNavigate();
-  const [formMessage, setFormMessage] = React.useState<{ type: 'success' | 'error', message: string } | null>(null);
+  const [formMessage, setFormMessage] = React.useState<{
+    type: "success" | "error";
+    message: string;
+  } | null>(null);
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
 
   const formatPrice = (price: number | string): string => {
-    if (typeof price === 'string') {
+    if (typeof price === "string") {
       return price;
     }
-    return price.toLocaleString('en-US', {
+    return price.toLocaleString("en-US", {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     });
@@ -275,51 +306,58 @@ function ProductForm({ initialData, onSuccess, mode }: ProductFormProps) {
 
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
-    defaultValues: initialData ? {
-      ...initialData,
-      store_price: formatPrice(initialData.store_price)
-    } : {
-      product_id: '',
-      category: '',
-      brand: '',
-      product_name: '',
-      status: 'In Stock',
-      quantity: 0,
-      store_price: ''
-    },
+    defaultValues: initialData
+      ? {
+          ...initialData,
+          store_price: formatPrice(initialData.store_price),
+        }
+      : {
+          product_id: "",
+          category: "",
+          brand: "",
+          product_name: "",
+          status: "In Stock",
+          quantity: 0,
+          store_price: "",
+        },
   });
 
   async function onSubmit(values: FormSchema) {
     try {
-      const token = localStorage.getItem('token');
+      setIsSubmitting(true);
+      const token = localStorage.getItem("token");
       const formData = new FormData();
-      
+
       // Append all text fields
       Object.entries(values).forEach(([key, value]) => {
-        if (key !== 'image') {
-          if (key === 'store_price' && typeof value === 'string') {
-            formData.append(key, String(Number(value.replace(/,/g, ''))));
+        if (key !== "image") {
+          if (key === "store_price" && typeof value === "string") {
+            formData.append(key, String(Number(value.replace(/,/g, ""))));
           } else {
             formData.append(key, String(value));
           }
         }
       });
-      
-      // Append image if exists
+
+      // Only append image if a new one is selected, otherwise the existing image URL will be preserved
       if (values.image?.[0]) {
-        formData.append('image', values.image[0]);
+        formData.append("image", values.image[0]);
+      } else if (mode === "edit") {
+        // If we're editing and no new image was selected, send the existing image URL
+        formData.append("image_url", initialData?.image_url || "");
       }
 
-      const endpoint = mode === 'add' 
-        ? `${import.meta.env.VITE_API_URL}/api/product`
-        : `${import.meta.env.VITE_API_URL}/api/product/${values.product_id}`;
+      const endpoint =
+        mode === "add"
+          ? `${import.meta.env.VITE_API_URL}/api/product`
+          : `${import.meta.env.VITE_API_URL}/api/product/${values.product_id}`;
 
       const response = await fetch(endpoint, {
-        method: mode === 'add' ? 'POST' : 'PUT',
+        method: mode === "add" ? "POST" : "PUT",
         headers: {
-          'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
-        body: formData
+        body: formData,
       });
 
       if (!response.ok) {
@@ -327,19 +365,24 @@ function ProductForm({ initialData, onSuccess, mode }: ProductFormProps) {
       }
 
       setFormMessage({
-        type: 'success',
-        message: mode === 'add' ? 'Product added successfully!' : 'Product updated successfully!'
+        type: "success",
+        message:
+          mode === "add"
+            ? "Product added successfully!"
+            : "Product updated successfully!",
       });
-      
+
       setTimeout(() => {
         onSuccess?.();
-        navigate('/inventory');
+        navigate("/inventory");
       }, 1500);
     } catch (error) {
       setFormMessage({
-        type: 'error',
-        message: `Failed to ${mode} product. Please try again.`
+        type: "error",
+        message: `Failed to ${mode} product. Please try again.`,
       });
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
@@ -347,9 +390,13 @@ function ProductForm({ initialData, onSuccess, mode }: ProductFormProps) {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         {formMessage && (
-          <div className={`p-4 mb-4 rounded-md ${
-            formMessage.type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
-          }`}>
+          <div
+            className={`p-4 mb-4 rounded-md ${
+              formMessage.type === "success"
+                ? "bg-green-100 text-green-700"
+                : "bg-red-100 text-red-700"
+            }`}
+          >
             {formMessage.message}
           </div>
         )}
@@ -360,7 +407,7 @@ function ProductForm({ initialData, onSuccess, mode }: ProductFormProps) {
             <FormItem>
               <FormLabel>Product ID</FormLabel>
               <FormControl>
-                <Input {...field} disabled={mode === 'edit'} />
+                <Input {...field} disabled={mode === "edit"} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -412,10 +459,7 @@ function ProductForm({ initialData, onSuccess, mode }: ProductFormProps) {
             <FormItem>
               <FormLabel>Status</FormLabel>
               <FormControl>
-                <select 
-                  {...field}
-                  className="w-full p-2 border rounded"
-                >
+                <select {...field} className="w-full p-2 border rounded">
                   <option value="In Stock">In Stock</option>
                   <option value="Out of Stock">Out of Stock</option>
                 </select>
@@ -431,10 +475,10 @@ function ProductForm({ initialData, onSuccess, mode }: ProductFormProps) {
             <FormItem>
               <FormLabel>Quantity</FormLabel>
               <FormControl>
-                <Input 
-                  type="number" 
-                  {...field} 
-                  onChange={e => field.onChange(parseInt(e.target.value))}
+                <Input
+                  type="number"
+                  {...field}
+                  onChange={(e) => field.onChange(parseInt(e.target.value))}
                 />
               </FormControl>
               <FormMessage />
@@ -454,13 +498,13 @@ function ProductForm({ initialData, onSuccess, mode }: ProductFormProps) {
                   placeholder="0.00"
                   onChange={(e) => {
                     const value = e.target.value;
-                    if (/^[\d,]*\.?\d*$/.test(value) || value === '') {
-                      const plainNumber = value.replace(/,/g, '');
-                      if (plainNumber === '') {
-                        field.onChange('');
+                    if (/^[\d,]*\.?\d*$/.test(value) || value === "") {
+                      const plainNumber = value.replace(/,/g, "");
+                      if (plainNumber === "") {
+                        field.onChange("");
                         return;
                       }
-                      
+
                       const number = parseFloat(plainNumber);
                       if (!isNaN(number)) {
                         const formattedValue = formatPrice(number);
@@ -504,44 +548,61 @@ function ProductForm({ initialData, onSuccess, mode }: ProductFormProps) {
           )}
         />
         <DialogFooter>
-          <Button type="submit" disabled={formMessage?.type === 'success'}>
-            {mode === 'add' ? 'Add Product' : 'Update Product'}
+          <Button 
+            type="submit" 
+            disabled={isSubmitting || formMessage?.type === "success"}
+            className="relative"
+          >
+            {isSubmitting && (
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+              </div>
+            )}
+            <span className={isSubmitting ? "opacity-0" : "opacity-100"}>
+              {mode === "add" ? "Add Product" : "Update Product"}
+            </span>
           </Button>
         </DialogFooter>
       </form>
     </Form>
-  )
+  );
 }
 
 export function Inventory() {
   const navigate = useNavigate();
-  const [sorting, setSorting] = React.useState<SortingState>([])
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
-  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
-  const [rowSelection, setRowSelection] = React.useState({})
-  const [data, setData] = React.useState<Inventory[]>([])
-  const [error, setError] = React.useState<string | null>(null)
-  const [isAddDialogOpen, setIsAddDialogOpen] = React.useState(false)
-  
+  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    []
+  );
+  const [columnVisibility, setColumnVisibility] =
+    React.useState<VisibilityState>({});
+  const [rowSelection, setRowSelection] = React.useState({});
+  const [data, setData] = React.useState<Inventory[]>([]);
+  const [error, setError] = React.useState<string | null>(null);
+  const [isAddDialogOpen, setIsAddDialogOpen] = React.useState(false);
+
   React.useEffect(() => {
     const fetchData = async () => {
       try {
-        const token = localStorage.getItem('token');
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/product`, {
-          headers: {
-            'Authorization': `Bearer ${token}`
+        const token = localStorage.getItem("token");
+        const response = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/product`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           }
-        });
+        );
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const result = await response.json();
         setData(result);
       } catch (error) {
-        console.error('Failed to fetch products:', error);
-        setError('Failed to fetch products. Please try again.');
+        console.error("Failed to fetch products:", error);
+        setError("Failed to fetch products. Please try again.");
       }
-    }
+    };
     fetchData();
   }, []);
 
@@ -562,7 +623,7 @@ export function Inventory() {
       columnVisibility,
       rowSelection,
     },
-  })
+  });
 
   return (
     <div className="w-full">
@@ -588,14 +649,22 @@ export function Inventory() {
               <DialogHeader>
                 <DialogTitle>Add New Product</DialogTitle>
               </DialogHeader>
-              <ProductForm mode="add" onSuccess={() => setIsAddDialogOpen(false)} />
+              <ProductForm
+                mode="add"
+                onSuccess={() => setIsAddDialogOpen(false)}
+              />
             </DialogContent>
           </Dialog>
           <Input
             placeholder="Search products..."
-            value={(table.getColumn("product_name")?.getFilterValue() as string) ?? ""}
+            value={
+              (table.getColumn("product_name")?.getFilterValue() as string) ??
+              ""
+            }
             onChange={(event) =>
-              table.getColumn("product_name")?.setFilterValue(event.target.value)
+              table
+                .getColumn("product_name")
+                ?.setFilterValue(event.target.value)
             }
             className="max-w-sm"
           />
@@ -622,7 +691,7 @@ export function Inventory() {
                     >
                       {column.id}
                     </DropdownMenuCheckboxItem>
-                  )
+                  );
                 })}
             </DropdownMenuContent>
           </DropdownMenu>
@@ -644,7 +713,7 @@ export function Inventory() {
                             header.getContext()
                           )}
                     </TableHead>
-                  )
+                  );
                 })}
               </TableRow>
             ))}
@@ -658,14 +727,20 @@ export function Inventory() {
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
                     </TableCell>
                   ))}
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={columns.length} className="h-24 text-center">
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
                   No results.
                 </TableCell>
               </TableRow>
@@ -694,7 +769,7 @@ export function Inventory() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 export default Inventory;

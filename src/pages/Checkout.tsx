@@ -49,6 +49,7 @@ const invoices = [
 const Checkout = () => {
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const [isOrderSuccessful, setIsOrderSuccessful] = useState<boolean>(false);
+  const [isProcessing, setIsProcessing] = useState(false);
   const [quantities, setQuantities] = useState(
     invoices.reduce((acc, invoice) => {
       acc[invoice.id] = invoice.quantity;
@@ -56,9 +57,16 @@ const Checkout = () => {
     }, {} as Record<number, number>)
   );
 
-  function payment() {
-    setIsOrderSuccessful(true);
-    setDialogOpen(true);
+  async function payment() {
+    setIsProcessing(true);
+    try {
+      // Simulate payment processing
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      setIsOrderSuccessful(true);
+      setDialogOpen(true);
+    } finally {
+      setIsProcessing(false);
+    }
   }
 
   const getTotal = () => {
@@ -172,8 +180,19 @@ const Checkout = () => {
               ₱{getTotal().toLocaleString()}
             </div>
           </div>
-          <Button onClick={payment} className="mt-6 w-full">
-            Place Order
+          <Button 
+            onClick={payment} 
+            className="mt-6 w-full relative" 
+            disabled={isProcessing}
+          >
+            {isProcessing && (
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+              </div>
+            )}
+            <span className={isProcessing ? "opacity-0" : "opacity-100"}>
+              Place Order
+            </span>
           </Button>
         </div>
       </div>
