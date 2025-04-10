@@ -55,8 +55,6 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
 
-const API_URL = import.meta.env.VITE_API_URL;
-
 export type Inventory = {
   product_id: string
   category: string
@@ -176,7 +174,7 @@ export const columns: ColumnDef<Inventory>[] = [
       const handleDelete = async () => {
         try {
           const token = localStorage.getItem('token');
-          const response = await fetch(`${API_URL}/api/product/${product.product_id}`, {
+          const response = await fetch(`${import.meta.env.VITE_API_URL}/api/product/${product.product_id}`, {
             method: 'DELETE',
             headers: {
               'Authorization': `Bearer ${token}`
@@ -310,8 +308,8 @@ function ProductForm({ initialData, onSuccess, mode }: ProductFormProps) {
       }
 
       const endpoint = mode === 'add' 
-        ? `${API_URL}/api/product`
-        : `${API_URL}/api/product/${values.product_id}`;
+        ? `${import.meta.env.VITE_API_URL}/api/product`
+        : `${import.meta.env.VITE_API_URL}/api/product/${values.product_id}`;
 
       const response = await fetch(endpoint, {
         method: mode === 'add' ? 'POST' : 'PUT',
@@ -525,7 +523,7 @@ export function Inventory() {
     const fetchData = async () => {
       try {
         const token = localStorage.getItem('token');
-        const response = await fetch(`${API_URL}/api/product`, {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/product`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }

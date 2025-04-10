@@ -27,7 +27,7 @@ export default function ProductList({ searchQuery, selectedCategories, priceRang
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch('http://localhost:3000/api/product');
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/product`);
         if (!response.ok) {
           throw new Error('Failed to fetch products');
         }

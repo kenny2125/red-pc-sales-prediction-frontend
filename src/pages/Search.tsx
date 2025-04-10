@@ -37,7 +37,7 @@ export default function Search() {
     // Fetch available categories from products
     const fetchCategories = async () => {
       try {
-        const response = await fetch('http://localhost:3000/api/product');
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/product`);
         if (!response.ok) throw new Error('Failed to fetch products');
         const products = await response.json() as Product[];
         
