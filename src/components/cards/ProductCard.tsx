@@ -12,6 +12,7 @@ interface ProductCardProps {
     image_url: string;
     product_name: string;
     store_price: number;
+    brand: string;
   }
 }
 
@@ -24,7 +25,7 @@ function ProductCard({ product }: ProductCardProps) {
   function handleCardClick() {
     navigate(`/product?id=${product.product_id}`);
   }
-
+  
   function handleActionClick(e: React.MouseEvent) {
     e.stopPropagation();
     if (currentUser?.role === 'admin') {
@@ -59,6 +60,7 @@ function ProductCard({ product }: ProductCardProps) {
           />
         </div>
         <div className='space-y-2'>
+          <p className="text-sm text-muted-foreground text-center">{product.brand}</p>
           <h3 className='font-medium text-sm sm:text-base min-h-[2.5rem] line-clamp-2 text-center'>
             {product.product_name}
           </h3>
