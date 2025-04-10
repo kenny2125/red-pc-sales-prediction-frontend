@@ -1,4 +1,5 @@
 import { ThemeProvider } from "./components/theme-provider";
+import { Toaster } from "sonner";
 import { UserProvider } from "./contexts/UserContext";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
@@ -31,6 +32,8 @@ const App: React.FC = () => (
   <UserProvider>
     <BrowserRouter>
       <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+        {/* Add Sonner Toaster */}
+        <Toaster position="top-center" richColors />
         <div className="sm:px-[175px] md:px-[100px] lg:px-[175px]  ">
           <Header />
 

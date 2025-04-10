@@ -9,14 +9,12 @@ import { ModeToggle } from "./ui/mode-toggle";
 import { LogInDialog } from "./dialogs/LogInDialog";
 import Logo from "./Logo";
 import { useUser } from "@/contexts/UserContext";
-import { Outlet, Link, useNavigate } from "react-router-dom";
+import { Outlet, Link } from "react-router-dom";
 
 export default function Header() {
-  const navigate = useNavigate();
   const { currentUser, isLoggedIn } = useUser();
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
 
   const getGreeting = () => {
     const hour = new Date().getHours();
@@ -25,11 +23,21 @@ export default function Header() {
     return "Good Evening";
   };
 
-  function handleSearch(e: React.FormEvent) {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      navigate(`/search?query=${encodeURIComponent(searchQuery.trim())}`);
-      setSearchQuery("");
+  function productSearch() {
+    try {
+      // Try mobile input first; fallback to desktop input
+      const mobileInput = document.getElementById("mobile-search-input") as HTMLInputElement;
+      const desktopInput = document.querySelector('input[type="email"]') as HTMLInputElement;
+      const searchValue =
+        (mobileInput && mobileInput.value.trim()) ||
+        (desktopInput && desktopInput.value.trim());
+      if (searchValue) {
+        window.location.href = `/search?query=${encodeURIComponent(searchValue)}`;
+      } else {
+        alert("Please enter a product name to search.");
+      }
+    } catch (error) {
+      console.error("Error during product search:", error);
     }
   }
 
@@ -113,17 +121,12 @@ export default function Header() {
               <Logo />
             </div>
             <div className="flex flex-1 justify-center">
-              <form onSubmit={handleSearch} className="flex w-[520px] h-[53px] items-center gap-2">
-                <Input 
-                  type="text" 
-                  placeholder="Search" 
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-                <Button type="submit">
+              <div className="flex w-[520px] h-[53px] items-center gap-2">
+                <Input type="email" placeholder="Search" />
+                <Button type="submit" onClick={productSearch}>
                   <Search /> <span>Search</span>
                 </Button>
-              </form>
+              </div>
             </div>
             <div>
               {isLoggedIn ? (
@@ -161,17 +164,12 @@ export default function Header() {
             {/* Second row: search input, shown when toggled */}
             {mobileSearchOpen && (
               <div className="px-4 pb-2">
-                <form onSubmit={handleSearch} className="flex gap-2">
-                  <Input 
-                    type="text" 
-                    placeholder="Search" 
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                  />
-                  <Button type="submit">
+                <div className="flex gap-2">
+                  <Input id="mobile-search-input" type="email" placeholder="Search" />
+                  <Button type="submit" onClick={productSearch}>
                     <Search /> <span>Search</span>
                   </Button>
-                </form>
+                </div>
               </div>
             )}
           </div>

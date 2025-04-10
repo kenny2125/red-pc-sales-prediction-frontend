@@ -1,10 +1,11 @@
-import React, { useState } from 'react'
+import React, { useState, useCallback } from 'react'
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { useNavigate } from 'react-router-dom'
 import { Button } from "@/components/ui/button"
 import { ShoppingCart, Eye, Trash2 } from 'lucide-react'
 import defaultImage from '@/assets/redpcph.png'
 import { useUser } from "@/contexts/UserContext"
+import { toast } from "sonner"
 
 interface ProductCardProps {
   product: {
@@ -19,6 +20,7 @@ interface ProductCardProps {
 function ProductCard({ product }: ProductCardProps) {
   const navigate = useNavigate();
   const [isInCart, setIsInCart] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [imageError, setImageError] = useState(false);
   const { currentUser } = useUser();
   
@@ -26,16 +28,63 @@ function ProductCard({ product }: ProductCardProps) {
     navigate(`/product?id=${product.product_id}`);
   }
   
-  function handleActionClick(e: React.MouseEvent) {
+  const handleActionClick = useCallback(async (e: React.MouseEvent) => {
     e.stopPropagation();
+    
     if (currentUser?.role === 'admin') {
       // Handle view action for admin
       navigate(`/product?id=${product.product_id}`);
-    } else {
-      // Handle cart action for other users
-      setIsInCart(!isInCart);
+      return;
     }
-  }
+
+    if (!currentUser) {
+      toast.error("Please log in to add items to your cart");
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+
+      if (isInCart) {
+        // Remove from cart
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/cart/remove/${product.product_id}`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (!response.ok) throw new Error('Failed to remove from cart');
+        
+        toast.success("Item removed from cart");
+        setIsInCart(false);
+      } else {
+        // Add to cart
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/cart/add`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            product_id: product.product_id,
+            quantity: 1
+          })
+        });
+
+        if (!response.ok) throw new Error('Failed to add to cart');
+        
+        toast.success("Item added to cart");
+        setIsInCart(true);
+      }
+    } catch (error) {
+      console.error('Cart operation failed:', error);
+      toast.error("Failed to update cart. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  }, [currentUser, isInCart, navigate, product.product_id]);
 
   // Format price using Intl.NumberFormat for consistent formatting
   const formattedPrice = new Intl.NumberFormat('en-PH', {
@@ -74,6 +123,7 @@ function ProductCard({ product }: ProductCardProps) {
           variant={isInCart ? "destructive" : "default"} 
           size="sm" 
           onClick={handleActionClick}
+          disabled={isLoading}
           className="w-full flex items-center justify-center gap-2"
         >
           {currentUser?.role === 'admin' ? (
