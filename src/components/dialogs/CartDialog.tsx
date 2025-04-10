@@ -101,6 +101,14 @@ export function CartDialog() {
   };
 
   const handleCheckout = () => {
+    // Filter cart items to only include selected ones
+    const selectedProducts = cartItems.filter(item => 
+      selectedItems.includes(item.product_id)
+    );
+    
+    // Store selected items in localStorage
+    localStorage.setItem('checkoutItems', JSON.stringify(selectedProducts));
+    
     setOpen(false);
     navigate('/checkout');
   };

@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { ShoppingCart } from "lucide-react";
+import { useNavigate, Navigate } from "react-router-dom";
+import { useUser } from "@/contexts/UserContext";
 import {
   Table,
   TableBody,
@@ -17,52 +19,130 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import ProductCard from "../components/cards/ProductCard";
 import { QuantityInput } from "@/components/ui/quantity-input";
 import CheckoutDialog from "../components/dialogs/CheckoutDialog";
 
-// Sample invoices data (in a real app this would come from a cart context/store)
-const invoices = [
-  {
-    id: 1,
-    productUrl: "",
-    productName: "GEFORCE RTX 4090 MSI GAMING TRIO 24GB GDDR6X TRIPLE FAN RGB",
-    quantity: 1,
-    price: 125000,
-  },
-  {
-    id: 2,
-    productUrl: "",
-    productName: "GEFORCE RTX 4090 MSI GAMING TRIO 24GB GDDR6X TRIPLE FAN RGB",
-    quantity: 1,
-    price: 125000,
-  },
-  {
-    id: 3,
-    productUrl: "",
-    productName: "GEFORCE RTX 4090 MSI GAMING TRIO 24GB GDDR6X TRIPLE FAN RGB",
-    quantity: 1,
-    price: 125000,
-  },
-];
+interface CartItem {
+  id: number;
+  product_id: string;
+  product_name: string;
+  quantity: number;
+  store_price: number;
+  image_url: string | null;
+}
+
+interface UserProfile {
+  id: string;
+  username: string;
+  email: string;
+  first_name: string;
+  last_name: string;
+  gender?: string;
+  address?: string;
+  phone?: string;
+  role: string;
+}
 
 const Checkout = () => {
+  const navigate = useNavigate();
+  const { currentUser } = useUser();
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const [isOrderSuccessful, setIsOrderSuccessful] = useState<boolean>(false);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [quantities, setQuantities] = useState(
-    invoices.reduce((acc, invoice) => {
-      acc[invoice.id] = invoice.quantity;
-      return acc;
-    }, {} as Record<number, number>)
-  );
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [paymentMethod, setPaymentMethod] = useState<string>("");
+  const [pickupMethod, setPickupMethod] = useState<string>("");
+
+  // If not logged in, redirect to home
+  if (!currentUser) {
+    return <Navigate to="/" />;
+  }
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) return;
+
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/profile`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          setUserProfile(data);
+        }
+      } catch (error) {
+        console.error('Error fetching user profile:', error);
+      }
+    };
+
+    fetchUserProfile();
+  }, []);
+
+  useEffect(() => {
+    const fetchCheckoutItems = () => {
+      try {
+        setLoading(true);
+        const savedItems = localStorage.getItem('checkoutItems');
+        
+        if (savedItems) {
+          const items = JSON.parse(savedItems);
+          setCartItems(items);
+          // Clear the items from localStorage after loading them
+          localStorage.removeItem('checkoutItems');
+        } else {
+          // If no items in localStorage, redirect back to home
+          // navigate('/');
+        }
+      } catch (error) {
+        console.error('Error loading checkout items:', error);
+        navigate('/');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCheckoutItems();
+  }, [navigate]);
 
   async function payment() {
+    if (!paymentMethod || !pickupMethod) {
+      alert("Please select both payment and pickup methods");
+      return;
+    }
+    
     setIsProcessing(true);
     try {
-      // Simulate payment processing
+      // TODO: Implement actual payment processing with API call
       await new Promise(resolve => setTimeout(resolve, 1500));
+
+      // Clear selected items from cart after successful payment
+      const token = localStorage.getItem('token');
+      if (token) {
+        // Remove the purchased items from the cart
+        for (const item of cartItems) {
+          await fetch(`${import.meta.env.VITE_API_URL}/api/cart/remove/${item.product_id}`, {
+            method: 'DELETE',
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+        }
+      }
+
+      // Clear checkout items from localStorage
+      localStorage.removeItem('checkoutItems');
+      
       setIsOrderSuccessful(true);
+      setDialogOpen(true);
+    } catch (error) {
+      console.error('Payment processing failed:', error);
+      setIsOrderSuccessful(false);
       setDialogOpen(true);
     } finally {
       setIsProcessing(false);
@@ -70,14 +150,18 @@ const Checkout = () => {
   }
 
   const getTotal = () => {
-    return invoices.reduce(
-      (sum, invoice) => sum + invoice.price * quantities[invoice.id],
+    return cartItems.reduce(
+      (sum, item) => sum + item.store_price * item.quantity,
       0
     );
   };
 
-  return (<>
-    <div className=" py-8 px-4">
+  if (loading || !userProfile) {
+    return <div className="flex justify-center items-center min-h-[60vh]">Loading checkout details...</div>;
+  }
+
+  return (
+    <div className="py-8 px-4">
       <div className="flex flex-row align-middle items-center gap-2 mb-4">
         <ShoppingCart size={30} className="text-primary" />
         <h1 className="text-2xl font-bold">Checkout</h1>
@@ -95,28 +179,25 @@ const Checkout = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {invoices.map((invoice) => (
-                <TableRow key={invoice.id} className="align-middle">
+              {cartItems.map((item) => (
+                <TableRow key={item.product_id} className="align-middle">
                   <TableCell className="hidden md:table-cell">
                     <img
-                      src="https://placehold.co/100"
-                      alt=""
-                      className="w-full"
+                      src={item.image_url || "https://placehold.co/100"}
+                      alt={item.product_name}
+                      className="w-[100px] h-[100px] object-cover"
                     />
                   </TableCell>
                   <TableCell className="font-medium">
                     <span className="md:inline line-clamp-2">
-                      {invoice.productName}
+                      {item.product_name}
                     </span>
                   </TableCell>
                   <TableCell className="text-center">
-                    {invoice.quantity}
+                    {item.quantity}
                   </TableCell>
                   <TableCell className="text-right">
-                    ₱
-                    {(
-                      invoice.price * quantities[invoice.id]
-                    ).toLocaleString()}
+                    ₱{(item.store_price * item.quantity).toLocaleString()}
                   </TableCell>
                 </TableRow>
               ))}
@@ -127,12 +208,12 @@ const Checkout = () => {
           <h1 className="text-lg font-semibold">Customer Information</h1>
           <div>
             <h1>Order# </h1>
-            <p></p>
+            <p>{new Date().getTime().toString().slice(-8)}</p>
           </div>
           <div className="flex flex-col md:flex-row gap-4 md:gap-12 justify-between">
             <div className="flex flex-row gap-2 items-center">
               <Label>Payment Method</Label>
-              <Select>
+              <Select onValueChange={setPaymentMethod} value={paymentMethod}>
                 <SelectTrigger className="w-full md:w-[200px]">
                   <SelectValue placeholder="Select a Payment Method" />
                 </SelectTrigger>
@@ -145,7 +226,7 @@ const Checkout = () => {
             </div>
             <div className="flex flex-row gap-2 items-center">
               <Label>Pickup Method</Label>
-              <Select>
+              <Select onValueChange={setPickupMethod} value={pickupMethod}>
                 <SelectTrigger className="w-full md:w-[200px]">
                   <SelectValue placeholder="Select a Pickup Method" />
                 </SelectTrigger>
@@ -159,17 +240,16 @@ const Checkout = () => {
           <div className="flex flex-col md:flex-row gap-4 md:gap-8 justify-between">
             <div className="flex flex-row gap-4">
               <h1 className="font-medium">Customer Name</h1>
-              <p>John Kenny Reyes</p>
+              <p>{userProfile.first_name} {userProfile.last_name}</p>
             </div>
-
             <div className="flex flex-row gap-4">
               <h1 className="font-medium">Contact Number</h1>
-              <p>09123456789</p>
+              <p>{userProfile.phone || "No phone number provided"}</p>
             </div>
           </div>
           <div>
             <h1 className="font-medium">Address</h1>
-            <p>Blk 1, Lot 2, San Bandangilid, Novaliches, Quezon City</p>
+            <p>{userProfile.address || "No address provided"}</p>
           </div>
           <div className="flex flex-row justify-between align-bottom mt-4">
             <div>
@@ -183,7 +263,7 @@ const Checkout = () => {
           <Button 
             onClick={payment} 
             className="mt-6 w-full relative" 
-            disabled={isProcessing}
+            disabled={isProcessing || cartItems.length === 0}
           >
             {isProcessing && (
               <div className="absolute inset-0 flex items-center justify-center">
@@ -201,9 +281,12 @@ const Checkout = () => {
         open={dialogOpen}
         onOpenChange={setDialogOpen}
         isSuccessful={isOrderSuccessful}
+        paymentMethod={paymentMethod}
+        pickupMethod={pickupMethod}
+        orderNumber={new Date().getTime().toString().slice(-8)}
+        total={getTotal()}
       />
     </div>
-    </>
   );
 };
 
