@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { Card } from "@/components/ui/card";
 import { useSearchParams } from "react-router-dom";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -27,6 +27,10 @@ export default function Search() {
   const [sortBy, setSortBy] = useState<string>("");
   const [activeTab, setActiveTab] = useState<"filters" | "results">("results");
   const [availableCategories, setAvailableCategories] = useState<string[]>([]);
+
+  const handlePriceChange = useCallback((value: number) => {
+    setPriceRange([value]);
+  }, []);
 
   useEffect(() => {
     const query = searchParams.get("query");
@@ -109,11 +113,11 @@ export default function Search() {
       <div>
         <h1>Maximum Price</h1>
         <Slider 
-          defaultValue={[maxPrice]}
+          min={0}
           max={maxPrice}
           step={1000}
-          value={priceRange}
-          onValueChange={(value) => setPriceRange(value as [number])}
+          value={priceRange[0]}
+          onChange={handlePriceChange}
         />
         <p className="text-sm mt-2">₱{priceRange[0].toLocaleString()}</p>
       </div>
