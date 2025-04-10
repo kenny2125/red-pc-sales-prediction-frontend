@@ -54,6 +54,7 @@ import {
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
+import { useNavigate } from "react-router-dom"
 
 export type Inventory = {
   product_id: string
@@ -170,6 +171,7 @@ export const columns: ColumnDef<Inventory>[] = [
       const product = row.original
       const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false)
       const [isEditDialogOpen, setIsEditDialogOpen] = React.useState(false)
+      const navigate = useNavigate();
 
       const handleDelete = async () => {
         try {
@@ -185,7 +187,7 @@ export const columns: ColumnDef<Inventory>[] = [
             throw new Error(`HTTP error! status: ${response.status}`);
           }
 
-          window.location.reload();
+          navigate('/inventory');
         } catch (error) {
           console.error('Failed to delete product:', error);
         }
@@ -258,6 +260,7 @@ interface ProductFormProps {
 }
 
 function ProductForm({ initialData, onSuccess, mode }: ProductFormProps) {
+  const navigate = useNavigate();
   const [formMessage, setFormMessage] = React.useState<{ type: 'success' | 'error', message: string } | null>(null);
 
   const formatPrice = (price: number | string): string => {
@@ -294,7 +297,7 @@ function ProductForm({ initialData, onSuccess, mode }: ProductFormProps) {
       // Append all text fields
       Object.entries(values).forEach(([key, value]) => {
         if (key !== 'image') {
-          if (key === 'store_price') {
+          if (key === 'store_price' && typeof value === 'string') {
             formData.append(key, String(Number(value.replace(/,/g, ''))));
           } else {
             formData.append(key, String(value));
@@ -330,7 +333,7 @@ function ProductForm({ initialData, onSuccess, mode }: ProductFormProps) {
       
       setTimeout(() => {
         onSuccess?.();
-        window.location.reload();
+        navigate('/inventory');
       }, 1500);
     } catch (error) {
       setFormMessage({
@@ -511,6 +514,7 @@ function ProductForm({ initialData, onSuccess, mode }: ProductFormProps) {
 }
 
 export function Inventory() {
+  const navigate = useNavigate();
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
