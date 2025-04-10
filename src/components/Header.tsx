@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
-import { Search } from "lucide-react";
+import { Search, LayoutDashboard, PackageSearch, TrendingUp, ScrollText, Menu } from "lucide-react";
 import { ProfileDialog } from "./dialogs/ProfileDialog";
 import { OrderDialog } from "./dialogs/OrderDialog";
 import { CartDialog } from "./dialogs/CartDialog";
@@ -14,6 +14,7 @@ import { Outlet, Link } from "react-router-dom";
 export default function Header() {
   const { currentUser, isLoggedIn } = useUser();
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   function productSearch() {
     try {
@@ -36,27 +37,63 @@ export default function Header() {
   return (
     <div className="w-full flex flex-col">
       {currentUser?.role == "admin" ? (
-        <div className="h-[8rem] inline-flex justify-between items-center">
-          <Logo />
-          <div className="inline-flex align-middle justify-center gap-12">
-            <Link to="/dashboard">Dashboard</Link>
-            <Link to="/inventory">Inventory</Link>
-            <Link to="/sales">Sales</Link>
-            <Link to="/orders">Orders</Link>
+        <div className="min-h-[4rem] lg:h-[8rem] flex flex-col lg:flex-row justify-between items-center w-full">
+          {/* Logo - Left */}
+          <div className="flex w-full lg:w-1/4 justify-between lg:justify-start items-center px-4 lg:px-0 py-2 lg:py-0">
+            <Logo />
+            <div className="flex items-center gap-2 lg:hidden">
+              <ProfileDialog />
+              <ModeToggle />
+              <Button variant="ghost" size="icon" onClick={() => setMobileMenuOpen(prev => !prev)}>
+                <Menu />
+              </Button>
+            </div>
           </div>
-          <div>
-            {isLoggedIn ? (
-              <>
-                <div className="inline-flex items-center gap-2">
-                  <OrderDialog />
-                  <ProfileDialog />
-                  <CartDialog />
-                  <ModeToggle />
-                </div>
-              </>
-            ) : (
-              <LogInDialog />
-            )}
+          
+          {/* Navigation Links - Center */}
+          <div className="hidden lg:flex items-center justify-center gap-12 flex-1">
+            <Link to="/dashboard" className="flex items-center gap-2 hover:text-primary transition-colors">
+              <LayoutDashboard className="w-5 h-5" />
+              <span>Dashboard</span>
+            </Link>
+            <Link to="/inventory" className="flex items-center gap-2 hover:text-primary transition-colors">
+              <PackageSearch className="w-5 h-5" />
+              <span>Inventory</span>
+            </Link>
+            <Link to="/sales" className="flex items-center gap-2 hover:text-primary transition-colors">
+              <TrendingUp className="w-5 h-5" />
+              <span>Sales</span>
+            </Link>
+            <Link to="/orders" className="flex items-center gap-2 hover:text-primary transition-colors">
+              <ScrollText className="w-5 h-5" />
+              <span>Orders</span>
+            </Link>
+          </div>
+
+          {/* User Controls - Right */}
+          <div className="hidden lg:flex items-center gap-2 w-1/4 justify-end">
+            <ProfileDialog />
+            <ModeToggle />
+          </div>
+
+          {/* Mobile Navigation */}
+          <div className={`lg:hidden w-full ${mobileMenuOpen ? 'flex' : 'hidden'} flex-col gap-2 px-4 py-2 bg-background border-t`}>
+            <Link to="/dashboard" className="flex items-center gap-2 hover:text-primary transition-colors py-2">
+              <LayoutDashboard className="w-5 h-5" />
+              <span>Dashboard</span>
+            </Link>
+            <Link to="/inventory" className="flex items-center gap-2 hover:text-primary transition-colors py-2">
+              <PackageSearch className="w-5 h-5" />
+              <span>Inventory</span>
+            </Link>
+            <Link to="/sales" className="flex items-center gap-2 hover:text-primary transition-colors py-2">
+              <TrendingUp className="w-5 h-5" />
+              <span>Sales</span>
+            </Link>
+            <Link to="/orders" className="flex items-center gap-2 hover:text-primary transition-colors py-2">
+              <ScrollText className="w-5 h-5" />
+              <span>Orders</span>
+            </Link>
           </div>
         </div>
       ) : (
