@@ -16,6 +16,13 @@ export default function Header() {
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return "Good Morning";
+    if (hour < 18) return "Good Afternoon";
+    return "Good Evening";
+  };
+
   function productSearch() {
     try {
       // Try mobile input first; fallback to desktop input
@@ -41,12 +48,18 @@ export default function Header() {
           {/* Logo - Left */}
           <div className="flex w-full lg:w-1/4 justify-between lg:justify-start items-center px-4 lg:px-0 py-2 lg:py-0">
             <Logo />
-            <div className="flex items-center gap-2 lg:hidden">
-              <ProfileDialog />
-              <ModeToggle />
-              <Button variant="ghost" size="icon" onClick={() => setMobileMenuOpen(prev => !prev)}>
-                <Menu />
-              </Button>
+            <div className="flex items-center gap-1 lg:hidden">
+              <div className="text-primary text-sm flex flex-col items-end">
+                <span>{getGreeting()}</span>
+                <span className="font-medium">{currentUser.first_name}</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <ProfileDialog />
+                <ModeToggle />
+                <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setMobileMenuOpen(prev => !prev)}>
+                  <Menu className="h-5 w-5" />
+                </Button>
+              </div>
             </div>
           </div>
           
@@ -71,7 +84,11 @@ export default function Header() {
           </div>
 
           {/* User Controls - Right */}
-          <div className="hidden lg:flex items-center gap-2 w-1/4 justify-end">
+          <div className="hidden lg:flex items-center gap-3 w-1/4 justify-end">
+            <div className="text-primary flex flex-col items-end">
+              <span>{getGreeting()}</span>
+              <span className="font-medium">{currentUser.first_name}</span>
+            </div>
             <ProfileDialog />
             <ModeToggle />
           </div>

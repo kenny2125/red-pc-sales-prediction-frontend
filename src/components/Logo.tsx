@@ -4,9 +4,9 @@ import { Link } from "react-router-dom";
 export default function Logo() {
   return (
     <Link to="/">
-      <div className="inline-flex justify-center items-center gap-2">
-        <img className="w-[40px] h-[40px] md:w-[60px] md:h-[60px] lg:w-[76px] lg:h-[76px]" src={RedPcLogo} />
-        <div className="text-xl md:text-2xl lg:text-4xl font-['Anton']">RED PC</div>
+      <div className="inline-flex justify-center items-center gap-1 lg:gap-2">
+        <img className="w-[32px] h-[32px] sm:w-[36px] sm:h-[36px] md:w-[40px] md:h-[40px] lg:w-[60px] lg:h-[60px]" src={RedPcLogo} />
+        <div className="hidden md:block text-xl md:text-2xl lg:text-4xl font-['Anton']">RED PC</div>
       </div>
     </Link>
   );

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,6 +14,7 @@ interface LoginFormProps {
 }
 
 export function LoginForm({ onToggleMode, isLoading, error, login }: LoginFormProps) {
+  const navigate = useNavigate();
   const [credential, setCredential] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false); // new state for password visibility
@@ -60,6 +62,12 @@ export function LoginForm({ onToggleMode, isLoading, error, login }: LoginFormPr
         setTimeout(async () => {
           // Call the context login function to update app state
           await login(credential, password);
+          
+          // Check if user is admin and redirect accordingly
+          if (data.user && data.user.role === 'admin') {
+            navigate('/dashboard');
+          }
+          
           // Hide success overlay after delay
           setTimeout(() => {
             setShowSuccessOverlay(false);
