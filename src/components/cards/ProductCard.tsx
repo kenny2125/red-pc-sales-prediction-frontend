@@ -2,8 +2,9 @@ import React, { useState } from 'react'
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { useNavigate } from 'react-router-dom'
 import { Button } from "@/components/ui/button"
-import { ShoppingCart, Trash2 } from 'lucide-react'
+import { ShoppingCart, Eye, Trash2 } from 'lucide-react'
 import defaultImage from '@/assets/redpcph.png'
+import { useUser } from "@/contexts/UserContext"
 
 interface ProductCardProps {
   product: {
@@ -18,14 +19,21 @@ function ProductCard({ product }: ProductCardProps) {
   const navigate = useNavigate();
   const [isInCart, setIsInCart] = useState(false);
   const [imageError, setImageError] = useState(false);
+  const { currentUser } = useUser();
   
   function handleCardClick() {
     navigate(`/product?id=${product.product_id}`);
   }
 
-  function handleAddToCart(e: React.MouseEvent) {
+  function handleActionClick(e: React.MouseEvent) {
     e.stopPropagation();
-    setIsInCart(!isInCart);
+    if (currentUser?.role === 'admin') {
+      // Handle view action for admin
+      navigate(`/product?id=${product.product_id}`);
+    } else {
+      // Handle cart action for other users
+      setIsInCart(!isInCart);
+    }
   }
 
   // Format price using Intl.NumberFormat for consistent formatting
@@ -57,9 +65,13 @@ function ProductCard({ product }: ProductCardProps) {
         <Button 
           variant={isInCart ? "destructive" : "default"} 
           size="sm" 
-          onClick={handleAddToCart}
+          onClick={handleActionClick}
         >
-          {isInCart ? <Trash2 size={16} /> : <ShoppingCart size={16} />}
+          {currentUser?.role === 'admin' ? (
+            <Eye size={16} />
+          ) : (
+            isInCart ? <Trash2 size={16} /> : <ShoppingCart size={16} />
+          )}
         </Button>
       </CardFooter>
     </Card>

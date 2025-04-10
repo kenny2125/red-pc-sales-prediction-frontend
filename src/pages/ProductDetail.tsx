@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/card";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import { useUser } from "@/contexts/UserContext";
 import brand1 from "@/assets/brand-logos/nvidia.svg";
 import sample from "../assets/sample5090.jpg";
 import { Button } from "@/components/ui/button";
@@ -29,6 +30,7 @@ function ProductDetail() {
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { currentUser } = useUser();
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -71,6 +73,16 @@ function ProductDetail() {
     maximumFractionDigits: 2
   }).format(product.store_price);
 
+  const renderActionButton = () => {
+    if (!currentUser) return null;
+    
+    if (currentUser.role === "admin") {
+      return <Button className="w-32">View</Button>;
+    } else {
+      return <Button className="w-32">Add to Cart</Button>;
+    }
+  };
+
   return (
     <>
       {/* Desktop Layout: visible on md and above */}
@@ -98,7 +110,7 @@ function ProductDetail() {
               />
               <h1 className="text-4xl font-bold mb-4">{formattedPrice}</h1>
               <div className="flex flex-row gap-4 justify-center">
-                <Button className="w-32">Add to Cart</Button>
+                {renderActionButton()}
               </div>
             </div>
           </div>
@@ -126,7 +138,7 @@ function ProductDetail() {
           </div>
           <h1 className="text-4xl font-bold mb-4">{formattedPrice}</h1>
           <div className="flex flex-row gap-4 justify-center">
-            <Button className="w-32">Add to Cart</Button>
+            {renderActionButton()}
           </div>
         </div>
       </div>
