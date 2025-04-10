@@ -57,7 +57,7 @@ function PackageCard() {
       </CardContent>
 
       <CardFooter className="p-2 pt-0 justify-center">
-        <h1 className="text-xl font-bold text-anton">₱17,399</h1>
+        <p className="text-sm sm:text-base md:text-lg font-semibold text-primary">₱17,399</p>
       </CardFooter>
     </Card>
   );
