@@ -46,31 +46,53 @@ function ProductCard({ product }: ProductCardProps) {
 
   return (
     <Card 
-      className="w-full max-w-[250px] flex flex-col items-center p-2 gap-2 cursor-pointer transition-all hover:shadow-lg hover:scale-105 active:scale-100"
+      className="w-full max-w-[280px] flex flex-col justify-between h-full cursor-pointer transition-all hover:shadow-lg hover:scale-[1.02] active:scale-100"
       onClick={handleCardClick}
     >
-      <CardContent className="p-2 flex flex-col items-center flex-grow overflow-hidden">
-        <img 
-          src={imageError ? defaultImage : product.image_url} 
-          alt={product.product_name} 
-          className="object-contain w-full h-48"
-          onError={() => setImageError(true)}
-        />
-        <div className='flex flex-col items-center'>
-          <p className='text-sm font-bold line-clamp-2'>{product.product_name}</p> 
+      <CardContent className="p-4 flex flex-col gap-4">
+        <div className="aspect-square w-full relative bg-background/50 flex items-center justify-center">
+          <img 
+            src={imageError ? defaultImage : product.image_url} 
+            alt={product.product_name} 
+            className="max-w-full max-h-full w-auto h-auto object-contain"
+            onError={() => setImageError(true)}
+          />
+        </div>
+        <div className='space-y-2'>
+          <h3 className='font-medium text-sm sm:text-base min-h-[2.5rem] line-clamp-2 text-center'>
+            {product.product_name}
+          </h3>
+          <p className='text-lg sm:text-xl md:text-2xl font-bold text-center text-primary'>
+            {formattedPrice}
+          </p>
         </div>
       </CardContent>
-      <CardFooter className="p-2 w-full flex justify-between items-center">
-        <h1 className='text-xl font-bold text-anton'>{formattedPrice}</h1>
+      <CardFooter className="px-4 pb-4 pt-0">
         <Button 
           variant={isInCart ? "destructive" : "default"} 
           size="sm" 
           onClick={handleActionClick}
+          className="w-full flex items-center justify-center gap-2"
         >
           {currentUser?.role === 'admin' ? (
-            <Eye size={16} />
+            <>
+              <Eye size={16} />
+              <span>View Details</span>
+            </>
           ) : (
-            isInCart ? <Trash2 size={16} /> : <ShoppingCart size={16} />
+            <>
+              {isInCart ? (
+                <>
+                  <Trash2 size={16} />
+                  <span>Remove from Cart</span>
+                </>
+              ) : (
+                <>
+                  <ShoppingCart size={16} />
+                  <span>Add to Cart</span>
+                </>
+              )}
+            </>
           )}
         </Button>
       </CardFooter>
