@@ -103,7 +103,7 @@ const CheckoutDialog: React.FC<CheckoutDialogProps> = ({
                 <Truck className="h-5 w-5 text-primary" />
                 <p className="text-sm">Preparing for delivery</p>
               </div>
-              <p className="text-sm text-gray-600 text-center mt-2">
+              <p className="text-sm text-center mt-2">
                 Payment will be collected upon delivery
               </p>
             </div>
