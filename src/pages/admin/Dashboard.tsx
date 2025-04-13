@@ -42,37 +42,17 @@ interface RecentSale {
   date: string;
 }
 
-const stockslevel = [
-  {
-    id: "1",
-    stock: "1",
-    productName: "Monitor",
-  },
-  {
-    id: "2",
-    stock: "2",
-    productName: "Monitor",
-  },
-  {
-    id: "3",
-    stock: "3",
-    productName: "Monitor",
-  },
-  {
-    id: "3",
-    stock: "3",
-    productName: "Monitor",
-  },
-  {
-    id: "3",
-    stock: "3",
-    productName: "Monitor",
-  },
-];
+interface StockLevel {
+  product_id: string;
+  product_name: string;
+  quantity: number;
+  status: string;
+}
 
 export default function Dashboard() {
   const [ongoingOrders, setOngoingOrders] = useState(0);
   const [recentSales, setRecentSales] = useState<RecentSale[]>([]);
+  const [stockLevels, setStockLevels] = useState<StockLevel[]>([]);
 
   useEffect(() => {
     const fetchOngoingOrders = async () => {
@@ -95,8 +75,19 @@ export default function Dashboard() {
       }
     };
 
+    const fetchStockLevels = async () => {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/product/stock-levels`);
+        const data = await response.json();
+        setStockLevels(data);
+      } catch (error) {
+        console.error('Error fetching stock levels:', error);
+      }
+    };
+
     fetchOngoingOrders();
     fetchRecentSales();
+    fetchStockLevels();
   }, []);
 
   return (
@@ -187,6 +178,7 @@ export default function Dashboard() {
           <Card className="w-full">
             <CardHeader>
               <CardTitle>Stocks Monitoring</CardTitle>
+              <CardDescription>Showing products with lowest stock levels</CardDescription>
             </CardHeader>
             <CardContent>
               <Table>
@@ -194,13 +186,15 @@ export default function Dashboard() {
                   <TableRow>
                     <TableHead>Stocks</TableHead>
                     <TableHead className="text-left">Product Name</TableHead>
+                    <TableHead className="text-right">Status</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {stockslevel.map((item) => (
-                    <TableRow key={item.id}>
-                      <TableCell className="text-left">{item.stock}</TableCell>
-                      <TableCell className="text-left">{item.productName}</TableCell>                      
+                  {stockLevels.map((item) => (
+                    <TableRow key={item.product_id}>
+                      <TableCell className="font-medium">{item.quantity}</TableCell>
+                      <TableCell>{item.product_name}</TableCell>
+                      <TableCell className="text-right">{item.status}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
