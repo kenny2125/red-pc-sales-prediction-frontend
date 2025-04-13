@@ -20,7 +20,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { QuantityInput } from "@/components/ui/quantity-input";
-import CheckoutDialog from "../components/dialogs/CheckoutDialog";
+import CheckoutDialog from "../../components/dialogs/CheckoutDialog";
 
 interface CartItem {
   id: number;
@@ -118,21 +118,44 @@ const Checkout = () => {
     
     setIsProcessing(true);
     try {
-      // TODO: Implement actual payment processing with API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
-
-      // Clear selected items from cart after successful payment
       const token = localStorage.getItem('token');
-      if (token) {
-        // Remove the purchased items from the cart
-        for (const item of cartItems) {
-          await fetch(`${import.meta.env.VITE_API_URL}/api/cart/remove/${item.product_id}`, {
-            method: 'DELETE',
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-          });
-        }
+      if (!token) {
+        throw new Error('No authentication token found');
+      }
+
+      // Create order through the API
+      const orderData = {
+        total_amount: getTotal(),
+        payment_method: paymentMethod,
+        pickup_method: pickupMethod,
+        items: cartItems.map(item => ({
+          product_id: item.product_id,
+          quantity: item.quantity,
+          store_price: item.store_price
+        }))
+      };
+
+      const orderResponse = await fetch(`${import.meta.env.VITE_API_URL}/api/orders`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(orderData)
+      });
+
+      if (!orderResponse.ok) {
+        throw new Error('Failed to create order');
+      }
+
+      // Clear the purchased items from the cart
+      for (const item of cartItems) {
+        await fetch(`${import.meta.env.VITE_API_URL}/api/cart/remove/${item.product_id}`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
       }
 
       // Clear checkout items from localStorage

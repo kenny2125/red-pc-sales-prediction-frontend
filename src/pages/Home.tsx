@@ -17,7 +17,6 @@ import brand12 from "../assets/brand-logos/ramsta.svg";
 import brand13 from "../assets/brand-logos/teamgroup.svg";
 import PackageCard from "@/components/cards/PackageCard";
 import ProductCard from "@/components/cards/ProductCard";
-import logo from "../assets/redpcph.png";
 import { useEffect, useState } from "react";
 
 interface Product {

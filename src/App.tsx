@@ -8,7 +8,7 @@ import Footer from "./components/Footer";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 import Home from "./pages/Home";
-import ProductDetail from "./pages/ProductDetail";
+import ProductDetail from "./pages/customer/ProductDetail";
 
 import AboutUs from "./pages/footer/AboutUs";
 import FAQ from "./pages/footer/FAQ";
@@ -21,10 +21,10 @@ import Inventory from "./pages/admin/Inventory";
 import Orders from "./pages/admin/Orders";
 import Sales from "./pages/admin/Sales";
 import TestView from "./pages/Test";
-import Search from "./pages/Search";
-import PackageView from "./pages/Package";
-import PackageDetail from "./pages/PackageDetail";
-import Checkout from "./pages/Checkout";
+import Search from "./pages/customer/Search";
+// import PackageView from "./pages/Package";
+// import PackageDetail from "./pages/PackageDetail";
+import Checkout from "./pages/customer/Checkout";
 import Unauthorized from "./pages/Unauthorized";
 import NotFound from "./pages/NotFound";
 
@@ -40,10 +40,10 @@ const App: React.FC = () => (
           <Routes>
             <Route index element={<Home />} />
             <Route path="/search" element={<Search />} />
-            <Route path="/pc-builds" element={<PackageView />} />
+            {/* <Route path="/pc-builds" element={<PackageView />} /> */}
 
             <Route path="/product" element={<ProductDetail />} />
-            <Route path="/build" element={<PackageDetail />} />
+            {/* <Route path="/build" element={<PackageDetail />} /> */}
             <Route path="/checkout" element={<Checkout />} />
 
             <Route path="/about-us" element={<AboutUs />} />
