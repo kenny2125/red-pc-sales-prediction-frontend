@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -7,8 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { LineChartInteractive } from "@/components/charts/LineChartInterative";
-import { PhilippinePeso } from "lucide-react";
-import { ScrollText } from "lucide-react";
+import { PhilippinePeso, ScrollText } from "lucide-react";
 
 import {
   Table,
@@ -36,43 +36,11 @@ const topsales = [
   },
 ];
 
-const recentSales = [
-  {
-    id: "1",
-    customerName: "Kenny Reyes",
-    sales: "2000",
-  },
-  {
-    id: "2",
-    customerName: "Kenny Reyes",
-    sales: "2000",
-  },
-  {
-    id: "3",
-    customerName: "Kenny Reyes",
-    sales: "2000",
-  },
-  {
-    id: "4",
-    customerName: "Kenny Reyes",
-    sales: "2000",
-  },
-  {
-    id: "5",
-    customerName: "Kenny Reyes",
-    sales: "2000",
-  },
-  {
-    id: "6",
-    customerName: "Kenny Reyes",
-    sales: "2000",
-  },
-  {
-    id: "7",
-    customerName: "Kenny Reyes",
-    sales: "2000",
-  },
-];
+interface RecentSale {
+  id: string;
+  amount: number;
+  date: string;
+}
 
 const stockslevel = [
   {
@@ -103,6 +71,34 @@ const stockslevel = [
 ];
 
 export default function Dashboard() {
+  const [ongoingOrders, setOngoingOrders] = useState(0);
+  const [recentSales, setRecentSales] = useState<RecentSale[]>([]);
+
+  useEffect(() => {
+    const fetchOngoingOrders = async () => {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/orders/ongoing-count`);
+        const data = await response.json();
+        setOngoingOrders(data.count);
+      } catch (error) {
+        console.error('Error fetching ongoing orders:', error);
+      }
+    };
+
+    const fetchRecentSales = async () => {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/sales/recent`);
+        const data = await response.json();
+        setRecentSales(data);
+      } catch (error) {
+        console.error('Error fetching recent sales:', error);
+      }
+    };
+
+    fetchOngoingOrders();
+    fetchRecentSales();
+  }, []);
+
   return (
     <>
       <div className=" flex flex-row gap-4 w-full">
@@ -127,7 +123,7 @@ export default function Dashboard() {
                 <ScrollText size="80px" className="text-primary" />
               </CardContent>
               <CardFooter>
-                <p>10 Orders Today</p>
+                <p>{ongoingOrders} Orders Today</p>
               </CardFooter>
             </Card>
             <Card className="flex flex-col items-center w-full">
@@ -176,11 +172,11 @@ export default function Dashboard() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {recentSales.map((item) => (
-                    <TableRow key={item.id}>
-                      <TableCell className="text-left">{item.customerName}</TableCell>
+                  {recentSales.map((sale) => (
+                    <TableRow key={sale.id}>
+                      <TableCell className="text-left">Customer</TableCell>
                       <TableCell className="text-right">
-                        ₱{item.sales}
+                        ₱{sale.amount.toLocaleString()}
                       </TableCell>
                     </TableRow>
                   ))}

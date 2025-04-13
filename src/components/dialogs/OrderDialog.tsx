@@ -57,10 +57,10 @@ export function OrderDialog() {
         throw new Error('No authentication token found');
       }
 
-      // Determine the endpoint based on user role
+      // Use the new checkout endpoint for fetching user orders
       const endpoint = currentUser?.role === 'admin' 
         ? `${import.meta.env.VITE_API_URL}/api/orders`
-        : `${import.meta.env.VITE_API_URL}/api/orders/by-user/${currentUser?.id}`;
+        : `${import.meta.env.VITE_API_URL}/api/checkout/by-user/${currentUser?.id}`;
 
       const response = await fetch(endpoint, {
         method: 'GET',

@@ -123,19 +123,20 @@ const Checkout = () => {
         throw new Error('No authentication token found');
       }
 
-      // Create order through the API
+      // Create order through the API using the new checkout endpoint
       const orderData = {
+        user_id: currentUser?.id, // Add user_id to match backend expectations
         total_amount: getTotal(),
         payment_method: paymentMethod,
         pickup_method: pickupMethod,
         items: cartItems.map(item => ({
           product_id: item.product_id,
           quantity: item.quantity,
-          store_price: item.store_price
+          price_at_time: item.store_price
         }))
       };
 
-      const orderResponse = await fetch(`${import.meta.env.VITE_API_URL}/api/orders`, {
+      const orderResponse = await fetch(`${import.meta.env.VITE_API_URL}/api/checkout`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
