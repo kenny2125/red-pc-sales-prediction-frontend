@@ -8,7 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { LineChartInteractive } from "@/components/charts/LineChartInterative";
-import { PhilippinePeso, ScrollText } from "lucide-react";
+import { PhilippinePeso, Package, TrendingUp, ShoppingCart, BarChart3 } from "lucide-react";
 
 import {
   Table,
@@ -53,8 +53,26 @@ export default function Dashboard() {
   const [ongoingOrders, setOngoingOrders] = useState(0);
   const [recentSales, setRecentSales] = useState<RecentSale[]>([]);
   const [stockLevels, setStockLevels] = useState<StockLevel[]>([]);
+  const [totalRevenue, setTotalRevenue] = useState(0);
+  const [frequentItems, setFrequentItems] = useState<Array<{
+    product_id: string;
+    product_name: string;
+    image_url: string;
+    sold_count: number;
+    total_quantity: number;
+  }>>([]);
 
   useEffect(() => {
+    const fetchTotalRevenue = async () => {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/sales/total-revenue`);
+        const data = await response.json();
+        setTotalRevenue(data.total_revenue);
+      } catch (error) {
+        console.error('Error fetching total revenue:', error);
+      }
+    };
+
     const fetchOngoingOrders = async () => {
       try {
         const response = await fetch(`${import.meta.env.VITE_API_URL}/api/orders/ongoing-count`);
@@ -85,124 +103,147 @@ export default function Dashboard() {
       }
     };
 
+    const fetchFrequentItems = async () => {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/sales/most-frequent`);
+        const data = await response.json();
+        setFrequentItems(data);
+      } catch (error) {
+        console.error('Error fetching frequent items:', error);
+      }
+    };
+
+    fetchTotalRevenue();
     fetchOngoingOrders();
     fetchRecentSales();
     fetchStockLevels();
+    fetchFrequentItems();
   }, []);
 
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('en-PH', {
+      style: 'currency',
+      currency: 'PHP'
+    }).format(amount);
+  };
+
   return (
-    <>
-      <div className=" flex flex-row gap-4 w-full">
-        <div className="flex flex-col w-full gap-4 ">
-          <div className="flex flex-row justify-between align-middle max-w-6xl gap-4">
-            <Card className="flex flex-col items-center w-full  ">
-              <CardHeader className=" w-full justify-center">
-                <CardTitle>Total Revenue</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <PhilippinePeso size="80px" className="text-primary" />
-              </CardContent>
-              <CardFooter>
-                <p>Php 99999999</p>
-              </CardFooter>
-            </Card>
-            <Card className="flex flex-col items-center w-full">
-              <CardHeader className=" w-full justify-center">
-                <CardTitle>Ongoing Orders</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ScrollText size="80px" className="text-primary" />
-              </CardContent>
-              <CardFooter>
-                <p>{ongoingOrders} Orders Today</p>
-              </CardFooter>
-            </Card>
-            <Card className="flex flex-col items-center w-full">
-              <CardHeader className=" w-full justify-center">
-                <CardTitle>Sales Today</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <PhilippinePeso size="80px" className="text-primary" />
-              </CardContent>
-              <CardFooter>
-                <p>Php 99999999</p>
-              </CardFooter>
-            </Card>
-            <Card className="flex flex-col items-center w-full">
-              <CardHeader className=" w-full justify-center">
-                <CardTitle>Top Searched Products</CardTitle>
-              </CardHeader>
-              <CardContent>
-                {topsales.map((item) => (
-                  <TableRow key={item.id}>
-                    <TableCell>{item.product}</TableCell>
-                  </TableRow>
-                ))}
-              </CardContent>
-              {/* <CardFooter>
-                <p>Php 99999999</p>
-              </CardFooter> */}
-            </Card>
-          </div>
-          <div className="w-full max-w-6xl">
-            <LineChartInteractive />
-          </div>
+    <div className="container ">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <Card className="flex flex-col items-center">
+          <CardHeader className="w-full text-center">
+            <CardTitle className="text-lg">Total Revenue</CardTitle>
+          </CardHeader>
+          <CardContent className="flex items-center justify-center">
+            <div className="rounded-full bg-primary/10 p-4">
+              <PhilippinePeso className="h-8 w-8 text-primary" />
+            </div>
+          </CardContent>
+          <CardFooter>
+            <p className="text-2xl font-bold">{formatCurrency(totalRevenue)}</p>
+          </CardFooter>
+        </Card>
+
+        <Card className="flex flex-col items-center">
+          <CardHeader className="w-full text-center">
+            <CardTitle className="text-lg">Ongoing Orders</CardTitle>
+          </CardHeader>
+          <CardContent className="flex items-center justify-center">
+            <div className="rounded-full bg-primary/10 p-4">
+              <ShoppingCart className="h-8 w-8 text-primary" />
+            </div>
+          </CardContent>
+          <CardFooter>
+            <p className="text-2xl font-bold">{ongoingOrders} Orders Today</p>
+          </CardFooter>
+        </Card>
+
+        <Card className="flex flex-col items-center">
+          <CardHeader className="w-full text-center">
+            <CardTitle className="text-lg">Sales Today</CardTitle>
+          </CardHeader>
+          <CardContent className="flex items-center justify-center">
+            <div className="rounded-full bg-primary/10 p-4">
+              <TrendingUp className="h-8 w-8 text-primary" />
+            </div>
+          </CardContent>
+          <CardFooter>
+            <p className="text-2xl font-bold">
+              {recentSales.length > 0 ? formatCurrency(recentSales[0].amount) : 'No sales today'}
+            </p>
+          </CardFooter>
+        </Card>
+
+        <Card className="flex flex-col">
+          <CardHeader className="text-center">
+            <CardTitle className="text-lg">Top Products</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              {frequentItems.slice(0, 3).map((item) => (
+                <div key={item.product_id} className="flex items-center justify-between">
+                  <span className="text-sm truncate flex-1">{item.product_name}</span>
+                  <span className="text-sm font-medium">{item.total_quantity}</span>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div className="lg:col-span-2">
+        <LineChartInteractive />
+          
         </div>
 
-        <div className="flex flex-col w-lg align-middle text-center justify-between">
-          <Card className="w-full ">
+        <div className="space-y-4">
+          <Card>
             <CardHeader>
-              <CardTitle>Recent Sales</CardTitle>
+              <CardTitle className="text-lg">Recent Sales</CardTitle>
             </CardHeader>
             <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Customer Name</TableHead>
-                    <TableHead className="text-right">Amount</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {recentSales.map((sale) => (
-                    <TableRow key={sale.id}>
-                      <TableCell className="text-left">Customer</TableCell>
-                      <TableCell className="text-right">
-                        ₱{sale.amount.toLocaleString()}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+              <div className="space-y-2">
+                {recentSales.slice(0, 5).map((sale) => (
+                  <div key={sale.id} className="flex items-center justify-between">
+                    <div className="space-y-1">
+                      <p className="text-sm font-medium">Customer</p>
+                      <p className="text-sm text-muted-foreground">{sale.date}</p>
+                    </div>
+                    <p className="text-sm font-medium">₱{sale.amount.toLocaleString()}</p>
+                  </div>
+                ))}
+              </div>
             </CardContent>
           </Card>
-          <Card className="w-full">
+
+          <Card>
             <CardHeader>
-              <CardTitle>Stocks Monitoring</CardTitle>
-              <CardDescription>Showing products with lowest stock levels</CardDescription>
+              <CardTitle className="text-lg">Stock Alerts</CardTitle>
+              <CardDescription>Low stock items</CardDescription>
             </CardHeader>
             <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Stocks</TableHead>
-                    <TableHead className="text-left">Product Name</TableHead>
-                    <TableHead className="text-right">Status</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {stockLevels.map((item) => (
-                    <TableRow key={item.product_id}>
-                      <TableCell className="font-medium">{item.quantity}</TableCell>
-                      <TableCell>{item.product_name}</TableCell>
-                      <TableCell className="text-right">{item.status}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+              <div className="space-y-2">
+                {stockLevels.slice(0, 5).map((item) => (
+                  <div key={item.product_id} className="flex items-center justify-between">
+                    <div className="space-y-1">
+                      <p className="text-sm font-medium truncate">{item.product_name}</p>
+                      <p className="text-sm text-muted-foreground">Qty: {item.quantity}</p>
+                    </div>
+                    <span className={`text-xs px-2 py-1 rounded-full ${
+                      item.status === 'Low' ? 'bg-red-100 text-red-800' : 
+                      item.status === 'Medium' ? 'bg-yellow-100 text-yellow-800' : 
+                      'bg-green-100 text-green-800'
+                    }`}>
+                      {item.status}
+                    </span>
+                  </div>
+                ))}
+              </div>
             </CardContent>
           </Card>
         </div>
       </div>
-    </>
+    </div>
   );
 }

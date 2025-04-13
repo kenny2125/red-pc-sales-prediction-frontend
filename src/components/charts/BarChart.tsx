@@ -1,7 +1,7 @@
 "use client"
 
 import { TrendingUp } from "lucide-react"
-import { Bar, BarChart, CartesianGrid, Cell, LabelList } from "recharts"
+import { Bar, BarChart, CartesianGrid, Cell, LabelList, ResponsiveContainer, XAxis, YAxis, Tooltip, Legend } from "recharts"
 
 import {
   Card,
@@ -41,26 +41,32 @@ export function BarChartView() {
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig}>
-          <BarChart accessibilityLayer data={chartData}>
-            <CartesianGrid vertical={false} />
-            <ChartTooltip
-              cursor={false}
-              content={<ChartTooltipContent hideLabel hideIndicator />}
-            />
-            <Bar dataKey="visitors">
-              <LabelList position="top" dataKey="month" fillOpacity={1} />
-              {chartData.map((item) => (
-                <Cell
-                  key={item.month}
-                  fill={
-                    item.visitors > 0
-                      ? "hsl(var(--chart-1))"
-                      : "hsl(var(--chart-2))"
-                  }
-                />
-              ))}
-            </Bar>
-          </BarChart>
+          <ResponsiveContainer width="100%" height={350}>
+            <BarChart data={chartData}>
+              <CartesianGrid vertical={false} />
+              <XAxis dataKey="month" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <ChartTooltip
+                cursor={false}
+                content={<ChartTooltipContent hideLabel hideIndicator />}
+              />
+              <Bar dataKey="visitors">
+                <LabelList position="top" dataKey="month" fillOpacity={1} />
+                {chartData.map((item) => (
+                  <Cell
+                    key={item.month}
+                    fill={
+                      item.visitors > 0
+                        ? "hsl(var(--chart-1))"
+                        : "hsl(var(--chart-2))"
+                    }
+                  />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
         </ChartContainer>
       </CardContent>
       <CardFooter className="flex-col items-start gap-2 text-sm">

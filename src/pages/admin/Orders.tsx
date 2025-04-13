@@ -303,20 +303,20 @@ export function Orders() {
   }
 
   return (
-    <div className="w-full">
-      <div className="flex items-center justify-between py-4">
+    <div className="w-full p-4">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between py-4 gap-4">
         <div className="flex items-center gap-2">
           <ScrollText size="40px" />
           <h2 className="text-2xl font-bold">Orders</h2>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="ml-auto">
+              <Button variant="outline" className="w-full sm:w-auto">
                 Columns <ChevronDown className="ml-2 h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent align="end" className="w-[200px]">
               {table
                 .getAllColumns()
                 .filter((column) => column.getCanHide())
@@ -342,19 +342,19 @@ export function Orders() {
             onChange={(event) =>
               table.getColumn("customerName")?.setFilterValue(event.target.value)
             }
-            className="max-w-sm"
+            className="w-full sm:w-[300px]"
           />
         </div>
       </div>
 
-      <div className="rounded-md border">
+      <div className="rounded-md border overflow-x-auto">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id}>
+                    <TableHead key={header.id} className="whitespace-nowrap">
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -375,7 +375,7 @@ export function Orders() {
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell key={cell.id} className="whitespace-nowrap">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
@@ -398,12 +398,12 @@ export function Orders() {
         </Table>
       </div>
       
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <div className="flex-1 text-sm text-muted-foreground">
+      <div className="flex flex-col sm:flex-row items-center justify-end gap-4 py-4">
+        <div className="flex-1 text-sm text-muted-foreground text-center sm:text-left">
           {table.getFilteredSelectedRowModel().rows.length} of{" "}
           {table.getFilteredRowModel().rows.length} row(s) selected.
         </div>
-        <div className="space-x-2">
+        <div className="flex gap-2">
           <Button
             variant="outline"
             size="sm"

@@ -1,7 +1,7 @@
 "use client"
 
 import { TrendingUp } from "lucide-react"
-import { Label, Pie, PieChart, Sector } from "recharts"
+import { Label, Pie, PieChart, Sector, ResponsiveContainer } from "recharts"
 import { PieSectorDataItem } from "recharts/types/polar/Pie"
 import { ChartLegend, ChartLegendContent } from "../ui/chart"
 
@@ -65,29 +65,29 @@ export function PieChartDonut() {
           config={chartConfig}
           className="mx-auto aspect-square max-h-[250px]"
         >
-          
-          <PieChart>
-            <ChartTooltip
-              cursor={false}
-              content={<ChartTooltipContent hideLabel />}
-            />
-            <ChartLegend content={<ChartLegendContent />} />
-            
-            <Pie
-              data={chartData}
-              dataKey="visitors"
-              nameKey="browser"
-              innerRadius={60}
-              strokeWidth={5}
-              activeIndex={0}
-              activeShape={({
-                outerRadius = 0,
-                ...props
-              }: PieSectorDataItem) => (
-                <Sector {...props} outerRadius={outerRadius + 10} />
-              )}
-            />
-          </PieChart>
+          <ResponsiveContainer width="100%" height={350}>
+            <PieChart>
+              <ChartTooltip
+                cursor={false}
+                content={<ChartTooltipContent hideLabel />}
+              />
+              <ChartLegend content={<ChartLegendContent />} />
+              <Pie
+                data={chartData}
+                dataKey="visitors"
+                nameKey="browser"
+                innerRadius={60}
+                strokeWidth={5}
+                activeIndex={0}
+                activeShape={({
+                  outerRadius = 0,
+                  ...props
+                }: PieSectorDataItem) => (
+                  <Sector {...props} outerRadius={outerRadius + 10} />
+                )}
+              />
+            </PieChart>
+          </ResponsiveContainer>
         </ChartContainer>
       </CardContent>
       <CardFooter className="flex-col gap-2 text-sm">

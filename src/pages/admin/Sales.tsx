@@ -17,15 +17,15 @@ import { PcCaseIcon } from "lucide-react";
 const topsales = [
   {
     id: "1",
-    product: "Most Searched Products",
+    product: "Most Sold Products",
   },
   {
     id: "2",
-    product: "Most Searched Products",
+    product: "Most Sold Products",
   },
   {
     id: "3",
-    product: "Most Searched Products",
+    product: "Most Sold Products",
   },
 ];
 
@@ -377,189 +377,175 @@ export default function Sales() {
   
   return (
     <>
-      <div className=" flex flex-row gap-4 w-full">
-        <div className="flex flex-col w-full gap-4 ">
-        <div className="w-full max-w-6xl  ">
-            <LineChartInteractive />
-          </div>
-          <div className="flex flex-row justify-between align-middle max-w-6xl gap-4">
-      
-            <Card className="flex flex-col items-center w-full">
-              <CardHeader className=" w-full justify-center">
-                <CardTitle>Total Computer Units Sold</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <PcCaseIcon size="80px" className="text-primary" />
-              </CardContent>
-              <CardFooter>
-                <p>100 Units Sold</p>
-              </CardFooter>
-            </Card>
-            <Card className="flex flex-col items-center w-full">
-              <CardHeader className=" w-full justify-center">
-                <CardTitle>Total Sold Products </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CpuIcon size="80px" className="text-primary" />
-              </CardContent>
-              <CardFooter>
-                <p>2323 sold</p>
-              </CardFooter>
-            </Card>
-            <Card className="flex flex-col items-center w-full">
-              <CardHeader className=" w-full justify-center">
-                <CardTitle>Best Sellers</CardTitle>
-              </CardHeader>
-              <CardContent>
-                {topsales.map((item) => (
-                  <TableRow key={item.id}>
-                    <TableCell>{item.product}</TableCell>
-                  </TableRow>
-                ))}
-              </CardContent>
-              {/* <CardFooter>
-                <p>Php 99999999</p>
-              </CardFooter> */}
-            </Card>
-            <Card className="flex flex-col items-center w-full">
-              <CardHeader className=" w-full justify-center">
-                <CardTitle>Top Searched Products</CardTitle>
-              </CardHeader>
-              <CardContent>
-                {topsales.map((item) => (
-                  <TableRow key={item.id}>
-                    <TableCell>{item.product}</TableCell>
-                  </TableRow>
-                ))}
-              </CardContent>
-              {/* <CardFooter>
-                <p>Php 99999999</p>
-              </CardFooter> */}
-            </Card>
-          </div>
-      
+      <div className="flex flex-col gap-4 p-4">
+        <div className="w-full">
+          <LineChartInteractive />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <Card className="flex flex-col items-center w-full">
+            <CardHeader className="w-full justify-center">
+              <CardTitle className="text-lg sm:text-xl">Total Computer Units Sold</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <PcCaseIcon size="80px" className="text-primary" />
+            </CardContent>
+            <CardFooter>
+              <p>100 Units Sold</p>
+            </CardFooter>
+          </Card>
+          <Card className="flex flex-col items-center w-full">
+            <CardHeader className="w-full justify-center">
+              <CardTitle className="text-lg sm:text-xl">Total Sold Products</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <CpuIcon size="80px" className="text-primary" />
+            </CardContent>
+            <CardFooter>
+              <p>2323 sold</p>
+            </CardFooter>
+          </Card>
+          <Card className="flex flex-col items-center w-full">
+            <CardHeader className="w-full justify-center">
+              <CardTitle className="text-lg sm:text-xl">Best Sellers</CardTitle>
+            </CardHeader>
+            <CardContent className="w-full">
+              {topsales.map((item) => (
+                <TableRow key={item.id}>
+                  <TableCell>{item.product}</TableCell>
+                </TableRow>
+              ))}
+            </CardContent>
+          </Card>
         </div>
 
-        <div className="flex flex-col w-lg align-middle text-center gap-4 justify-between">
-        <PieChartDonut/>
-        <BarChartView/>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="w-full">
+            <PieChartDonut/>
+          </div>
+          <div className="w-full">
+            <BarChartView/>
+          </div>
         </div>
       </div>
-      <div className="w-full">
-      <div className="flex items-center justify-end py-4 gap-4">
-      <PhilippinePeso size="40px" />
-      <TableHeader>Sales Table</TableHeader>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
-              Columns <ChevronDown />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) =>
-                      column.toggleVisibility(!!value)
-                    }
-                  >
-                    {column.id}
-                  </DropdownMenuCheckboxItem>
-                )
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu>
-        
-        <Input
-          placeholder="Search Paymongo ID..."
-          value={(table.getColumn("paymongoID")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("paymongoID")?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        />
-      </div>
-      <div className="rounded-md border">
-        <Table>
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  )
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
+      <div className="w-full px-4">
+        <div className="flex flex-col sm:flex-row items-center justify-between py-4 gap-4">
+          <div className="flex items-center gap-2">
+            <PhilippinePeso size="40px" />
+            <TableHeader>Sales Table</TableHeader>
+          </div>
+          <div className="flex flex-wrap gap-2 items-center">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="ml-auto">
+                  Columns <ChevronDown />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                {table
+                  .getAllColumns()
+                  .filter((column) => column.getCanHide())
+                  .map((column) => {
+                    return (
+                      <DropdownMenuCheckboxItem
+                        key={column.id}
+                        className="capitalize"
+                        checked={column.getIsVisible()}
+                        onCheckedChange={(value) =>
+                          column.toggleVisibility(!!value)
+                        }
+                      >
+                        {column.id}
+                      </DropdownMenuCheckboxItem>
+                    )
+                  })}
+              </DropdownMenuContent>
+            </DropdownMenu>
+            
+            <Input
+              placeholder="Search Paymongo ID..."
+              value={(table.getColumn("paymongoID")?.getFilterValue() as string) ?? ""}
+              onChange={(event) =>
+                table.getColumn("paymongoID")?.setFilterValue(event.target.value)
+              }
+              className="max-w-sm"
+            />
+          </div>
+        </div>
+        <div className="rounded-md border">
+          <Table>
+            <TableHeader>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => {
+                    return (
+                      <TableHead key={header.id}>
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
+                      </TableHead>
+                    )
+                  })}
                 </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  No results.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <div className="flex-1 text-sm text-muted-foreground">
-          {table.getFilteredSelectedRowModel().rows.length} of{" "}
-          {table.getFilteredRowModel().rows.length} row(s) selected.
+              ))}
+            </TableHeader>
+            <TableBody>
+              {table.getRowModel().rows?.length ? (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() && "selected"}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id}>
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={columns.length}
+                    className="h-24 text-center"
+                  >
+                    No results.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
         </div>
-        <div className="space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            Previous
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            Next
-          </Button>
+        <div className="flex items-center justify-end space-x-2 py-4">
+          <div className="flex-1 text-sm text-muted-foreground">
+            {table.getFilteredSelectedRowModel().rows.length} of{" "}
+            {table.getFilteredRowModel().rows.length} row(s) selected.
+          </div>
+          <div className="space-x-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => table.previousPage()}
+              disabled={!table.getCanPreviousPage()}
+            >
+              Previous
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => table.nextPage()}
+              disabled={!table.getCanNextPage()}
+            >
+              Next
+            </Button>
+          </div>
         </div>
       </div>
-    </div>
     </>
   );
 }
