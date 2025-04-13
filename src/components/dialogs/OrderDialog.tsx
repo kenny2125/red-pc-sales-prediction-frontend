@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { ScrollText } from "lucide-react";
+import { ScrollText, Loader2 } from "lucide-react";
+import { useUser } from "@/contexts/UserContext";
+import { toast } from "sonner";
 import {
   Dialog,
   DialogContent,
@@ -22,55 +24,94 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-type UserRole = "guest" | "customer" | "admin";
-
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  role: UserRole;
+interface OrderItem {
+  product_id: string;
+  quantity: number;
+  price_at_time: number;
+  product_name: string;
+  image_url: string;
 }
 
-const orders = [
-  {
-    orderNumber: "ORD001",
-    productName: "Gaming Mouse",
-    paidAt: "March 22, 2025",
-    amount: "Php250.00",
-  },
-  {
-    orderNumber: "ORD002",
-    productName: "Mechanical Keyboard",
-    paidAt: "March 23, 2025",
-    amount: "Php1,200.00",
-  },
-  {
-    orderNumber: "ORD003",
-    productName: "Gaming Headset",
-    paidAt: "March 24, 2025",
-    amount: "Php800.00",
-  },
-  {
-    orderNumber: "ORD004",
-    productName: "Monitor Stand",
-    paidAt: "March 25, 2025",
-    amount: "Php350.00",
-  },
-  {
-    orderNumber: "ORD005",
-    productName: "USB Hub",
-    paidAt: "March 26, 2025",
-    amount: "Php150.00",
-  },
-];
+interface Order {
+  orderID: string;
+  paymentStatus: string;
+  pickupStatus: string;
+  customerName: string;
+  orderDate: string;
+  purchasedProduct: string;
+  totalAmount: number;
+  items: OrderItem[];
+}
 
 export function OrderDialog() {
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [loading, setLoading] = useState(false);
+  const { currentUser } = useUser();
+  const [isOpen, setIsOpen] = useState(false);
 
+  const fetchOrders = async () => {
+    try {
+      setLoading(true);
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('No authentication token found');
+      }
+
+      // Determine the endpoint based on user role
+      const endpoint = currentUser?.role === 'admin' 
+        ? `${import.meta.env.VITE_API_URL}/api/orders`
+        : `${import.meta.env.VITE_API_URL}/api/orders/by-user/${currentUser?.id}`;
+
+      const response = await fetch(endpoint, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch orders');
+      }
+
+      const data = await response.json();
+      setOrders(data);
+    } catch (error) {
+      console.error('Error fetching orders:', error);
+      toast.error('Failed to fetch orders');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isOpen && currentUser) {
+      fetchOrders();
+    }
+  }, [isOpen, currentUser]);
+
+  const calculateTotal = () => {
+    return orders.reduce((total, order) => total + order.totalAmount, 0);
+  };
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  };
+
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('en-PH', {
+      style: 'currency',
+      currency: 'PHP'
+    }).format(amount);
+  };
 
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <ScrollText size={40} className="text-primary" />
+        <ScrollText size={40} className="text-primary cursor-pointer" />
       </DialogTrigger>
 
       <DialogContent className="sm:max-w-[867px]">
@@ -80,41 +121,83 @@ export function OrderDialog() {
             <DialogTitle>Order History</DialogTitle>
           </div>
           <DialogDescription>
-            Make changes to your profile here. Click save when you're done.
+            View your order history and status updates
           </DialogDescription>
         </DialogHeader>
 
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-[100px]">Order#</TableHead>
-              <TableHead>Product Name</TableHead>
-              <TableHead>Paid At</TableHead>
-              <TableHead className="text-right">Amount</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {orders.map((order) => (
-              <TableRow key={order.orderNumber}>
-                <TableCell className="font-medium">{order.orderNumber}</TableCell>
-                <TableCell>{order.productName}</TableCell>
-                <TableCell>{order.paidAt}</TableCell>
-                <TableCell className="text-right">
-                  {order.amount}
-                </TableCell>
+        {loading ? (
+          <div className="flex justify-center items-center h-40">
+            <Loader2 className="h-8 w-8 animate-spin" />
+          </div>
+        ) : (
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-[100px]">Order#</TableHead>
+                <TableHead>Products</TableHead>
+                <TableHead>Payment Status</TableHead>
+                <TableHead>Pickup Status</TableHead>
+                <TableHead>Date</TableHead>
+                <TableHead className="text-right">Amount</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-          <TableFooter>
-            <TableRow>
-              <TableCell colSpan={3}>Total</TableCell>
-              <TableCell className="text-right">Php2,750.00</TableCell>
-            </TableRow>
-          </TableFooter>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {orders.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={6} className="text-center py-8">
+                    No orders found
+                  </TableCell>
+                </TableRow>
+              ) : (
+                orders.map((order) => (
+                  <TableRow key={order.orderID}>
+                    <TableCell className="font-medium">{order.orderID}</TableCell>
+                    <TableCell>{order.purchasedProduct}</TableCell>
+                    <TableCell>
+                      <span className={`capitalize ${
+                        order.paymentStatus === 'Paid' ? 'text-green-600' :
+                        order.paymentStatus === 'Processing' ? 'text-yellow-600' :
+                        order.paymentStatus === 'Cancelled' ? 'text-red-600' :
+                        'text-gray-600'
+                      }`}>
+                        {order.paymentStatus}
+                      </span>
+                    </TableCell>
+                    <TableCell>
+                      <span className={`capitalize ${
+                        order.pickupStatus === 'Claimed' ? 'text-green-600' :
+                        order.pickupStatus === 'Ready to Claim' ? 'text-yellow-600' :
+                        order.pickupStatus === 'Cancelled' ? 'text-red-600' :
+                        'text-gray-600'
+                      }`}>
+                        {order.pickupStatus}
+                      </span>
+                    </TableCell>
+                    <TableCell>{formatDate(order.orderDate)}</TableCell>
+                    <TableCell className="text-right">
+                      {formatCurrency(order.totalAmount)}
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+            {orders.length > 0 && (
+              <TableFooter>
+                <TableRow>
+                  <TableCell colSpan={5}>Total</TableCell>
+                  <TableCell className="text-right">
+                    {formatCurrency(calculateTotal())}
+                  </TableCell>
+                </TableRow>
+              </TableFooter>
+            )}
+          </Table>
+        )}
 
         <DialogFooter>
-          <Button type="submit">Close</Button>
+          <Button variant="outline" onClick={() => setIsOpen(false)}>
+            Close
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
