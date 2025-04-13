@@ -12,6 +12,12 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles }) => {
     return <Navigate to="/unauthorized" replace />;
   }
   
+  // Admin has access to everything
+  if (currentUser.role === "admin") {
+    return <Outlet />;
+  }
+  
+  // Editor and Viewer have access to their allowed routes
   if (allowedRoles.includes(currentUser.role)) {
     return <Outlet />;
   }

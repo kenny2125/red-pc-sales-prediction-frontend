@@ -20,6 +20,7 @@ import Dashboard from "./pages/admin/Dashboard";
 import Inventory from "./pages/admin/Inventory";
 import Orders from "./pages/admin/Orders";
 import Sales from "./pages/admin/Sales";
+import UserManagement from "./pages/admin/UserManagement";
 import TestView from "./pages/Test";
 import Search from "./pages/customer/Search";
 // import PackageView from "./pages/Package";
@@ -57,9 +58,18 @@ const App: React.FC = () => (
             {/* Protected Admin Routes */}
             <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
               <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/users" element={<UserManagement />} />
+            </Route>
+
+            {/* Protected Admin & Editor Routes */}
+            <Route element={<ProtectedRoute allowedRoles={["admin", "editor"]} />}>
               <Route path="/inventory" element={<Inventory />} />
-              <Route path="/sales" element={<Sales />} />
               <Route path="/orders" element={<Orders />} />
+            </Route>
+
+            {/* Protected Admin, Editor & Viewer Routes */}
+            <Route element={<ProtectedRoute allowedRoles={["admin", "editor", "viewer"]} />}>
+              <Route path="/sales" element={<Sales />} />
             </Route>
             
             <Route path="/test" element={<TestView />} />

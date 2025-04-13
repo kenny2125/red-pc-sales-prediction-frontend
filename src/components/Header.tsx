@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
-import { Search, LayoutDashboard, PackageSearch, TrendingUp, ScrollText, Menu } from "lucide-react";
+import { Search, LayoutDashboard, PackageSearch, TrendingUp, ScrollText, Menu, Users } from "lucide-react";
 import { ProfileDialog } from "./dialogs/ProfileDialog";
 import { OrderDialog } from "./dialogs/OrderDialog";
 import { CartDialog } from "./dialogs/CartDialog";
@@ -23,9 +23,42 @@ export default function Header() {
     return "Good Evening";
   };
 
+  // Helper function to get navigation links based on user role
+  const getNavigationLinks = () => {
+    if (!currentUser) return [];
+
+    const links = [];
+
+    // Admin has access to everything
+    if (currentUser.role === "admin") {
+      links.push(
+        { to: "/dashboard", icon: <LayoutDashboard className="w-5 h-5" />, text: "Dashboard" },
+        { to: "/inventory", icon: <PackageSearch className="w-5 h-5" />, text: "Inventory" },
+        { to: "/sales", icon: <TrendingUp className="w-5 h-5" />, text: "Sales" },
+        { to: "/orders", icon: <ScrollText className="w-5 h-5" />, text: "Orders" },
+        { to: "/users", icon: <Users className="w-5 h-5" />, text: "Users" }
+      );
+    }
+    // Editor has access to inventory, orders, and sales
+    else if (currentUser.role === "editor") {
+      links.push(
+        { to: "/inventory", icon: <PackageSearch className="w-5 h-5" />, text: "Inventory" },
+        { to: "/sales", icon: <TrendingUp className="w-5 h-5" />, text: "Sales" },
+        { to: "/orders", icon: <ScrollText className="w-5 h-5" />, text: "Orders" }
+      );
+    }
+    // Viewer has access to sales only
+    else if (currentUser.role === "viewer") {
+      links.push(
+        { to: "/sales", icon: <TrendingUp className="w-5 h-5" />, text: "Sales" }
+      );
+    }
+
+    return links;
+  };
+
   function productSearch() {
     try {
-      // Try mobile input first; fallback to desktop input
       const mobileInput = document.getElementById("mobile-search-input") as HTMLInputElement;
       const desktopInput = document.querySelector('input[type="email"]') as HTMLInputElement;
       const searchValue =
@@ -41,9 +74,11 @@ export default function Header() {
     }
   }
 
+  const navigationLinks = getNavigationLinks();
+
   return (
     <div className="w-full flex flex-col">
-      {currentUser?.role == "admin" ? (
+      {currentUser?.role === "admin" || currentUser?.role === "editor" || currentUser?.role === "viewer" ? (
         <div className="min-h-[4rem] lg:h-[8rem] flex flex-col lg:flex-row justify-between items-center w-full">
           {/* Logo - Left */}
           <div className="flex w-full lg:w-1/4 justify-between lg:justify-start items-center px-4 lg:px-0 py-2 lg:py-0">
@@ -65,22 +100,16 @@ export default function Header() {
           
           {/* Navigation Links - Center */}
           <div className="hidden lg:flex items-center justify-center gap-12 flex-1">
-            <Link to="/dashboard" className="flex items-center gap-2 hover:text-primary transition-colors">
-              <LayoutDashboard className="w-5 h-5" />
-              <span>Dashboard</span>
-            </Link>
-            <Link to="/inventory" className="flex items-center gap-2 hover:text-primary transition-colors">
-              <PackageSearch className="w-5 h-5" />
-              <span>Inventory</span>
-            </Link>
-            <Link to="/sales" className="flex items-center gap-2 hover:text-primary transition-colors">
-              <TrendingUp className="w-5 h-5" />
-              <span>Sales</span>
-            </Link>
-            <Link to="/orders" className="flex items-center gap-2 hover:text-primary transition-colors">
-              <ScrollText className="w-5 h-5" />
-              <span>Orders</span>
-            </Link>
+            {navigationLinks.map((link) => (
+              <Link 
+                key={link.to} 
+                to={link.to} 
+                className="flex items-center gap-2 hover:text-primary transition-colors"
+              >
+                {link.icon}
+                <span>{link.text}</span>
+              </Link>
+            ))}
           </div>
 
           {/* User Controls - Right */}
@@ -95,22 +124,16 @@ export default function Header() {
 
           {/* Mobile Navigation */}
           <div className={`lg:hidden w-full ${mobileMenuOpen ? 'flex' : 'hidden'} flex-col gap-2 px-4 py-2 bg-background border-t`}>
-            <Link to="/dashboard" className="flex items-center gap-2 hover:text-primary transition-colors py-2">
-              <LayoutDashboard className="w-5 h-5" />
-              <span>Dashboard</span>
-            </Link>
-            <Link to="/inventory" className="flex items-center gap-2 hover:text-primary transition-colors py-2">
-              <PackageSearch className="w-5 h-5" />
-              <span>Inventory</span>
-            </Link>
-            <Link to="/sales" className="flex items-center gap-2 hover:text-primary transition-colors py-2">
-              <TrendingUp className="w-5 h-5" />
-              <span>Sales</span>
-            </Link>
-            <Link to="/orders" className="flex items-center gap-2 hover:text-primary transition-colors py-2">
-              <ScrollText className="w-5 h-5" />
-              <span>Orders</span>
-            </Link>
+            {navigationLinks.map((link) => (
+              <Link 
+                key={link.to} 
+                to={link.to} 
+                className="flex items-center gap-2 hover:text-primary transition-colors py-2"
+              >
+                {link.icon}
+                <span>{link.text}</span>
+              </Link>
+            ))}
           </div>
         </div>
       ) : (
