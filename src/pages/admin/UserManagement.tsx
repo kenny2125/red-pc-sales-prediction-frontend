@@ -320,7 +320,7 @@ export function UserManagement() {
   }
 
   return (
-    <div className="w-full p-4">
+    <div className="w-full">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between py-4 gap-4">
         <div className="flex items-center gap-2">
           <UserSquare2 size="40px" />

@@ -626,7 +626,7 @@ export function Inventory() {
   });
 
   return (
-    <div className="w-full px-4 md:px-6">
+    <div className="w-full">
       {error && (
         <div className="p-4 mb-4 rounded-md bg-red-100 text-red-700">
           {error}

@@ -52,7 +52,7 @@ const Checkout = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
-  const [paymentMethod, setPaymentMethod] = useState<string>("");
+  const [paymentMethod, setPaymentMethod] = useState<string>("cod");
   const [pickupMethod, setPickupMethod] = useState<string>("");
 
   // If not logged in, redirect to home
@@ -243,8 +243,9 @@ const Checkout = () => {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="cod">Cash on Delivery</SelectItem>
-                  <SelectItem value="gcash">GCASH</SelectItem>
-                  <SelectItem value="paymaya">PAYMAYA</SelectItem>
+                  {/* Only Cash on Delivery is available by default */}
+                  {/* <SelectItem value="gcash">GCASH</SelectItem>
+                  <SelectItem value="paymaya">PAYMAYA</SelectItem> */}
                 </SelectContent>
               </Select>
             </div>
