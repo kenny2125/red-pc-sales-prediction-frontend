@@ -23,8 +23,6 @@ import Sales from "./pages/admin/Sales";
 import UserManagement from "./pages/admin/UserManagement";
 import TestView from "./pages/Test";
 import Search from "./pages/customer/Search";
-// import PackageView from "./pages/Package";
-// import PackageDetail from "./pages/PackageDetail";
 import Checkout from "./pages/customer/Checkout";
 import Unauthorized from "./pages/Unauthorized";
 import NotFound from "./pages/NotFound";
@@ -80,19 +78,7 @@ const App: React.FC = () => (
 
           <Footer />
         </div>
-        {/* Global styles for brand logos animation speeds */}
-        <style>
-          {`
-            .brand-logos {
-              animation-duration: 10s;
-            }
-            @media (max-width: 768px) {
-              .brand-logos {
-                animation-duration: 15s;
-              }
-            }
-          `}
-        </style>
+
       </ThemeProvider>
     </BrowserRouter>
   </UserProvider>

@@ -1,52 +1,58 @@
 import React from "react";
-import { LucideScrollText } from "lucide-react";
+import { LucideScrollText, Info, User, Lock, Share2, Shield, Users } from "lucide-react";
 
 const Terms: React.FC = () => {
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <div className="text-center rounded">
-        <h1 className="text-4xl font-['Anton'] text-black dark:text-white">
-          Terms & Conditions
+    <div className="max-w-2xl mx-auto p-8 bg-white dark:bg-gray-900 rounded-lg shadow-md">
+      <div className="text-center mb-8">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2 flex items-center justify-center gap-2">
+          <LucideScrollText className="w-8 h-8 text-primary" /> Terms & Conditions
         </h1>
+        <p className="text-gray-500 dark:text-gray-400 text-base">Please read our terms and conditions carefully.</p>
       </div>
-
-      <div className="flex flex-col gap-2 mt-4">
-        <h2 className="text-2xl font-['Anton'] flex items-center gap-2 text-black dark:text-white">
-          <LucideScrollText /> Terms & Conditions
-        </h2>
-        <p className="leading-relaxed text-gray-700 dark:text-gray-300">
-          These Terms and Conditions govern your access to and use of our website, services, and products. By using our website, you agree to comply with and be bound by these terms. If you do not agree to these Terms and Conditions, you should not use our services. We reserve the right to modify these terms at any time, and any changes will be posted on this page. Your continued use of the site after any modifications indicates your acceptance of the updated Terms and Conditions.
-        </p>
-
-        <h2 className="text-2xl font-['Anton'] text-black dark:text-white">Information We Collect</h2>
-        <p className="leading-relaxed text-gray-700 dark:text-gray-300">
-          We collect information that you provide directly to us, such as when you create an account, make a purchase, or communicate with us. This information may include your name, email address, phone number, payment information, and any other details you choose to provide.
-        </p>
-
-        <h2 className="text-2xl font-['Anton'] text-black dark:text-white">How We Use Your Information</h2>
-        <p className="leading-relaxed text-gray-700 dark:text-gray-300">
-          We use the information we collect to process transactions, personalize your experience, improve our website, provide customer support, and communicate with you about products, services, and promotions. We may also use your information for analytics to enhance the functionality and performance of our services.
-        </p>
-
-        <h2 className="text-2xl font-['Anton'] text-black dark:text-white">How We Disclose Your Information</h2>
-        <p className="leading-relaxed text-gray-700 dark:text-gray-300">
-          We may share your information with trusted third-party service providers who assist us in operating our business, such as payment processors and shipping companies. We ensure these partners handle your data securely and only for purposes aligned with our privacy practices. We may also share information as required by law or to protect our legal rights.
-        </p>
-
-        <h2 className="text-2xl font-['Anton'] text-black dark:text-white">Security</h2>
-        <p className="leading-relaxed text-gray-700 dark:text-gray-300">
-          We are committed to protecting your information and have implemented industry-standard security measures to prevent unauthorized access, disclosure, alteration, or destruction of your data. While we strive to safeguard your information, please note that no method of electronic storage is 100% secure.
-        </p>
-
-        <h2 className="text-2xl font-['Anton'] text-black dark:text-white">Third-Party Websites</h2>
-        <p className="leading-relaxed text-gray-700 dark:text-gray-300">
-          Our website may link to external sites with their own policies. We are not responsible for their privacy practices or content of third-party sites.
-        </p>
-
-        <h2 className="text-2xl font-['Anton'] text-black dark:text-white">Children's Privacy</h2>
-        <p className="leading-relaxed text-gray-700 dark:text-gray-300">
-          Our services are not directed at children under 13, and we do not knowingly collect personal information from children. If we become aware of data collected from children without parental consent, we will take steps to delete it promptly.
-        </p>
+      <div className="flex flex-col gap-8">
+        <div className="flex items-start gap-4">
+          <Info className="w-6 h-6 text-blue-500 mt-1" />
+          <div>
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">General Terms</h2>
+            <p className="text-gray-600 dark:text-gray-300 text-sm">By using our website, you agree to comply with and be bound by these terms. We may update these terms at any time. Continued use of the site means you accept any changes.</p>
+          </div>
+        </div>
+        <div className="flex items-start gap-4">
+          <User className="w-6 h-6 text-green-500 mt-1" />
+          <div>
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Information We Collect</h2>
+            <p className="text-gray-600 dark:text-gray-300 text-sm">We collect information you provide directly, such as when you create an account, make a purchase, or contact us. This may include your name, email, phone, and payment details.</p>
+          </div>
+        </div>
+        <div className="flex items-start gap-4">
+          <Lock className="w-6 h-6 text-yellow-500 mt-1" />
+          <div>
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">How We Use Your Information</h2>
+            <p className="text-gray-600 dark:text-gray-300 text-sm">We use your information to process transactions, personalize your experience, improve our website, provide support, and communicate with you about products and services.</p>
+          </div>
+        </div>
+        <div className="flex items-start gap-4">
+          <Share2 className="w-6 h-6 text-orange-500 mt-1" />
+          <div>
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">How We Share Your Information</h2>
+            <p className="text-gray-600 dark:text-gray-300 text-sm">We may share your information with trusted third-party providers for business operations, or as required by law. We ensure partners handle your data securely.</p>
+          </div>
+        </div>
+        <div className="flex items-start gap-4">
+          <Shield className="w-6 h-6 text-cyan-500 mt-1" />
+          <div>
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Security</h2>
+            <p className="text-gray-600 dark:text-gray-300 text-sm">We use industry-standard security measures to protect your data. No method is 100% secure, but we strive to safeguard your information.</p>
+          </div>
+        </div>
+        <div className="flex items-start gap-4">
+          <Users className="w-6 h-6 text-pink-500 mt-1" />
+          <div>
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Children's Privacy</h2>
+            <p className="text-gray-600 dark:text-gray-300 text-sm">Our services are not directed at children under 13. We do not knowingly collect data from children. If we learn of such data, we will delete it promptly.</p>
+          </div>
+        </div>
       </div>
     </div>
   );

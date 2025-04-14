@@ -1,91 +1,63 @@
 import React from "react";
+import { FileText, Lock, UserCheck, Clock, RefreshCcw, Shield } from "lucide-react";
 
 const PrivacyPolicy: React.FC = () => {
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <div className="text-center rounded">
-        <h1 className="text-4xl font-['Anton'] text-black dark:text-white">Privacy Policy</h1>
+    <div className="max-w-2xl mx-auto p-8 bg-white dark:bg-gray-900 rounded-lg shadow-md">
+      <div className="text-center mb-8">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2 flex items-center justify-center gap-2">
+          <Lock className="w-8 h-8 text-primary" /> Privacy Policy
+        </h1>
+        <p className="text-gray-500 dark:text-gray-400 text-base">How we collect, use, and protect your information.</p>
       </div>
-
-      <div className="mt-6 space-y-6">
-        <h2 className="text-2xl font-['Anton'] text-black dark:text-white">Privacy Policy</h2>
-        <p className="leading-relaxed text-gray-700 dark:text-gray-300">
-          We are a team dedicated to providing exceptional products and services, with a commitment to transparency, 
-          privacy, and security for our users. Our goal is to create a seamless experience while ensuring 
-          your personal data is protected. This Privacy Policy outlines how we collect, use, and secure your information.
-        </p>
-
-        <h3 className="text-xl font-['Anton'] text-black dark:text-white">Personal Information We Collect</h3>
-
-        <h4 className="text-lg font-['Anton'] text-black dark:text-white">Device Information</h4>
-        <p className="leading-relaxed text-gray-700 dark:text-gray-300">
-          We collect information about the device you use to access our website, including your IP address, 
-          browser type, operating system, and device identifiers. This helps us optimize your experience, 
-          troubleshoot issues, and secure our platform.
-        </p>
-
-        <h4 className="text-lg font-['Anton'] text-black dark:text-white">Cookies</h4>
-        <p className="leading-relaxed text-gray-700 dark:text-gray-300">
-          Our website uses cookies to enhance your experience. Cookies are small data files stored on your device 
-          that remember your preferences and improve site functionality. You can manage cookie preferences in 
-          your browser settings.
-        </p>
-
-        <h4 className="text-lg font-['Anton'] text-black dark:text-white">Log Files</h4>
-        <p className="leading-relaxed text-gray-700 dark:text-gray-300">
-          We use log files to record actions on our site, including your IP address, browser type, 
-          and interaction with our pages. This data helps us improve site performance and troubleshoot issues.
-        </p>
-
-        <h4 className="text-lg font-['Anton'] text-black dark:text-white">Web Beacons, Tags, and Pixels</h4>
-        <p className="leading-relaxed text-gray-700 dark:text-gray-300">
-          We may use web beacons, tags, and pixels to track user behavior, understand website traffic, 
-          and measure the effectiveness of our marketing efforts. This information is used solely for analytics 
-          and improving user experience.
-        </p>
-
-        <h3 className="text-xl font-['Anton'] text-black dark:text-white">How Do We Use Your Personal Information?</h3>
-        <p className="leading-relaxed text-gray-700 dark:text-gray-300">
-          We use your personal information to process orders, provide customer support, and improve our services. 
-          This may include personalizing your experience, sending updates and promotional materials, and analyzing 
-          user behavior to enhance our offerings. We prioritize your privacy and ensure that all uses of your data 
-          align with this Privacy Policy.
-        </p>
-
-        <h3 className="text-xl font-['Anton'] text-black dark:text-white">Data Retention</h3>
-        <p className="leading-relaxed text-gray-700 dark:text-gray-300">
-          We retain your personal information only for as long as necessary to fulfill the purposes outlined in this policy, 
-          including providing services, maintaining your account, and complying with legal obligations. Once your information 
-          is no longer needed, we securely delete or anonymize it.
-        </p>
-
-        <h3 className="text-xl font-['Anton'] text-black dark:text-white">Data Privacy Changes</h3>
-        <p className="leading-relaxed text-gray-700 dark:text-gray-300">
-          We may occasionally update this Privacy Policy to reflect changes in our practices or legal requirements. 
-          Any updates will be posted on this page, and we encourage you to review it periodically. Your continued use 
-          of our services after policy changes signifies your acceptance of the revised terms.
-        </p>
-
-        <h3 className="text-xl font-['Anton'] text-black dark:text-white">Security of Your Information</h3>
-        <p className="leading-relaxed text-gray-700 dark:text-gray-300">
-          We take your security seriously and implement multiple security measures to protect your personal information. 
-          These measures include encryption, firewalls, and secure server environments. While we strive to safeguard your data, 
-          please note that no method of transmission over the internet or electronic storage is 100% secure. However, we remain 
-          committed to keeping your data as secure as possible.
-        </p>
-
-        <h3 className="text-xl font-['Anton'] text-black dark:text-white">Policy for Children</h3>
-        <p className="leading-relaxed text-gray-700 dark:text-gray-300">
-          At RED PC, we value the privacy and protection of children who use our services. This Children's Privacy Policy 
-          outlines how we collect, use, and secure personal information from children under the age of 13 in accordance with 
-          applicable privacy laws.
-        </p>
-
-        <p className="leading-relaxed text-gray-700 dark:text-gray-300 mt-4">
-          Depending on your location, you may have certain rights regarding your personal information, such as the right to 
-          access, correct, or delete your data. If you have any concerns, please contact us at{" "}
-          <span className="text-orange-500">redpccomputer@gmail.com</span>.
-        </p>
+      <div className="flex flex-col gap-8">
+        <div className="flex items-start gap-4">
+          <FileText className="w-6 h-6 text-blue-500 mt-1" />
+          <div>
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Personal Information We Collect</h2>
+            <ul className="list-disc ml-5 text-gray-600 dark:text-gray-300 text-sm">
+              <li>Device Information (IP address, browser type, OS, device identifiers)</li>
+              <li>Cookies (preferences, site functionality)</li>
+              <li>Log Files (site actions, interactions)</li>
+              <li>Web Beacons, Tags, and Pixels (analytics, marketing effectiveness)</li>
+            </ul>
+          </div>
+        </div>
+        <div className="flex items-start gap-4">
+          <UserCheck className="w-6 h-6 text-green-500 mt-1" />
+          <div>
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">How We Use Your Information</h2>
+            <p className="text-gray-600 dark:text-gray-300 text-sm">We use your information to process orders, provide support, personalize your experience, send updates, and improve our services. We do not sell your data.</p>
+          </div>
+        </div>
+        <div className="flex items-start gap-4">
+          <Clock className="w-6 h-6 text-yellow-500 mt-1" />
+          <div>
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Data Retention</h2>
+            <p className="text-gray-600 dark:text-gray-300 text-sm">We retain your information only as long as necessary for service provision, account maintenance, and legal compliance. Data is securely deleted or anonymized when no longer needed.</p>
+          </div>
+        </div>
+        <div className="flex items-start gap-4">
+          <RefreshCcw className="w-6 h-6 text-orange-500 mt-1" />
+          <div>
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Policy Updates</h2>
+            <p className="text-gray-600 dark:text-gray-300 text-sm">We may update this policy as needed. Please review it periodically. Continued use of our services means you accept the changes.</p>
+          </div>
+        </div>
+        <div className="flex items-start gap-4">
+          <Shield className="w-6 h-6 text-cyan-500 mt-1" />
+          <div>
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Security</h2>
+            <p className="text-gray-600 dark:text-gray-300 text-sm">We use encryption, firewalls, and secure servers to protect your data. No method is 100% secure, but we are committed to your privacy.</p>
+          </div>
+        </div>
+        <div className="flex items-start gap-4">
+          <Shield className="w-6 h-6 text-pink-500 mt-1" />
+          <div>
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Children's Privacy</h2>
+            <p className="text-gray-600 dark:text-gray-300 text-sm">We do not knowingly collect data from children under 13. If you have concerns, contact us at <span className="text-primary">redpccomputer@gmail.com</span>.</p>
+          </div>
+        </div>
       </div>
     </div>
   );

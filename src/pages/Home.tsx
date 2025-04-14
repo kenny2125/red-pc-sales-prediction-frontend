@@ -15,7 +15,6 @@ import brand10 from "../assets/brand-logos/ovation.svg";
 import brand11 from "../assets/brand-logos/pny.svg";
 import brand12 from "../assets/brand-logos/ramsta.svg";
 import brand13 from "../assets/brand-logos/teamgroup.svg";
-import PackageCard from "@/components/cards/PackageCard";
 import ProductCard from "@/components/cards/ProductCard";
 import { useEffect, useState } from "react";
 
@@ -146,40 +145,7 @@ function Home() {
         </div>
       </section>
 
-      <section className="flex flex-col items-center my-12">
-        <div>
-          <h1 className="text-4xl font-bold text-center">Check our Computer Builds</h1>
-        </div>
 
-        {/* Scrollable container with custom scrollbar */}
-        <div className="w-full max-w-[90vw] relative">
-          <div className="overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-primary scrollbar-track-secondary">
-            <div className="flex gap-4 min-w-max px-4">
-              <PackageCard />
-              <PackageCard />
-              <PackageCard />
-              <PackageCard />
-              <PackageCard />
-              <PackageCard />
-              <PackageCard />
-              <PackageCard />
-              <PackageCard />
-              <PackageCard />
-              <PackageCard />
-              <PackageCard />
-            </div>
-          </div>
-        </div>
-
-        <Button
-          className="text-xl p-5 m-6"
-          onClick={() => {
-            window.location.href = "/pc-builds";
-          }}
-        >
-          See More <CircleArrowRight className="ml-2" />
-        </Button>
-      </section>
 
       <section className="flex flex-col items-center">
         <h1 className="text-4xl font-bold mt-10 text-center">
