@@ -188,7 +188,7 @@ export default function Search() {
   return (
     <>
       {/* Desktop View */}
-      <div className="hidden md:flex gap-4 p-4">
+      <div className="hidden md:flex gap-4 ">
         <FilterCard />
         <div className="flex-1">
           <div>
@@ -206,7 +206,7 @@ export default function Search() {
                     <p className="text-lg text-gray-500">No products found matching your criteria</p>
                   </div>
                 ) : (
-                  <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3 sm:gap-4">
+                  <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-5 gap-3 sm:gap-4">
                     {filteredProducts.map((product) => (
                       <ProductCard key={product.product_id} product={product} />
                     ))}

@@ -1,5 +1,3 @@
-import gif from "../assets/home-gif.gif";
-import PackageSet from "../assets/package-pic.png";
 import { Button } from "@/components/ui/button";
 import { CircleArrowRight } from "lucide-react";
 import brand1 from "../assets/brand-logos/amd.svg";
@@ -68,56 +66,8 @@ function Home() {
   ];
 
   return (
-    <main>
-      {/* Hero Section */}
-      <section
-        style={{
-          backgroundImage: `url(${gif})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          position: "relative",
-        }}
-        className="mx-0 md:mx-[-175px] h-auto md:h-[75vh]"
-      >
-        {/* Dark overlay to make background less bright */}
-        <div
-          className="absolute inset-0 bg-white/70 dark:bg-black/70"
-          style={{ zIndex: 1 }}
-        ></div>
+    <main>    
 
-        {/* CTO */}
-        <div className="relative z-10 flex flex-col md:flex-row items-center justify-between px-[5%] md:px-[10%] lg:px-[150px] h-full w-full">
-          {/* Image container: responsive size and lower z-index on small screens */}
-          <div className="order-1 md:order-2 z-0">
-            <img
-              className="w-full max-w-[250px] md:max-w-md h-auto" // smaller on sm, larger on md+
-              src={PackageSet}
-              alt="Package Set"
-            />
-          </div>
-
-          {/* Text container: ensure it remains above the image */}
-          <div className="order-2 md:order-1 max-w-[600px] text-center md:text-left z -10 h-full flex flex-col justify-center">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-7">
-              Empowering Your <br /> Digital Experience
-            </h1>
-            <p className="text-[17px] -2xl">
-              Providing Quality Computers and Accessories Across the Philippines.
-            </p>
-            <p className="text-[17px] -2xl">
-              Starting at <span className="text-2xl font-bold">₱17,399</span> per computer Set
-            </p>
-            <Button
-              className="mt-7 font-bold text-2xl p-6 cursor-pointer"
-              onClick={() => {
-                window.location.href = "/search";
-              }}
-            >
-              Shop Now <CircleArrowRight  />
-            </Button>
-          </div>
-        </div>
-      </section>
 
       {/* Brand Logos Section */}
       <section className="py-[30px] mt-5">
@@ -177,26 +127,6 @@ function Home() {
         >
           See More Products <CircleArrowRight className="ml-2" />
         </Button>
-      </section>
-
-      {/* Facebook Page Embed Section */}
-      <section className="flex flex-col items-center my-16 px-4">
-        <h1 className="text-4xl font-bold mb-8">Connect With Us</h1>
-        <div className="flex flex-col items-center gap-8 w-full">
-          {/* Timeline embed */}
-          <div className="rounded-lg overflow-hidden shadow-lg flex justify-center items-center">
-            <iframe 
-              src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2FREDPCPH&tabs=timeline&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true" 
-              style={{ border: 'none', overflow: 'hidden', width: '100%', height: '600px' }} 
-              scrolling="no" 
-              frameBorder="0" 
-              allowFullScreen={true} 
-              allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
-              title="RED PC Facebook Timeline"            
-            ></iframe>
-          </div>
-          
-        </div>
       </section>
       
     </main>

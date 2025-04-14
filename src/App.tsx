@@ -33,7 +33,7 @@ const App: React.FC = () => (
       <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
         {/* Add Sonner Toaster */}
         <Toaster position="top-center" richColors />
-        <div className="sm:px-[175px] md:px-[100px] lg:px-[175px]  ">
+        <div className="sm:px-[175px] md:px-[100px] lg:px-[300px]  ">
           <Header />
 
           <Routes>

@@ -160,7 +160,10 @@ export default function Header() {
                   <ModeToggle />
                 </div>
               ) : (
+                <div className="inline-flex items-center gap-2">
                 <LogInDialog />
+                <ModeToggle />
+                </div>
               )}
             </div>
           </div>
