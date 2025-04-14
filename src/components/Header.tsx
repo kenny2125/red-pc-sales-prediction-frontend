@@ -313,33 +313,35 @@ export default function Header() {
             </NavigationMenu>
           </div>
           {/* Mobile filter/hamburger beside search bar (visible on small screens) */}
-          <div className="flex md:hidden items-center px-4 pb-2 gap-2">
-            <Input id="mobile-search-input" type="email" placeholder="Search" className="flex-1" />
-            <Button type="submit" onClick={productSearch}>
-              <Search />
-            </Button>
-            <Sheet open={categoriesOpen} onOpenChange={setCategoriesOpen}>
-              <SheetTrigger asChild>
-                <Button variant="outline" size="icon" aria-label="Open categories menu">
-                  <Menu />
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="left" className="w-64 p-0">
-                <div className="p-4 border-b font-semibold text-lg">Categories</div>
-                <NavigationMenu orientation="vertical">
-                  <NavigationMenuList className="flex flex-col">
-                    {categories.map((cat) => (
-                      <NavigationMenuItem key={cat}>
-                        <NavigationMenuLink asChild>
-                          <a href={`/search?category=${encodeURIComponent(cat)}`}>{cat}</a>
-                        </NavigationMenuLink>
-                      </NavigationMenuItem>
-                    ))}
-                  </NavigationMenuList>
-                </NavigationMenu>
-              </SheetContent>
-            </Sheet>
-          </div>
+          {mobileSearchOpen && (
+            <div className="flex md:hidden items-center px-4 pb-2 gap-2">
+              <Input id="mobile-search-input" type="email" placeholder="Search" className="flex-1" />
+              <Button type="submit" onClick={productSearch}>
+                <Search />
+              </Button>
+              <Sheet open={categoriesOpen} onOpenChange={setCategoriesOpen}>
+                <SheetTrigger asChild>
+                  <Button variant="outline" size="icon" aria-label="Open categories menu">
+                    <Menu />
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="right" className="w-64 p-0">
+                  <div className="p-4 border-b font-semibold text-lg">Categories</div>
+                  <NavigationMenu orientation="vertical">
+                    <NavigationMenuList className="flex flex-col">
+                      {categories.map((cat) => (
+                        <NavigationMenuItem key={cat}>
+                          <NavigationMenuLink asChild>
+                            <a href={`/search?category=${encodeURIComponent(cat)}`}>{cat}</a>
+                          </NavigationMenuLink>
+                        </NavigationMenuItem>
+                      ))}
+                    </NavigationMenuList>
+                  </NavigationMenu>
+                </SheetContent>
+              </Sheet>
+            </div>
+          )}
         </>
       )}
     </div>
