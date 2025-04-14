@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useUser } from "@/contexts/UserContext";
 import brand1 from "@/assets/brand-logos/nvidia.svg";
-import sample from "@/assets/sample5090.jpg";
+import sample from "@/assets/image-placeholder.webp";
 import { Button } from "@/components/ui/button";
 import ProductList from "@/components/ProductList";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";

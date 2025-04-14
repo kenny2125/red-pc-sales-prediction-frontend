@@ -55,13 +55,14 @@ export default function Search() {
       setLoading(true);
       try {
         const query = searchParams.get("query");
+        const category = searchParams.get("category");
         let url = `${import.meta.env.VITE_API_URL}/api/product`;
-        
         // Add search query if present
         if (query) {
           url += `/search?query=${encodeURIComponent(query)}`;
+        } else if (category) {
+          url += `/search?query=${encodeURIComponent(category)}`;
         }
-
         const response = await fetch(url);
         if (!response.ok) throw new Error('Failed to fetch products');
         const data = await response.json();
@@ -125,6 +126,47 @@ export default function Search() {
       }
     });
 
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 30;
+
+  // Reset page when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedCategories, priceRange, sortBy, searchParams]);
+
+  // Paginated products
+  const paginatedProducts = filteredProducts.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+
+  // Pagination controls
+  const Pagination = () => (
+    <div className="flex justify-center items-center gap-2 mt-4">
+      <Button
+        variant="outline"
+        size="sm"
+        disabled={currentPage === 1}
+        onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+      >
+        Previous
+      </Button>
+      <span className="px-2 text-sm">
+        Page {currentPage} of {totalPages || 1}
+      </span>
+      <Button
+        variant="outline"
+        size="sm"
+        disabled={currentPage === totalPages || totalPages === 0}
+        onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+      >
+        Next
+      </Button>
+    </div>
+  );
+
   // Extracted FilterCard component for reuse
   const FilterCard = () => (
     <Card className="flex flex-col w-fit h-fit p-4 rounded-lg justify-center align-top gap-4">
@@ -177,10 +219,12 @@ export default function Search() {
       <Separator />
       <Button
         onClick={() => {
-          window.location.href = "/pc-builds";
+          setSelectedCategories([]);
+          setSortBy("");
+          setPriceRange([maxPrice]);
         }}
       >
-        Check out our PC Builds
+        Reset Filters
       </Button>
     </Card>
   );
@@ -188,7 +232,7 @@ export default function Search() {
   return (
     <>
       {/* Desktop View */}
-      <div className="hidden md:flex gap-4 ">
+      <div className="hidden md:flex gap-4 py-4">
         <FilterCard />
         <div className="flex-1">
           <div>
@@ -201,16 +245,19 @@ export default function Search() {
               </div>
             ) : (
               <div className="mt-4">
-                {filteredProducts.length === 0 ? (
+                {paginatedProducts.length === 0 ? (
                   <div className="text-center py-8">
                     <p className="text-lg text-gray-500">No products found matching your criteria</p>
                   </div>
                 ) : (
-                  <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-5 gap-3 sm:gap-4">
-                    {filteredProducts.map((product) => (
-                      <ProductCard key={product.product_id} product={product} />
-                    ))}
-                  </div>
+                  <>
+                    <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-5 gap-3 sm:gap-4">
+                      {paginatedProducts.map((product) => (
+                        <ProductCard key={product.product_id} product={product} />
+                      ))}
+                    </div>
+                    <Pagination />
+                  </>
                 )}
               </div>
             )}
@@ -251,17 +298,20 @@ export default function Search() {
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
                 </div>
               ) : (
-                <div className="grid grid-cols-2 sm:grid-cols-2 gap-4">
-                  {filteredProducts.length === 0 ? (
-                    <div className="text-center py-8 col-span-full">
-                      <p className="text-lg text-gray-500">No products found matching your criteria</p>
-                    </div>
-                  ) : (
-                    filteredProducts.map((product) => (
-                      <ProductCard key={product.product_id} product={product} />
-                    ))
-                  )}
-                </div>
+                <>
+                  <div className="grid grid-cols-2 sm:grid-cols-2 gap-4">
+                    {paginatedProducts.length === 0 ? (
+                      <div className="text-center py-8 col-span-full">
+                        <p className="text-lg text-gray-500">No products found matching your criteria</p>
+                      </div>
+                    ) : (
+                      paginatedProducts.map((product) => (
+                        <ProductCard key={product.product_id} product={product} />
+                      ))
+                    )}
+                  </div>
+                  <Pagination />
+                </>
               )}
             </>
           )}

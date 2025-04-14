@@ -15,6 +15,7 @@ import brand12 from "../assets/brand-logos/ramsta.svg";
 import brand13 from "../assets/brand-logos/teamgroup.svg";
 import ProductCard from "@/components/cards/ProductCard";
 import { useEffect, useState } from "react";
+import { Helmet } from "react-helmet-async";
 
 interface Product {
   product_id: string;
@@ -66,7 +67,10 @@ function Home() {
   ];
 
   return (
-    <main>    
+    <main>
+      <Helmet>
+        <title>Home - 1618 Office Solutions</title>
+      </Helmet>    
 
 
       {/* Brand Logos Section */}

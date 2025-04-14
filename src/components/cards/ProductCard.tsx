@@ -3,7 +3,7 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { useNavigate } from 'react-router-dom'
 import { Button } from "@/components/ui/button"
 import { ShoppingCart, Eye, Trash2 } from 'lucide-react'
-import defaultImage from '@/assets/redpcph.png'
+import defaultNoImage from '@/assets/image-placeholder.webp'
 import { useUser } from "@/contexts/UserContext"
 import { toast } from "sonner"
 
@@ -102,7 +102,7 @@ function ProductCard({ product }: ProductCardProps) {
       <CardContent className="p-3 sm:p-4 flex flex-col gap-3 sm:gap-4">
         <div className="aspect-square w-full relative bg-background/50 flex items-center justify-center">
           <img 
-            src={imageError ? defaultImage : product.image_url} 
+            src={imageError || !product.image_url ? defaultNoImage : product.image_url} 
             alt={product.product_name} 
             className="max-w-full max-h-full w-auto h-auto object-contain"
             onError={() => setImageError(true)}
