@@ -44,7 +44,7 @@ interface ValidationMetrics {
   mape: string
 }
 
-export function AreaChartView() {
+export function SalesPrediction() {
   const [chartData, setChartData] = useState<any[]>([]);
   const [predictionData, setPredictionData] = useState<PredictionData[]>([]);
   const [isLoading, setIsLoading] = useState(true);

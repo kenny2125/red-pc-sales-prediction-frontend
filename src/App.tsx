@@ -22,7 +22,6 @@ import Inventory from "./pages/admin/Inventory";
 import Orders from "./pages/admin/Orders";
 import Sales from "./pages/admin/Sales";
 import UserManagement from "./pages/admin/UserManagement";
-import TestView from "./pages/Test";
 import Search from "./pages/customer/Search";
 import Checkout from "./pages/customer/Checkout";
 import Unauthorized from "./pages/Unauthorized";
@@ -71,8 +70,7 @@ const App: React.FC = () => (
               <Route element={<ProtectedRoute allowedRoles={["admin", "editor", "viewer"]} />}>
                 <Route path="/sales" element={<Sales />} />
               </Route>
-              
-              <Route path="/test" element={<TestView />} />
+                            
               
               {/* 404 Route - This should always be the last route */}
               <Route path="*" element={<NotFound />} />

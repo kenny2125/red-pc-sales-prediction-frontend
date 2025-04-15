@@ -9,7 +9,7 @@ import {
 import { LineChartInteractive } from "@/components/charts/LineChartInterative";
 import { PhilippinePeso } from "lucide-react";
 import { CpuIcon } from "lucide-react";
-import { PieChartDonut } from "@/components/charts/PieChartDonut";
+import { TopCategories } from "@/components/charts/TopCategories";
 import { PcCaseIcon } from "lucide-react";
 
 
@@ -134,6 +134,7 @@ import {
 } from "@/components/ui/table"
 import { Boxes } from "lucide-react"
 import { BarChartView } from "@/components/charts/BarChart";
+import { SalesPrediction } from "@/components/charts/SalesPrediction";
 
 const data: Inventory[] = [
   {
@@ -379,48 +380,12 @@ export default function Sales() {
     <>
       <div className="flex flex-col gap-4 ">
         <div className="w-full">
-          <LineChartInteractive />
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          <Card className="flex flex-col items-center w-full">
-            <CardHeader className="w-full justify-center">
-              <CardTitle className="text-lg sm:text-xl">Total Computer Units Sold</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <PcCaseIcon size="80px" className="text-primary" />
-            </CardContent>
-            <CardFooter>
-              <p>100 Units Sold</p>
-            </CardFooter>
-          </Card>
-          <Card className="flex flex-col items-center w-full">
-            <CardHeader className="w-full justify-center">
-              <CardTitle className="text-lg sm:text-xl">Total Sold Products</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <CpuIcon size="80px" className="text-primary" />
-            </CardContent>
-            <CardFooter>
-              <p>2323 sold</p>
-            </CardFooter>
-          </Card>
-          <Card className="flex flex-col items-center w-full">
-            <CardHeader className="w-full justify-center">
-              <CardTitle className="text-lg sm:text-xl">Best Sellers</CardTitle>
-            </CardHeader>
-            <CardContent className="w-full">
-              {topsales.map((item) => (
-                <TableRow key={item.id}>
-                  <TableCell>{item.product}</TableCell>
-                </TableRow>
-              ))}
-            </CardContent>
-          </Card>
+        <SalesPrediction/>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <div className="w-full">
-            <PieChartDonut/>
+            <TopCategories/>
           </div>
           <div className="w-full">
             <BarChartView/>

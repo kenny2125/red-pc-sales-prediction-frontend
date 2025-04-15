@@ -8,7 +8,14 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { LineChartInteractive } from "@/components/charts/LineChartInterative";
-import { PhilippinePeso, Package, TrendingUp, ShoppingCart, BarChart3 } from "lucide-react";
+import {
+  PhilippinePeso,
+  Package,
+  TrendingUp,
+  ShoppingCart,
+  BarChart3,
+  CpuIcon,
+} from "lucide-react";
 
 import {
   Table,
@@ -54,62 +61,74 @@ export default function Dashboard() {
   const [recentSales, setRecentSales] = useState<RecentSale[]>([]);
   const [stockLevels, setStockLevels] = useState<StockLevel[]>([]);
   const [totalRevenue, setTotalRevenue] = useState(0);
-  const [frequentItems, setFrequentItems] = useState<Array<{
-    product_id: string;
-    product_name: string;
-    image_url: string;
-    sold_count: number;
-    total_quantity: number;
-  }>>([]);
+  const [frequentItems, setFrequentItems] = useState<
+    Array<{
+      product_id: string;
+      product_name: string;
+      image_url: string;
+      sold_count: number;
+      total_quantity: number;
+    }>
+  >([]);
 
   useEffect(() => {
     const fetchTotalRevenue = async () => {
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/sales/total-revenue`);
+        const response = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/sales/total-revenue`
+        );
         const data = await response.json();
         setTotalRevenue(data.total_revenue);
       } catch (error) {
-        console.error('Error fetching total revenue:', error);
+        console.error("Error fetching total revenue:", error);
       }
     };
 
     const fetchOngoingOrders = async () => {
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/orders/ongoing-count`);
+        const response = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/orders/ongoing-count`
+        );
         const data = await response.json();
         setOngoingOrders(data.count);
       } catch (error) {
-        console.error('Error fetching ongoing orders:', error);
+        console.error("Error fetching ongoing orders:", error);
       }
     };
 
     const fetchRecentSales = async () => {
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/sales/recent`);
+        const response = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/sales/recent`
+        );
         const data = await response.json();
         setRecentSales(data);
       } catch (error) {
-        console.error('Error fetching recent sales:', error);
+        console.error("Error fetching recent sales:", error);
       }
     };
 
     const fetchStockLevels = async () => {
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/product/stock-levels`);
+        const response = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/product/stock-levels`
+        );
         const data = await response.json();
         setStockLevels(data);
       } catch (error) {
-        console.error('Error fetching stock levels:', error);
+        console.error("Error fetching stock levels:", error);
       }
     };
 
     const fetchFrequentItems = async () => {
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/sales/most-frequent`);
+        const response = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/sales/most-frequent`
+        );
         const data = await response.json();
         setFrequentItems(data);
       } catch (error) {
-        console.error('Error fetching frequent items:', error);
+        console.error("Error fetching frequent items:", error);
       }
     };
 
@@ -121,9 +140,9 @@ export default function Dashboard() {
   }, []);
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-PH', {
-      style: 'currency',
-      currency: 'PHP'
+    return new Intl.NumberFormat("en-PH", {
+      style: "currency",
+      currency: "PHP",
     }).format(amount);
   };
 
@@ -169,7 +188,9 @@ export default function Dashboard() {
           </CardContent>
           <CardFooter>
             <p className="text-2xl font-bold">
-              {recentSales.length > 0 ? formatCurrency(recentSales[0].amount) : 'No sales today'}
+              {recentSales.length > 0
+                ? formatCurrency(recentSales[0].amount)
+                : "No sales today"}
             </p>
           </CardFooter>
         </Card>
@@ -181,9 +202,16 @@ export default function Dashboard() {
           <CardContent>
             <div className="space-y-2">
               {frequentItems.slice(0, 3).map((item) => (
-                <div key={item.product_id} className="flex items-center justify-between">
-                  <span className="text-sm truncate flex-1">{item.product_name}</span>
-                  <span className="text-sm font-medium">{item.total_quantity}</span>
+                <div
+                  key={item.product_id}
+                  className="flex items-center justify-between"
+                >
+                  <span className="text-sm truncate flex-1">
+                    {item.product_name}
+                  </span>
+                  <span className="text-sm font-medium">
+                    {item.total_quantity}
+                  </span>
                 </div>
               ))}
             </div>
@@ -193,8 +221,7 @@ export default function Dashboard() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <div className="lg:col-span-2">
-        <LineChartInteractive />
-          
+          <LineChartInteractive />
         </div>
 
         <div className="space-y-4">
@@ -205,12 +232,19 @@ export default function Dashboard() {
             <CardContent>
               <div className="space-y-2">
                 {recentSales.slice(0, 5).map((sale) => (
-                  <div key={sale.id} className="flex items-center justify-between">
+                  <div
+                    key={sale.id}
+                    className="flex items-center justify-between"
+                  >
                     <div className="space-y-1">
                       <p className="text-sm font-medium">Customer</p>
-                      <p className="text-sm text-muted-foreground">{sale.date}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {sale.date}
+                      </p>
                     </div>
-                    <p className="text-sm font-medium">₱{sale.amount.toLocaleString()}</p>
+                    <p className="text-sm font-medium">
+                      ₱{sale.amount.toLocaleString()}
+                    </p>
                   </div>
                 ))}
               </div>
@@ -225,16 +259,27 @@ export default function Dashboard() {
             <CardContent>
               <div className="space-y-2">
                 {stockLevels.slice(0, 5).map((item) => (
-                  <div key={item.product_id} className="flex items-center justify-between">
+                  <div
+                    key={item.product_id}
+                    className="flex items-center justify-between"
+                  >
                     <div className="space-y-1">
-                      <p className="text-sm font-medium truncate">{item.product_name}</p>
-                      <p className="text-sm text-muted-foreground">Qty: {item.quantity}</p>
+                      <p className="text-sm font-medium truncate">
+                        {item.product_name}
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        Qty: {item.quantity}
+                      </p>
                     </div>
-                    <span className={`text-xs px-2 py-1 rounded-full ${
-                      item.status === 'Low' ? 'bg-red-100 text-red-800' : 
-                      item.status === 'Medium' ? 'bg-yellow-100 text-yellow-800' : 
-                      'bg-green-100 text-green-800'
-                    }`}>
+                    <span
+                      className={`text-xs px-2 py-1 rounded-full ${
+                        item.status === "Low"
+                          ? "bg-red-100 text-red-800"
+                          : item.status === "Medium"
+                          ? "bg-yellow-100 text-yellow-800"
+                          : "bg-green-100 text-green-800"
+                      }`}
+                    >
                       {item.status}
                     </span>
                   </div>
@@ -243,6 +288,23 @@ export default function Dashboard() {
             </CardContent>
           </Card>
         </div>
+
+        <div>
+        <Card className="flex flex-col items-center w-full">
+          <CardHeader className="w-full justify-center">
+            <CardTitle className="text-lg sm:text-xl">
+              Total Sold Products
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <CpuIcon size="80px" className="text-primary" />
+          </CardContent>
+          <CardFooter>
+            <p>2323 sold</p>
+          </CardFooter>
+        </Card>
+        </div>
+
       </div>
     </div>
   );

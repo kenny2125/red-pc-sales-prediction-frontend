@@ -53,7 +53,7 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-export function PieChartDonut() {
+export function TopCategories() {
   return (
     <Card className="flex flex-col">
       <CardHeader className="items-center pb-0">
