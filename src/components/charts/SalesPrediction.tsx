@@ -2,7 +2,7 @@
 
 import { TrendingUp } from "lucide-react"
 import { useEffect, useState, useRef } from "react"
-import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis, Legend } from "recharts"
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts"
 
 import {
   Card,
@@ -14,9 +14,15 @@ import {
 } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { useMediaQuery } from "@/hooks/use-media-query"
-import { Progress } from "@/components/ui/progress"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import {
+  ChartConfig,
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart"
 
 interface MonthlyData {
   year: number
@@ -30,6 +36,7 @@ interface PredictionData {
   month: number
   month_name: string
   predicted_sales: number
+  normalized_prediction?: number
 }
 
 interface TrainingProgress {
@@ -41,6 +48,18 @@ interface TrainingProgress {
 interface ValidationMetrics {
   mse: string
   mape: string
+  details?: Array<{
+    actual: number
+    predicted: number
+    actual_sales: number
+    predicted_sales: number
+  }>
+}
+
+interface NormalizationData {
+  min_sales: number
+  max_sales: number
+  range: number
 }
 
 export function SalesPrediction() {
@@ -50,6 +69,12 @@ export function SalesPrediction() {
   const [isPredicting, setIsPredicting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [monthsAhead, setMonthsAhead] = useState(6);
+  const [activeTab, setActiveTab] = useState("stacked");
+  
+  // Additional data from enhanced prediction endpoint
+  const [rawData, setRawData] = useState<any[]>([]);
+  const [normalizedData, setNormalizedData] = useState<any[]>([]);
+  const [normalizationParams, setNormalizationParams] = useState<NormalizationData | null>(null);
   
   // Training progress state
   const [trainingProgress, setTrainingProgress] = useState<TrainingProgress | null>(null);
@@ -58,6 +83,18 @@ export function SalesPrediction() {
   
   // Check if device is mobile
   const isMobile = useMediaQuery("(max-width: 768px)");
+
+  // Chart configuration
+  const chartConfig = {
+    total_sales: {
+      label: "Actual Sales",
+      color: "hsl(var(--chart-1))",
+    },
+    predicted_sales: {
+      label: "Predicted Sales",
+      color: "hsl(var(--chart-2))",
+    },
+  } satisfies ChartConfig;
 
   useEffect(() => {
     const fetchAllMonthlySales = async () => {
@@ -132,7 +169,8 @@ export function SalesPrediction() {
           case 'validation':
             setValidationMetrics({
               mse: data.mse,
-              mape: data.mape
+              mape: data.mape,
+              details: data.details
             });
             break;
             
@@ -140,20 +178,45 @@ export function SalesPrediction() {
             // Store prediction data
             setPredictionData(data.predictions);
             
+            // Store additional data if available
+            if (data.raw_data) setRawData(data.raw_data);
+            if (data.normalized_data) setNormalizedData(data.normalized_data);
+            if (data.normalization) setNormalizationParams(data.normalization);
+            
             // Define baseData excluding any previous predictions
             const baseData = chartData.filter(item => !item.isPrediction);
             
-            // Merge prediction with actual data for chart display
+            // Find the last few actual months to overlap with predictions for comparison
+            const lastActualMonths: Record<string, number> = {};
+            baseData.slice(-monthsAhead).forEach(item => {
+              const monthYearKey = `${item.monthIndex}-${item.year}`;
+              lastActualMonths[monthYearKey] = item.total_sales;
+            });
+            
+            // Create an array for merged data including predictions
             const mergedData = [...baseData];
+            
+            // Add predictions and mark them
             data.predictions.forEach((prediction: PredictionData) => {
+              // Create a key to match with actual data
+              const monthYearKey = `${prediction.month}-${prediction.year}`;
+              
+              // Add to the merged data
               mergedData.push({
                 month: `${prediction.month_name.slice(0, 3)} ${prediction.year}`,
-                total_sales: null, // No actual data for future months
+                total_sales: lastActualMonths[monthYearKey] || null, // If we have actual data for this month
                 predicted_sales: prediction.predicted_sales,
+                normalized_prediction: prediction.normalized_prediction,
                 year: prediction.year,
                 monthIndex: prediction.month,
                 isPrediction: true,
               });
+            });
+            
+            // Sort the merged data
+            mergedData.sort((a, b) => {
+              if (a.year !== b.year) return a.year - b.year;
+              return a.monthIndex - b.monthIndex;
             });
             
             setChartData(mergedData);
@@ -231,6 +294,14 @@ export function SalesPrediction() {
     const firstItem = chartData[0];
     const lastItem = chartData[chartData.length - 1];
     return `${firstItem.month} to ${lastItem.month}`;
+  };
+
+  // Get the last N months of actual data that overlap with predictions
+  const getOverlappingMonths = () => {
+    if (!predictionData.length) return [];
+    
+    const actualData = chartData.filter(item => !item.isPrediction && item.total_sales !== null);
+    return actualData.slice(-monthsAhead);
   };
 
   return (
@@ -317,111 +388,259 @@ export function SalesPrediction() {
         ) : error ? (
           <div className="flex justify-center items-center h-96 ">{error}</div>
         ) : (
-          <div className="h-[500px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart
-                data={chartData}
-                margin={{
-                  top: 10,
-                  right: 30,
-                  left: 10,
-                  bottom: 30,
-                }}
-              >
-                {/* <CartesianGrid /> */}
-                <XAxis
-                  dataKey="month"
-                  tickLine={true}
-                  axisLine={true}
-                  angle={-45}
-                  textAnchor="end"
-                  height={80}
-                  interval={0}
-                  tick={{ fontSize: 12 }}
-                />
-                <YAxis 
-                  tickLine={false}
-                  axisLine={true}
-                  tickFormatter={(value) => `$${value.toLocaleString()}`}
-                />
-                <Tooltip 
-                  formatter={(value, name) => [
-                    value ? `$${Number(value).toLocaleString()}` : 'N/A', 
-                    name === 'total_sales' ? 'Actual Sales' : 'Predicted Sales'
-                  ]}
-                />
-                <Legend />
-                
-                {/* On mobile, prioritize showing predicted sales */}
-                {isMobile ? (
-                  <>
-                    <Area
-                      dataKey="predicted_sales"
-                      type="monotone"
-                      name="Predicted Sales"
-                      stroke="#8884d8"
-                      fill="#8884d8"
-                      connectNulls
-                    />
-                    {predictionData.length > 0 && (
-                      <Area
-                        dataKey="total_sales"
-                        type="monotone"
-                        name="Actual Sales"
-                        stroke="#82ca9d"
-                        fill="#82ca9d"
-                        connectNulls
+          <Tabs defaultValue="stacked" value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="stacked">Stacked View</TabsTrigger>
+              <TabsTrigger value="separate">Separate View</TabsTrigger>
+            </TabsList>
+            <TabsContent value="stacked" className="h-[500px]">
+              <ChartContainer config={chartConfig}>
+                <AreaChart
+                  accessibilityLayer
+                  data={chartData}
+                  margin={{
+                    top: 10,
+                    right: 30,
+                    left: 10,
+                    bottom: 30,
+                  }}
+                  stackOffset="none"
+                >
+                  <CartesianGrid vertical={false} />
+                  <XAxis
+                    dataKey="month"
+                    tickLine={true}
+                    axisLine={true}
+                    angle={-45}
+                    textAnchor="end"
+                    height={80}
+                    interval={0}
+                    tick={{ fontSize: 12 }}
+                  />
+                  <YAxis 
+                    tickLine={false}
+                    axisLine={true}
+                    tickFormatter={(value) => `$${value.toLocaleString()}`}
+                  />
+                  <ChartTooltip
+                    cursor={false}
+                    content={
+                      <ChartTooltipContent 
+                        formatter={(value: any) => 
+                          value ? `$${Number(value).toLocaleString()}` : 'N/A'
+                        }
                       />
-                    )}
-                  </>
-                ) : (
-                  <>
-                    <Area
-                      dataKey="total_sales"
-                      type="monotone"
-                      name="Actual Sales"
-                      stroke="#82ca9d"
-                      fill="#82ca9d"
-                      connectNulls
-                    />
-                    {predictionData.length > 0 && (
+                    }
+                  />
+                  <Area
+                    dataKey="total_sales"
+                    type="monotone"
+                    name="total_sales"
+                    fill="var(--color-total_sales)"
+                    fillOpacity={0.6}
+                    stroke="var(--color-total_sales)"
+                    strokeWidth={2}
+                    connectNulls
+                  />
+                  <Area
+                    dataKey="predicted_sales"
+                    type="monotone"
+                    name="predicted_sales"
+                    fill="var(--color-predicted_sales)"
+                    fillOpacity={0.5}
+                    stroke="var(--color-predicted_sales)"
+                    strokeWidth={2}
+                    strokeDasharray="5 5"
+                    connectNulls
+                  />
+                </AreaChart>
+              </ChartContainer>
+            </TabsContent>
+            <TabsContent value="separate" className="h-[500px]">
+              <ChartContainer config={chartConfig}>
+                <AreaChart
+                  accessibilityLayer
+                  data={chartData}
+                  margin={{
+                    top: 10,
+                    right: 30,
+                    left: 10,
+                    bottom: 30,
+                  }}
+                >
+                  <CartesianGrid vertical={false} />
+                  <XAxis
+                    dataKey="month"
+                    tickLine={true}
+                    axisLine={true}
+                    angle={-45}
+                    textAnchor="end"
+                    height={80}
+                    interval={0}
+                    tick={{ fontSize: 12 }}
+                  />
+                  <YAxis 
+                    tickLine={false}
+                    axisLine={true}
+                    tickFormatter={(value) => `$${value.toLocaleString()}`}
+                  />
+                  <ChartTooltip
+                    cursor={false}
+                    content={
+                      <ChartTooltipContent 
+                        formatter={(value: any) => 
+                          value ? `$${Number(value).toLocaleString()}` : 'N/A'
+                        }
+                      />
+                    }
+                  />
+                  
+                  {/* On mobile, prioritize showing predicted sales */}
+                  {isMobile ? (
+                    <>
                       <Area
                         dataKey="predicted_sales"
                         type="monotone"
-                        name="Predicted Sales"
-                        stroke="#8884d8"
-                        fill="#8884d8"
+                        name="predicted_sales"
+                        fill="var(--color-predicted_sales)"
+                        fillOpacity={0.6}
+                        stroke="var(--color-predicted_sales)"
                         connectNulls
                       />
-                    )}
-                  </>
-                )}
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
+                      {predictionData.length > 0 && (
+                        <Area
+                          dataKey="total_sales"
+                          type="monotone"
+                          name="total_sales"
+                          fill="var(--color-total_sales)"
+                          fillOpacity={0.6}
+                          stroke="var(--color-total_sales)"
+                          connectNulls
+                        />
+                      )}
+                    </>
+                  ) : (
+                    <>
+                      <Area
+                        dataKey="total_sales"
+                        type="monotone"
+                        name="total_sales"
+                        fill="var(--color-total_sales)"
+                        fillOpacity={0.6}
+                        stroke="var(--color-total_sales)"
+                        connectNulls
+                      />
+                      {predictionData.length > 0 && (
+                        <Area
+                          dataKey="predicted_sales"
+                          type="monotone"
+                          name="predicted_sales"
+                          fill="var(--color-predicted_sales)"
+                          fillOpacity={0.6}
+                          stroke="var(--color-predicted_sales)"
+                          connectNulls
+                        />
+                      )}
+                    </>
+                  )}
+                </AreaChart>
+              </ChartContainer>
+            </TabsContent>
+          </Tabs>
         )}
         
-        {/* Prediction Results Table */}
+        {/* Prediction Results Tables */}
         {predictionData.length > 0 && (
-          <div className="mt-4 border rounded-md p-4">
-            <h3 className="font-medium mb-2">Sales Predictions</h3>
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b">
-                    <th className="text-left py-2">Period</th>
-                    <th className="text-right py-2">Predicted Sales</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {predictionData.map((pred, index) => (
-                    <tr key={index} className="border-b last:border-0">
-                      <td className="py-2">{pred.month_name} {pred.year}</td>
-                      <td className="text-right py-2">${pred.predicted_sales.toLocaleString()}</td>
+          <>
+            {/* Overlapping Months Comparison */}
+            {getOverlappingMonths().length > 0 && (
+              <div className="mt-4 border rounded-md p-4">
+                <h3 className="font-medium mb-2">Actual vs. Predicted Sales Comparison</h3>
+                <p className="text-sm text-muted-foreground mb-3">
+                  Comparing actual sales with model predictions for overlapping periods
+                </p>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b">
+                        <th className="text-left py-2">Period</th>
+                        <th className="text-right py-2">Actual Sales</th>
+                        <th className="text-right py-2">Predicted Sales</th>
+                        <th className="text-right py-2">Difference</th>
+                        <th className="text-right py-2">Error %</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {validationMetrics?.details?.map((item, index) => {
+                        const error = item.predicted_sales - item.actual_sales;
+                        const errorPercentage = item.actual_sales !== 0 
+                          ? (Math.abs(error) / item.actual_sales) * 100 
+                          : 0;
+                          
+                        return (
+                          <tr key={index} className="border-b last:border-0">
+                            <td className="py-2">Validation {index + 1}</td>
+                            <td className="text-right py-2">${item.actual_sales.toLocaleString()}</td>
+                            <td className="text-right py-2">${item.predicted_sales.toLocaleString()}</td>
+                            <td className={`text-right py-2 ${error > 0 ? 'text-red-500' : 'text-green-500'}`}>
+                              {error > 0 ? '+' : ''}{error.toLocaleString()}
+                            </td>
+                            <td className="text-right py-2">{errorPercentage.toFixed(2)}%</td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+            
+            {/* Future Predictions */}
+            <div className="mt-4 border rounded-md p-4">
+              <h3 className="font-medium mb-2">Future Sales Predictions</h3>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b">
+                      <th className="text-left py-2">Period</th>
+                      <th className="text-right py-2">Normalized Value</th>
+                      <th className="text-right py-2">Predicted Sales</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {predictionData.map((pred, index) => (
+                      <tr key={index} className="border-b last:border-0">
+                        <td className="py-2">{pred.month_name} {pred.year}</td>
+                        <td className="text-right py-2">
+                          {pred.normalized_prediction?.toFixed(6) || 'N/A'}
+                        </td>
+                        <td className="text-right py-2">${pred.predicted_sales.toLocaleString()}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </>
+        )}
+        
+        {/* Normalization Parameters (if available) */}
+        {normalizationParams && (
+          <div className="mt-4 border rounded-md p-4">
+            <h3 className="font-medium mb-2">Normalization Parameters</h3>
+            <div className="grid grid-cols-3 gap-4">
+              <div>
+                <p className="text-sm font-medium">Minimum Sales</p>
+                <p className="text-lg">${normalizationParams.min_sales.toLocaleString()}</p>
+              </div>
+              <div>
+                <p className="text-sm font-medium">Maximum Sales</p>
+                <p className="text-lg">${normalizationParams.max_sales.toLocaleString()}</p>
+              </div>
+              <div>
+                <p className="text-sm font-medium">Range</p>
+                <p className="text-lg">${normalizationParams.range.toLocaleString()}</p>
+              </div>
             </div>
           </div>
         )}
