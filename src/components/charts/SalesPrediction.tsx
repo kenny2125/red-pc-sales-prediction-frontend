@@ -69,6 +69,7 @@ export function SalesPrediction() {
   const [isPredicting, setIsPredicting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [monthsAhead, setMonthsAhead] = useState(6);
+  const [maxDataPoints, setMaxDataPoints] = useState(32); // Default value of 32
   const [activeTab, setActiveTab] = useState("stacked");
   
   // Additional data from enhanced prediction endpoint
@@ -151,8 +152,8 @@ export function SalesPrediction() {
       setTrainingProgress(null);
       setValidationMetrics(null);
       
-      // Updated URL to use the new prediction endpoint with only months_ahead parameter
-      const url = `${import.meta.env.VITE_API_URL}/api/predictions/sales?months_ahead=${monthsAhead}`;
+      // Updated URL to include both months_ahead and max_data_points parameters
+      const url = `${import.meta.env.VITE_API_URL}/api/predictions/sales?months_ahead=${monthsAhead}&max_data_points=${maxDataPoints}`;
       eventSourceRef.current = new EventSource(url);
       
       eventSourceRef.current.onmessage = (event) => {
@@ -375,6 +376,17 @@ export function SalesPrediction() {
               max="12"
               value={monthsAhead}
               onChange={(e) => setMonthsAhead(parseInt(e.target.value))}
+              className="px-2 py-1 border rounded w-16"
+            />
+          </label>
+          <label className="flex items-center gap-1 text-sm">
+            Max Data Points:
+            <input
+              type="number"
+              min="12"
+              max="100"
+              value={maxDataPoints}
+              onChange={(e) => setMaxDataPoints(parseInt(e.target.value))}
               className="px-2 py-1 border rounded w-16"
             />
           </label>
