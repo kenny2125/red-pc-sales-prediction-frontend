@@ -34,9 +34,8 @@ interface PredictionData {
 
 interface TrainingProgress {
   iterations: number
-  totalIterations: number
-  progress: number
   error: number
+  errorThreshold: number
 }
 
 interface ValidationMetrics {
@@ -51,8 +50,6 @@ export function SalesPrediction() {
   const [isPredicting, setIsPredicting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [monthsAhead, setMonthsAhead] = useState(6);
-  const [iterations, setIterations] = useState(5000); // Default to 25000
-  const [windowSize, setWindowSize] = useState(12); // Default to 12
   
   // Training progress state
   const [trainingProgress, setTrainingProgress] = useState<TrainingProgress | null>(null);
@@ -116,7 +113,8 @@ export function SalesPrediction() {
       setTrainingProgress(null);
       setValidationMetrics(null);
       
-      const url = `${import.meta.env.VITE_API_URL}/api/sales/predict?months_ahead=${monthsAhead}&iterations=${iterations}&window_size=${windowSize}`;
+      // Updated URL to use the new prediction endpoint with only months_ahead parameter
+      const url = `${import.meta.env.VITE_API_URL}/api/predictions/sales?months_ahead=${monthsAhead}`;
       eventSourceRef.current = new EventSource(url);
       
       eventSourceRef.current.onmessage = (event) => {
@@ -126,9 +124,8 @@ export function SalesPrediction() {
           case 'progress':
             setTrainingProgress({
               iterations: data.iterations,
-              totalIterations: data.totalIterations,
-              progress: data.progress,
-              error: data.error
+              error: data.error,
+              errorThreshold: data.errorThreshold
             });
             break;
             
@@ -257,29 +254,6 @@ export function SalesPrediction() {
               className="px-2 py-1 border rounded w-16"
             />
           </label>
-          <label className="flex items-center gap-1 text-sm">
-            Window Size:
-            <input
-              type="number"
-              min="3"
-              max="24"
-              value={windowSize}
-              onChange={(e) => setWindowSize(parseInt(e.target.value))}
-              className="px-2 py-1 border rounded w-16"
-            />
-          </label>
-          <label className="flex items-center gap-1 text-sm">
-            Iterations:
-            <input
-              type="number"
-              min="1000"
-              max="100000"
-              step="1000"
-              value={iterations}
-              onChange={(e) => setIterations(parseInt(e.target.value))}
-              className="px-2 py-1 border rounded w-20"
-            />
-          </label>
           <Button 
             onClick={predictFutureSales} 
             disabled={isLoading || isPredicting}
@@ -298,12 +272,24 @@ export function SalesPrediction() {
                 <DialogTitle>Training Neural Network</DialogTitle>
               </DialogHeader>
               <div className="flex justify-between mb-1 text-sm">
-                <span>Progress: {trainingProgress.progress}%</span>
-                <span>Iteration: {trainingProgress.iterations.toLocaleString()} / {trainingProgress.totalIterations.toLocaleString()}</span>
+                <span>Current Iteration: {trainingProgress.iterations.toLocaleString()}</span>
               </div>
-              <Progress value={trainingProgress.progress} className="mb-2" />
+              <div className="my-3 h-2 w-full bg-secondary rounded overflow-hidden">
+                <div 
+                  className="h-full bg-primary transition-all duration-300"
+                  style={{ 
+                    width: `${Math.min(100, (1 - trainingProgress.error / (trainingProgress.errorThreshold * 10)) * 100)}%` 
+                  }}
+                ></div>
+              </div>
               <p className="text-sm text-muted-foreground">
-                Current Error Rate: {trainingProgress.error.toFixed(6)}
+                Current Error: {trainingProgress.error.toFixed(6)}
+              </p>
+              <p className="text-sm text-muted-foreground">
+                Target Error Threshold: {trainingProgress.errorThreshold}
+              </p>
+              <p className="text-sm font-medium mt-2">
+                Training will continue until error threshold is met
               </p>
             </DialogContent>
           </Dialog>
