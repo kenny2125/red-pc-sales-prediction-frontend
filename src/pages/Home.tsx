@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { CircleArrowRight } from "lucide-react";
+import { CircleArrowRight, ShoppingCart } from "lucide-react";
 import ProductCard from "@/components/cards/ProductCard";
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
@@ -17,7 +17,6 @@ interface Product {
 }
 
 function Home() {
-  const [products, setProducts] = useState<Product[]>([]);
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -28,11 +27,8 @@ function Home() {
         if (!response.ok) throw new Error('Failed to fetch products');
         const data = await response.json();
         
-        // Take first 8 products for featured products section
-        setFeaturedProducts(data.slice(0, 8));
-        
-        // Take next 8 products for best sellers section
-        setProducts(data.slice(8, 16));
+        // Set all products, we'll limit to 20 in rendering
+        setFeaturedProducts(data);
       } catch (error) {
         console.error('Error fetching products:', error);
       } finally {
@@ -60,8 +56,8 @@ function Home() {
           <h1 className="text-5xl md:text-7xl font-bold mb-2">1618</h1>
           <h2 className="text-3xl md:text-5xl font-bold mb-4">Office Solutions Inc.</h2>
           <p className="text-xl md:text-2xl mb-8">Everything you need for a better workspace.</p>
-          <Button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 text-lg" onClick={() => window.location.href = "/shop"}>
-            Shop now
+          <Button variant="default" className="px-8 py-3 text-lg" onClick={() => window.location.href = "/search"}>
+            Shop now <ShoppingCart className="ml-2 h-5 w-5" />
           </Button>
         </div>
       </section>
@@ -127,7 +123,7 @@ function Home() {
           </div>
         ) : featuredProducts.length > 0 ? (
           <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
-            {featuredProducts.map((product) => (
+            {featuredProducts.slice(0, 20).map((product) => (
               <ProductCard key={product.product_id} product={product} />
             ))}
           </div>
@@ -136,38 +132,6 @@ function Home() {
             No products available
           </div>
         )}
-      </section>
-
-      {/* Best Sellers Section */}
-      <section className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold mb-8">Best Sellers</h2>
-        
-        {loading ? (
-          <div className="flex items-center justify-center w-full py-8">
-            Loading products...
-          </div>
-        ) : products.length > 0 ? (
-          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {products.map((product) => (
-              <ProductCard key={product.product_id} product={product} />
-            ))}
-          </div>
-        ) : (
-          <div className="flex items-center justify-center w-full py-8">
-            No products available
-          </div>
-        )}
-        
-        <div className="flex justify-center mt-10">
-          <Button
-            className="text-lg p-4"
-            onClick={() => {
-              window.location.href = "/search";
-            }}
-          >
-            See More Products <CircleArrowRight className="ml-2" />
-          </Button>
-        </div>
       </section>
     </main>
   );
