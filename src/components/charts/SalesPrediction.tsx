@@ -110,9 +110,10 @@ export function SalesPrediction() {
         const data: MonthlyData[] = await response.json();
         
         // Transform the data to match our chart format
-        // Include year in the label for clarity
+        // Now using month_name from the API response
         const transformedData = data.map(item => ({
-          month: `${item.month_name.slice(0, 3)} ${item.year}`,
+          month: `${item.month_name.slice(0, 3)} ${item.year}`, // Use abbreviated month name
+          monthName: item.month_name,
           total_sales: item.total_sales,
           predicted_sales: null, // Placeholder for prediction data
           year: item.year,
@@ -204,6 +205,7 @@ export function SalesPrediction() {
               // Add to the merged data
               mergedData.push({
                 month: `${prediction.month_name.slice(0, 3)} ${prediction.year}`,
+                monthName: prediction.month_name,
                 total_sales: lastActualMonths[monthYearKey] || null, // If we have actual data for this month
                 predicted_sales: prediction.predicted_sales,
                 normalized_prediction: prediction.normalized_prediction,
