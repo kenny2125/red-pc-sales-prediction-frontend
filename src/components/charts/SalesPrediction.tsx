@@ -46,14 +46,15 @@ interface TrainingProgress {
 }
 
 interface ValidationMetrics {
-  mse: string
-  mape: string
+  mse: string;
+  mape: string;
   details?: Array<{
-    actual: number
-    predicted: number
-    actual_sales: number
-    predicted_sales: number
-  }>
+    year: number;
+    month: number;
+    month_name: string;
+    actual_sales: number;
+    predicted_sales: number;
+  }>;
 }
 
 interface NormalizationData {
@@ -69,7 +70,7 @@ export function SalesPrediction() {
   const [isPredicting, setIsPredicting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [monthsAhead, setMonthsAhead] = useState(6);
-  const [maxDataPoints, setMaxDataPoints] = useState(32); // Default value of 32
+  const [maxDataPoints, setMaxDataPoints] = useState(24); // Default value of 32
   const [activeTab, setActiveTab] = useState("stacked");
   
   // Additional data from enhanced prediction endpoint
@@ -180,7 +181,7 @@ export function SalesPrediction() {
               // Find existing chart data points that match validation dates
               const updatedChartData = [...chartData];
               
-              data.details.forEach((item) => {
+              data.details.forEach((item: NonNullable<ValidationMetrics['details']>[number]) => {
                 const index = updatedChartData.findIndex(
                   point => point.year === item.year && point.monthIndex === item.month
                 );
