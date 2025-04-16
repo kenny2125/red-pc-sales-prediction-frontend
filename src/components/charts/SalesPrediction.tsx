@@ -173,6 +173,26 @@ export function SalesPrediction() {
               mape: data.mape,
               details: data.details
             });
+            
+            // Process validation data to show predictions on chart
+            if (data.details && Array.isArray(data.details)) {
+              // Find existing chart data points that match validation dates
+              const updatedChartData = [...chartData];
+              
+              data.details.forEach((item) => {
+                const index = updatedChartData.findIndex(
+                  point => point.year === item.year && point.monthIndex === item.month
+                );
+                
+                if (index !== -1) {
+                  // Add predicted sales to existing chart data point
+                  updatedChartData[index].predicted_sales = item.predicted_sales;
+                  updatedChartData[index].isValidation = true;
+                }
+              });
+              
+              setChartData(updatedChartData);
+            }
             break;
             
           case 'complete':
@@ -197,7 +217,38 @@ export function SalesPrediction() {
             // Create an array for merged data including predictions
             const mergedData = [...baseData];
             
-            // Add predictions and mark them
+            // Add validation results to show the overlap between actual and predicted values
+            if (data.validation_results && Array.isArray(data.validation_results)) {
+              data.validation_results.forEach((validation: any) => {
+                // Create a key that matches the format in chartData
+                const monthIdx = validation.month;
+                const yearVal = validation.year;
+                
+                // Find if this validation point already exists in our base data
+                const existingPointIndex = mergedData.findIndex(
+                  item => item.year === yearVal && item.monthIndex === monthIdx
+                );
+                
+                if (existingPointIndex !== -1) {
+                  // If this point exists in our base data, add the predicted sales to it
+                  mergedData[existingPointIndex].predicted_sales = validation.predicted_sales;
+                  mergedData[existingPointIndex].isValidation = true;
+                } else {
+                  // If it doesn't exist (unlikely), add a new point
+                  mergedData.push({
+                    month: `${validation.month_name.slice(0, 3)} ${validation.year}`,
+                    monthName: validation.month_name,
+                    total_sales: validation.actual_sales,
+                    predicted_sales: validation.predicted_sales,
+                    year: validation.year,
+                    monthIndex: validation.month,
+                    isValidation: true,
+                  });
+                }
+              });
+            }
+            
+            // Add future predictions and mark them
             data.predictions.forEach((prediction: PredictionData) => {
               // Create a key to match with actual data
               const monthYearKey = `${prediction.month}-${prediction.year}`;
