@@ -51,10 +51,10 @@ export function LoginForm({ onToggleMode, isLoading, error, login }: LoginFormPr
       
       const data = await response.json();
       setLoginResponse(data);
-      // console.log('Login response:', data);
+      console.log('Login response:', data);
       
       if (response.ok) {
-        // console.log('Login successful');
+        console.log('Login successful');
         setLoginStatus('success');
         setShowSuccessOverlay(true);
         
@@ -137,11 +137,9 @@ export function LoginForm({ onToggleMode, isLoading, error, login }: LoginFormPr
         </div>
       </div>
       
-      <DialogDescription asChild>
-        <div className="flex flex-col md:flex-row justify-center items-center">
-          <div>Don't have an account?</div>
-          <Button type="button" variant="link" onClick={onToggleMode}>Create New Account</Button>
-        </div>
+      <DialogDescription className="flex flex-col md:flex-row justify-center items-center">
+        <div>Don't have an account?</div>
+        <Button type="button" variant="link" onClick={onToggleMode}>Create New Account</Button>
       </DialogDescription>
       
       <div className="flex flex-col w-full mt-2 gap-4">

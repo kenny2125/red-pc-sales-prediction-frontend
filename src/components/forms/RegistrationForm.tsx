@@ -424,11 +424,9 @@ export function RegistrationForm({
       
       {error && <p className="text-sm text-red-500 text-center">{error}</p>}
       
-      <DialogDescription asChild>
-        <div className="flex flex-row justify-center items-center">
-          <div>Already have an account?</div>
-          <Button type="button" variant="link" onClick={onToggleMode}>Log In</Button>
-        </div>
+      <DialogDescription className="flex flex-row justify-center items-center">
+        <div>Already have an account?</div>
+        <Button type="button" variant="link" onClick={onToggleMode}>Log In</Button>
       </DialogDescription>
       
       <DialogFooter className="flex flex-col items-center">
