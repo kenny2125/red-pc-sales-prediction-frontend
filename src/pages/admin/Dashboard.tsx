@@ -17,32 +17,6 @@ import {
   CpuIcon,
 } from "lucide-react";
 
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableFooter,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-
-const topsales = [
-  {
-    id: "1",
-    product: "Most Searched Products",
-  },
-  {
-    id: "2",
-    product: "Most Searched Products",
-  },
-  {
-    id: "3",
-    product: "Most Searched Products",
-  },
-];
-
 interface RecentSale {
   id: string;
   amount: number;
@@ -147,7 +121,7 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="container ">
+    <div className="w-full">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <Card className="flex flex-col items-center">
           <CardHeader className="w-full text-center">
@@ -220,91 +194,58 @@ export default function Dashboard() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <div className="lg:col-span-2">
+        {/* Chart on left */}
+        <div className="lg:col-span-2 h-full">
           <LineChartInteractive />
         </div>
-
-        <div className="space-y-4">
-          <Card>
+        {/* Small cards grid on right - Now a flex column with full height */}
+        <div className="flex flex-col gap-4 h-full">
+          {/* Recent Sales - with scrollable content */}
+          <Card className="flex-1">
             <CardHeader>
               <CardTitle className="text-lg">Recent Sales</CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                {recentSales.slice(0, 5).map((sale) => (
-                  <div
-                    key={sale.id}
-                    className="flex items-center justify-between"
-                  >
+            <CardContent className="overflow-y-auto" style={{ maxHeight: "200px" }}>
+              <div className="space-y-3">
+                {recentSales.map((sale) => (
+                  <div key={sale.id} className="flex items-center justify-between pb-2 border-b">
                     <div className="space-y-1">
                       <p className="text-sm font-medium">Customer</p>
-                      <p className="text-sm text-muted-foreground">
-                        {sale.date}
-                      </p>
+                      <p className="text-sm text-muted-foreground">{sale.date}</p>
                     </div>
-                    <p className="text-sm font-medium">
-                      ₱{sale.amount.toLocaleString()}
-                    </p>
+                    <p className="text-sm font-medium">₱{sale.amount.toLocaleString()}</p>
                   </div>
                 ))}
               </div>
             </CardContent>
           </Card>
-
-          <Card>
+          {/* Stock Alerts - with scrollable content */}
+          <Card className="flex-1">
             <CardHeader>
               <CardTitle className="text-lg">Stock Alerts</CardTitle>
               <CardDescription>Low stock items</CardDescription>
             </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                {stockLevels.slice(0, 5).map((item) => (
-                  <div
-                    key={item.product_id}
-                    className="flex items-center justify-between"
-                  >
+            <CardContent className="overflow-y-auto" style={{ maxHeight: "200px" }}>
+              <div className="space-y-3">
+                {stockLevels.map((item) => (
+                  <div key={item.product_id} className="flex items-center justify-between pb-2 border-b">
                     <div className="space-y-1">
-                      <p className="text-sm font-medium truncate">
-                        {item.product_name}
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        Qty: {item.quantity}
-                      </p>
+                      <p className="text-sm font-medium truncate">{item.product_name}</p>
+                      <p className="text-sm text-muted-foreground">Qty: {item.quantity}</p>
                     </div>
-                    <span
-                      className={`text-xs px-2 py-1 rounded-full ${
-                        item.status === "Low"
-                          ? "bg-red-100 text-red-800"
-                          : item.status === "Medium"
-                          ? "bg-yellow-100 text-yellow-800"
-                          : "bg-green-100 text-green-800"
-                      }`}
-                    >
-                      {item.status}
-                    </span>
+                    <span className={`text-xs px-2 py-1 rounded-full ${
+                      item.status === 'Low'
+                        ? 'bg-red-100 text-red-800'
+                        : item.status === 'Medium'
+                        ? 'bg-yellow-100 text-yellow-800'
+                        : 'bg-green-100 text-green-800'
+                    }`}>{item.status}</span>
                   </div>
                 ))}
               </div>
             </CardContent>
           </Card>
         </div>
-
-        <div>
-        <Card className="flex flex-col items-center w-full">
-          <CardHeader className="w-full justify-center">
-            <CardTitle className="text-lg sm:text-xl">
-              Total Sold Products
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <CpuIcon size="80px" className="text-primary" />
-          </CardContent>
-          <CardFooter>
-            <p>2323 sold</p>
-          </CardFooter>
-        </Card>
-        </div>
-
       </div>
     </div>
   );

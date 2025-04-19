@@ -63,6 +63,25 @@ function ProductDetail() {
     fetchProduct();
   }, [searchParams]);
 
+  // Check if this product is already in user's cart
+  useEffect(() => {
+    if (!currentUser || currentUser.role === 'admin' || !product) return;
+    const checkCart = async () => {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/cart`, {
+          headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+        });
+        if (!response.ok) throw new Error('Failed to fetch cart');
+        const items = await response.json();
+        const exists = items.some((item: any) => item.product_id === product.product_id);
+        setIsInCart(exists);
+      } catch (err) {
+        console.error('Error checking cart in ProductDetail:', err);
+      }
+    };
+    checkCart();
+  }, [currentUser, product]);
+
   const handleAddToCart = useCallback(async () => {
     if (!currentUser) {
       setLoginDialogOpen(true);

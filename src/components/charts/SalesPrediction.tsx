@@ -361,43 +361,48 @@ export function SalesPrediction() {
 
   return (
     <Card>
-      <CardHeader className="flex flex-row items-center justify-between">
-        <div>
-          <CardTitle>Complete Sales Overview</CardTitle>
-          <CardDescription>
-            Total sales aggregated by month across all available data
-          </CardDescription>
-        </div>
-        <div className="flex items-center gap-2 flex-wrap">
-          <label className="flex items-center gap-1 text-sm">
-            Months Ahead:
-            <input
-              type="number"
-              min="1"
-              max="12"
-              value={monthsAhead}
-              onChange={(e) => setMonthsAhead(parseInt(e.target.value))}
-              className="px-2 py-1 border rounded w-16"
-            />
-          </label>
-          <label className="flex items-center gap-1 text-sm">
-            Max Data Points:
-            <input
-              type="number"
-              min="12"
-              max="100"
-              value={maxDataPoints}
-              onChange={(e) => setMaxDataPoints(parseInt(e.target.value))}
-              className="px-2 py-1 border rounded w-16"
-            />
-          </label>
-          <Button 
-            onClick={predictFutureSales} 
-            disabled={isLoading || isPredicting}
-            variant="outline"
-          >
-            {isPredicting ? "Predicting..." : "Predict Future Sales"}
-          </Button>
+      <CardHeader className="space-y-3">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+          <div>
+            <CardTitle>Complete Sales Overview</CardTitle>
+            <CardDescription>
+              Total sales aggregated by month across all available data
+            </CardDescription>
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="grid grid-cols-2 md:flex md:flex-row gap-2 w-full md:w-auto">
+              <label className="flex flex-col md:flex-row md:items-center gap-1 text-sm">
+                <span>Months Ahead:</span>
+                <input
+                  type="number"
+                  min="1"
+                  max="12"
+                  value={monthsAhead}
+                  onChange={(e) => setMonthsAhead(parseInt(e.target.value))}
+                  className="px-2 py-1 border rounded w-full md:w-16 h-9"
+                />
+              </label>
+              <label className="flex flex-col md:flex-row md:items-center gap-1 text-sm">
+                <span>Max Points:</span>
+                <input
+                  type="number"
+                  min="12"
+                  max="100"
+                  value={maxDataPoints}
+                  onChange={(e) => setMaxDataPoints(parseInt(e.target.value))}
+                  className="px-2 py-1 border rounded w-full md:w-16 h-9"
+                />
+              </label>
+            </div>
+            <Button 
+              onClick={predictFutureSales} 
+              disabled={isLoading || isPredicting}
+              variant="outline"
+              className="w-full md:w-auto h-9"
+            >
+              {isPredicting ? "Predicting..." : "Predict Future Sales"}
+            </Button>
+          </div>
         </div>
       </CardHeader>
       <CardContent>
@@ -448,27 +453,27 @@ export function SalesPrediction() {
             </AlertDescription>
           </Alert>
         )}
-        
+
         {isLoading ? (
-          <div className="flex justify-center items-center h-96">Loading chart data...</div>
+          <div className="flex justify-center items-center h-[300px] md:h-[400px]">Loading chart data...</div>
         ) : error ? (
-          <div className="flex justify-center items-center h-96 ">{error}</div>
+          <div className="flex justify-center items-center h-[300px] md:h-[400px]">{error}</div>
         ) : (
           <Tabs defaultValue="stacked" value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
+            <TabsList className="grid w-full grid-cols-2 mb-2">
               <TabsTrigger value="stacked">Stacked View</TabsTrigger>
               <TabsTrigger value="separate">Separate View</TabsTrigger>
             </TabsList>
-            <TabsContent value="stacked" className="h-[500px]">
+            <TabsContent value="stacked" className="h-[350px] md:h-[450px]">
               <ChartContainer config={chartConfig}>
                 <AreaChart
                   accessibilityLayer
                   data={chartData}
                   margin={{
                     top: 10,
-                    right: 30,
-                    left: 10,
-                    bottom: 30,
+                    right: isMobile ? 10 : 30,
+                    left: isMobile ? 5 : 10,
+                    bottom: isMobile ? 60 : 30,
                   }}
                   stackOffset="none"
                 >
@@ -480,13 +485,15 @@ export function SalesPrediction() {
                     angle={-45}
                     textAnchor="end"
                     height={80}
-                    interval={0}
-                    tick={{ fontSize: 12 }}
+                    interval={isMobile ? 2 : 0}
+                    tick={{ fontSize: isMobile ? 10 : 12 }}
                   />
                   <YAxis 
                     tickLine={false}
                     axisLine={true}
                     tickFormatter={(value) => `$${value.toLocaleString()}`}
+                    width={isMobile ? 50 : 60}
+                    tick={{ fontSize: isMobile ? 10 : 12 }}
                   />
                   <ChartTooltip
                     cursor={false}
@@ -522,16 +529,16 @@ export function SalesPrediction() {
                 </AreaChart>
               </ChartContainer>
             </TabsContent>
-            <TabsContent value="separate" className="h-[500px]">
+            <TabsContent value="separate" className="h-[350px] md:h-[450px]">
               <ChartContainer config={chartConfig}>
                 <AreaChart
                   accessibilityLayer
                   data={chartData}
                   margin={{
                     top: 10,
-                    right: 30,
-                    left: 10,
-                    bottom: 30,
+                    right: isMobile ? 10 : 30,
+                    left: isMobile ? 5 : 10,
+                    bottom: isMobile ? 60 : 30,
                   }}
                 >
                   <CartesianGrid vertical={false} />
@@ -542,13 +549,15 @@ export function SalesPrediction() {
                     angle={-45}
                     textAnchor="end"
                     height={80}
-                    interval={0}
-                    tick={{ fontSize: 12 }}
+                    interval={isMobile ? 2 : 0}
+                    tick={{ fontSize: isMobile ? 10 : 12 }}
                   />
                   <YAxis 
                     tickLine={false}
                     axisLine={true}
                     tickFormatter={(value) => `$${value.toLocaleString()}`}
+                    width={isMobile ? 50 : 60}
+                    tick={{ fontSize: isMobile ? 10 : 12 }}
                   />
                   <ChartTooltip
                     cursor={false}
@@ -637,30 +646,27 @@ export function SalesPrediction() {
                       </tr>
                     </thead>
                     <tbody>
-                      {validationMetrics?.details?.map((item, index) => {
-                        const error = item.predicted_sales - item.actual_sales;
-                        const errorPercentage = item.actual_sales !== 0 
-                          ? (Math.abs(error) / item.actual_sales) * 100 
-                          : 0;
-                          
-                        return (
-                          <tr key={index} className="border-b last:border-0">
-                            <td className="py-2">Validation {index + 1}</td>
-                            <td className="text-right py-2">${item.actual_sales.toLocaleString()}</td>
-                            <td className="text-right py-2">${item.predicted_sales.toLocaleString()}</td>
-                            <td className={`text-right py-2 ${error > 0 ? 'text-red-500' : 'text-green-500'}`}>
-                              {error > 0 ? '+' : ''}{error.toLocaleString()}
-                            </td>
-                            <td className="text-right py-2">{errorPercentage.toFixed(2)}%</td>
-                          </tr>
-                        );
-                      })}
+                      {validationMetrics?.details?.map((item, index) => (
+                        <tr key={index} className="border-b last:border-0">
+                          <td className="py-2">{item.month_name} {item.year}</td>
+                          <td className="text-right py-2">${item.actual_sales.toLocaleString()}</td>
+                          <td className="text-right py-2">${item.predicted_sales.toLocaleString()}</td>
+                          <td className="text-right py-2 font-medium" 
+                              style={{ color: Math.abs(item.difference) < item.actual_sales * 0.1 ? 'inherit' : (item.difference > 0 ? 'red' : 'green') }}>
+                            {item.difference > 0 ? '+' : ''}{item.difference.toLocaleString()}
+                          </td>
+                          <td className="text-right py-2 font-medium"
+                              style={{ color: Math.abs(item.percentage_error) < 10 ? 'inherit' : (Math.abs(item.percentage_error) > 20 ? 'red' : 'orange') }}>
+                            {item.percentage_error.toFixed(1)}%
+                          </td>
+                        </tr>
+                      ))}
                     </tbody>
                   </table>
                 </div>
               </div>
             )}
-            
+
             {/* Future Predictions */}
             <div className="mt-4 border rounded-md p-4">
               <h3 className="font-medium mb-2">Future Sales Predictions</h3>
@@ -694,7 +700,7 @@ export function SalesPrediction() {
         {normalizationParams && (
           <div className="mt-4 border rounded-md p-4">
             <h3 className="font-medium mb-2">Normalization Parameters</h3>
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div>
                 <p className="text-sm font-medium">Minimum Sales</p>
                 <p className="text-lg">${normalizationParams.min_sales.toLocaleString()}</p>
@@ -712,7 +718,7 @@ export function SalesPrediction() {
         )}
       </CardContent>
       <CardFooter>
-        <div className="flex w-full items-start gap-2 text-sm">
+        <div className="flex w-full flex-col sm:flex-row items-start gap-2 text-sm">
           <div className="grid gap-2">
             <div className="flex items-center gap-2 font-medium leading-none">
               {trend.isUp ? (

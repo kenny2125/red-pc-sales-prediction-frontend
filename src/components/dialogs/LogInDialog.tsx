@@ -14,9 +14,12 @@ import { useUser } from "@/contexts/UserContext";
 import { LoginForm } from "../forms/LoginForm";
 import { RegistrationForm } from "../forms/RegistrationForm";
 
-export function LogInDialog() {
+export function LogInDialog({ open, onOpenChange }: { open?: boolean; onOpenChange?: (open: boolean) => void }) {
   const [isLogin, setIsLogin] = useState(true);
-  const [open, setOpen] = useState(false);
+  // Internal state for uncontrolled usage
+  const [internalOpen, setInternalOpen] = useState(false);
+  const dialogOpen = open ?? internalOpen;
+  const handleDialogOpenChange = onOpenChange ?? setInternalOpen;
 
   const {
     isLoggedIn,
@@ -36,18 +39,18 @@ export function LogInDialog() {
 
   // Reset form when dialog closes
   useEffect(() => {
-    if (!open) {
+    if (!dialogOpen) {
       clearError();
     }
-  }, [open, clearError]);
+  }, [dialogOpen, clearError]);
 
   const handleLogout = () => {
     logout();
-    setOpen(false);
+    handleDialogOpenChange(false);
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={dialogOpen} onOpenChange={handleDialogOpenChange}>
       <DialogTrigger asChild>
         <Button variant="outline" type="submit">
           {isLoggedIn ? "My Account" : "Log In/Sign Up"}
@@ -89,8 +92,7 @@ export function LogInDialog() {
               onToggleMode={toggleMode}
               isLoading={isLoading}
               error={error}
-              register={register}
-              onSuccess={() => setOpen(false)}
+              onSuccess={() => handleDialogOpenChange(false)}
             />
           )}
         </>

@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { useNavigate } from 'react-router-dom'
 import { Button } from "@/components/ui/button"
@@ -23,6 +23,27 @@ function ProductCard({ product }: ProductCardProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [imageError, setImageError] = useState(false);
   const { currentUser } = useUser();
+  
+  // On mount, check if product is already in user's cart
+  useEffect(() => {
+    if (!currentUser || currentUser.role === 'admin') return;
+    const checkCart = async () => {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/cart`, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+        if (!response.ok) throw new Error('Failed to fetch cart');
+        const items = await response.json();
+        const exists = items.some((item: any) => item.product_id === product.product_id);
+        setIsInCart(exists);
+      } catch (err) {
+        console.error('Error checking cart:', err);
+      }
+    };
+    checkCart();
+  }, [currentUser, product.product_id]);
   
   function handleCardClick() {
     navigate(`/product?id=${product.product_id}`);

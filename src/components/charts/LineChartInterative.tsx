@@ -95,17 +95,75 @@ export function LineChartInteractive() {
     [chartData]
   )
 
+  // Calculate average daily sales
+  const averageDailySales = React.useMemo(() => {
+    if (chartData.length === 0) return 0;
+    return total.actualsales / chartData.length;
+  }, [chartData, total.actualsales]);
+
   // Calculate growth percentage (if applicable)
   const growthPercentage = React.useMemo(() => {
     if (chartData.length < 2) return 0;
-    
     const firstDayActual = chartData[0]?.actualsales || 0;
     const lastDayActual = chartData[chartData.length - 1]?.actualsales || 0;
-    
     if (firstDayActual === 0) return 0;
-    
     return ((lastDayActual - firstDayActual) / firstDayActual) * 100;
   }, [chartData]);
+
+  // Calculate median daily sales
+  const medianDailySales = React.useMemo(() => {
+    if (chartData.length === 0) return 0;
+    const values = chartData.map(d => d.actualsales || 0).sort((a, b) => a - b);
+    const mid = Math.floor(values.length / 2);
+    return values.length % 2 !== 0 ? values[mid] : (values[mid - 1] + values[mid]) / 2;
+  }, [chartData]);
+
+  // Find peak sales information
+  const peakSales = React.useMemo(() => {
+    if (chartData.length === 0) return { value: 0, date: '' };
+    
+    const peak = chartData.reduce((max, curr) => 
+      (curr.actualsales > max.actualsales) ? curr : max, 
+      { actualsales: 0 }
+    );
+    
+    return { 
+      value: peak.actualsales || 0, 
+      date: peak.date ? new Date(peak.date).toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+      }) : ''
+    };
+  }, [chartData]);
+
+  // Calculate total sales
+  const totalSales = React.useMemo(() => total.actualsales, [total.actualsales]);
+
+  // Find lowest sales day info
+  const lowestSales = React.useMemo(() => {
+    if (chartData.length === 0) return { value: 0, date: '' };
+    const min = chartData.reduce((min, curr) =>
+      (curr.actualsales < min.actualsales ? curr : min),
+      { actualsales: chartData[0].actualsales || 0, date: chartData[0].date }
+    );
+    return {
+      value: min.actualsales || 0,
+      date: new Date(min.date).toLocaleDateString("en-US", { month: "short", day: "numeric" })
+    };
+  }, [chartData]);
+
+  // Calculate date range for growth sub message
+  const dateRange = React.useMemo(() => {
+    if (startDate && endDate) {
+      return `${format(startDate, "MMM dd")} - ${format(endDate, "MMM dd")}`;
+    }
+    if (chartData.length >= 2) {
+      const first = new Date(chartData[0].date);
+      const last = new Date(chartData[chartData.length - 1].date);
+      return `${first.toLocaleDateString("en-US", { month: "short", day: "numeric" })} - ${last.toLocaleDateString("en-US", { month: "short", day: "numeric" })}`;
+    }
+    return '';
+  }, [startDate, endDate, chartData]);
 
   if (error) {
     return (
@@ -121,8 +179,8 @@ export function LineChartInteractive() {
 
   return (
     <Card>
-      <CardHeader className="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
-        <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
+      <CardHeader className="flex flex-col items-stretch space-y-4 border-b p-4 sm:p-6 sm:flex-row sm:space-y-0">
+        <div className="flex flex-1 flex-col justify-center gap-2">
           <CardTitle>Sales Chart - Interactive</CardTitle>
           <CardDescription>
             {loading ? (
@@ -131,51 +189,53 @@ export function LineChartInteractive() {
               `Showing total of ${growthPercentage.toFixed(1)}% growth over period`
             )}
           </CardDescription>
-          <div className="flex space-x-2 mt-2">
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant={"outline"}
-                  className={cn(
-                    "w-[150px] justify-start text-left font-normal",
-                    !startDate && "text-muted-foreground"
-                  )}
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {startDate ? format(startDate, "PPP") : "Start date"}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0">
-                <Calendar
-                  mode="single"
-                  selected={startDate}
-                  onSelect={setStartDate}
-                  initialFocus
-                />
-              </PopoverContent>
-            </Popover>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant={"outline"}
-                  className={cn(
-                    "w-[150px] justify-start text-left font-normal",
-                    !endDate && "text-muted-foreground"
-                  )}
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {endDate ? format(endDate, "PPP") : "End date"}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0">
-                <Calendar
-                  mode="single"
-                  selected={endDate}
-                  onSelect={setEndDate}
-                  initialFocus
-                />
-              </PopoverContent>
-            </Popover>
+          <div className="flex flex-col sm:flex-row gap-2 mt-2">
+            <div className="flex flex-wrap gap-2">
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant={"outline"}
+                    className={cn(
+                      "w-full sm:w-[150px] justify-start text-left font-normal",
+                      !startDate && "text-muted-foreground"
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {startDate ? format(startDate, "PPP") : "Start date"}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0">
+                  <Calendar
+                    mode="single"
+                    selected={startDate}
+                    onSelect={setStartDate}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant={"outline"}
+                    className={cn(
+                      "w-full sm:w-[150px] justify-start text-left font-normal",
+                      !endDate && "text-muted-foreground"
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {endDate ? format(endDate, "PPP") : "End date"}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0">
+                  <Calendar
+                    mode="single"
+                    selected={endDate}
+                    onSelect={setEndDate}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
             <Button 
               variant="secondary"
               onClick={() => {
@@ -188,42 +248,57 @@ export function LineChartInteractive() {
             </Button>
           </div>
         </div>
-        <div className="flex">
-          {["actualsales", "predictedsales"].map((key) => {
-            const chart = key as keyof typeof chartConfig
-            return (
-              <button
-                key={chart}
-                data-active={activeChart === chart}
-                className="flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left even:border-l data-[active=true]:bg-muted/50 sm:border-l sm:border-t-0 sm:px-8 sm:py-6"
-                onClick={() => setActiveChart(chart)}
-              >
-                <span className="text-xs text-muted-foreground">
-                  {chartConfig[chart].label}
-                </span>
-                {loading ? (
-                  <Skeleton className="h-8 w-[80px]" />
-                ) : (
-                  <span className="text-lg font-bold leading-none sm:text-3xl">
-                    {total[chart as keyof typeof total].toLocaleString()}
-                  </span>
-                )}
-              </button>
-            )
-          })}
-        </div>
+        {/* Replace analytics section with expanded insights */}
+        {!loading && (
+          <div className="flex flex-wrap gap-4 pt-4 sm:pt-0">
+            {/* Average Daily Sales */}
+            <div className="flex flex-col items-center bg-muted/30 p-3 rounded-md">
+              <span className="text-xs text-muted-foreground">Avg Daily Sales</span>
+              <span className="text-lg font-bold">{averageDailySales.toLocaleString(undefined, { maximumFractionDigits: 2 })}</span>
+            </div>
+            {/* Median Daily Sales */}
+            <div className="flex flex-col items-center bg-muted/30 p-3 rounded-md">
+              <span className="text-xs text-muted-foreground">Median Daily Sales</span>
+              <span className="text-lg font-bold">{medianDailySales.toLocaleString(undefined, { maximumFractionDigits: 2 })}</span>
+            </div>
+            {/* Peak Sales */}
+            <div className="flex flex-col items-center bg-muted/30 p-3 rounded-md">
+              <span className="text-xs text-muted-foreground">Peak Sales</span>
+              <span className="text-lg font-bold">{peakSales.value.toLocaleString()}</span>
+              {peakSales.date && <span className="text-xs text-muted-foreground">on {peakSales.date}</span>}
+            </div>
+            {/* Total Sales */}
+            <div className="flex flex-col items-center bg-muted/30 p-3 rounded-md">
+              <span className="text-xs text-muted-foreground">Total Sales</span>
+              <span className="text-lg font-bold">{totalSales.toLocaleString()}</span>
+            </div>
+            {/* Growth Percentage */}
+            <div className="flex flex-col items-center bg-muted/30 p-3 rounded-md">
+              <span className="text-xs text-muted-foreground">Growth</span>
+              <span className="text-lg font-bold">{growthPercentage.toFixed(1)}%</span>
+              {dateRange && <span className="text-xs text-muted-foreground">{dateRange}</span>}
+            </div>
+            {/* Lowest Sales */}
+            <div className="flex flex-col items-center bg-muted/30 p-3 rounded-md">
+              <span className="text-xs text-muted-foreground">Lowest Sales</span>
+              <span className="text-lg font-bold">{lowestSales.value.toLocaleString()}</span>
+              {lowestSales.date && <span className="text-xs text-muted-foreground">on {lowestSales.date}</span>}
+            </div>
+          </div>
+        )}
       </CardHeader>
-      <CardContent className="px-2 sm:p-6">
+      
+      <CardContent className="p-2 sm:p-6">
         {loading ? (
-          <div className="flex justify-center items-center h-[250px]">
-            <Skeleton className="h-[200px] w-full" />
+          <div className="flex justify-center items-center h-[200px] sm:h-[250px]">
+            <Skeleton className="h-[180px] sm:h-[200px] w-full" />
           </div>
         ) : (
           <ChartContainer
             config={chartConfig}
-            className="aspect-auto h-[250px] w-full"
+            className="aspect-auto h-[200px] sm:h-[250px] w-full"
           >
-            <ResponsiveContainer width="100%" height={350}>
+            <ResponsiveContainer width="100%" height="100%">
               <LineChart
                 data={chartData}
                 margin={{
