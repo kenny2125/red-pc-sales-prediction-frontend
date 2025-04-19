@@ -43,6 +43,13 @@ import type { Inventory } from "@/components/admin/InventoryColumns";
 import { getColumns } from "@/components/admin/InventoryColumns";
 import { ProductForm } from "@/components/admin/ProductForm";
 
+type InventoryStats = {
+  totalProducts: number;
+  lowStockItems: number;
+  outOfStockItems: number;
+  totalInventoryValue: number;
+};
+
 export function Inventory() {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -52,6 +59,9 @@ export function Inventory() {
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
   const [data, setData] = React.useState<Inventory[]>([]);
+  const [stats, setStats] = React.useState<InventoryStats | null>(null);
+  const [statsError, setStatsError] = React.useState<string | null>(null);
+  const [isStatsLoading, setIsStatsLoading] = React.useState(true);
   const [error, setError] = React.useState<string | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
   const [isAddDialogOpen, setIsAddDialogOpen] = React.useState(false);
@@ -82,11 +92,44 @@ export function Inventory() {
     }
   }, []);
 
+  const fetchStats = React.useCallback(async () => {
+    setIsStatsLoading(true);
+    setStatsError(null);
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/product/stats`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const result: InventoryStats = await response.json();
+      setStats(result);
+    } catch (error: any) {
+      console.error("Failed to fetch inventory stats:", error);
+      setStatsError(`Failed to load summary: ${error.message}.`);
+    } finally {
+      setIsStatsLoading(false);
+    }
+  }, []);
+
   React.useEffect(() => {
     fetchData();
-  }, [fetchData]);
+    fetchStats();
+  }, [fetchData, fetchStats]);
 
-  const columns = React.useMemo(() => getColumns(fetchData), [fetchData]);
+  const columns = React.useMemo(
+    () => getColumns(() => {
+      fetchData();
+      fetchStats();
+    }),
+    [fetchData, fetchStats]
+  );
 
   const table = useReactTable({
     data,
@@ -110,6 +153,15 @@ export function Inventory() {
   const handleAddSuccess = () => {
     setIsAddDialogOpen(false);
     fetchData();
+    fetchStats();
+  };
+
+  const formatCurrency = (value: number | undefined | null) => {
+    if (value === undefined || value === null) return "PHP 0.00";
+    return new Intl.NumberFormat("en-PH", {
+      style: "currency",
+      currency: "PHP",
+    }).format(value);
   };
 
   return (
@@ -117,6 +169,11 @@ export function Inventory() {
       {error && (
         <div className="p-4 mb-4 rounded-md bg-red-100 text-red-700">
           {error}
+        </div>
+      )}
+      {statsError && (
+        <div className="p-4 mb-4 rounded-md bg-yellow-100 text-yellow-700">
+          {statsError}
         </div>
       )}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -213,19 +270,27 @@ export function Inventory() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <div className="border rounded-lg p-4 flex flex-col items-center justify-center h-32 bg-card text-card-foreground">
           <p className="text-sm text-muted-foreground">Total Products</p>
-          <p className="text-2xl font-bold">[Value]</p>
+          <p className="text-2xl font-bold">
+            {isStatsLoading ? "..." : stats?.totalProducts ?? "N/A"}
+          </p>
         </div>
         <div className="border rounded-lg p-4 flex flex-col items-center justify-center h-32 bg-card text-card-foreground">
           <p className="text-sm text-muted-foreground">Low Stock Items</p>
-          <p className="text-2xl font-bold">[Value]</p>
+          <p className="text-2xl font-bold">
+            {isStatsLoading ? "..." : stats?.lowStockItems ?? "N/A"}
+          </p>
         </div>
         <div className="border rounded-lg p-4 flex flex-col items-center justify-center h-32 bg-card text-card-foreground">
           <p className="text-sm text-muted-foreground">Out of Stock Items</p>
-          <p className="text-2xl font-bold">[Value]</p>
+          <p className="text-2xl font-bold">
+            {isStatsLoading ? "..." : stats?.outOfStockItems ?? "N/A"}
+          </p>
         </div>
         <div className="border rounded-lg p-4 flex flex-col items-center justify-center h-32 bg-card text-card-foreground">
           <p className="text-sm text-muted-foreground">Inventory Value</p>
-          <p className="text-2xl font-bold">[Value]</p>
+          <p className="text-2xl font-bold">
+            {isStatsLoading ? "..." : formatCurrency(stats?.totalInventoryValue)}
+          </p>
         </div>
       </div>
       <div className="rounded-md border overflow-x-auto">
