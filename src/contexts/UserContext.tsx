@@ -20,6 +20,7 @@ interface UserContextType {
   register: (userData: RegistrationData) => Promise<void>;
   logout: () => void;
   clearError: () => void;
+  authFetch: (input: RequestInfo, init?: RequestInit) => Promise<Response>;
 }
 
 export interface RegistrationData {
@@ -57,21 +58,40 @@ export function UserProvider({ children }: UserProviderProps) {
   const [error, setError] = useState<string | null>(null);
   const [token, setToken] = useState<string | null>(null);
 
+  // Utility to validate JWT expiration
+  const isTokenValid = (token: string): boolean => {
+    try {
+      const { exp } = JSON.parse(atob(token.split('.')[1]));
+      return exp * 1000 > Date.now();
+    } catch {
+      return false;
+    }
+  };
+
   // Check for saved auth on mount
   useEffect(() => {
     const savedToken = localStorage.getItem('token');
     const savedUser = localStorage.getItem('user');
-    
+    let logoutTimer: number;
+
     if (savedToken && savedUser) {
-      try {
+      if (!isTokenValid(savedToken)) {
+        logout();
+      } else {
         setToken(savedToken);
         setCurrentUser(JSON.parse(savedUser));
         setIsLoggedIn(true);
-      } catch (e) {
-        console.error('Failed to parse saved user', e);
-        logout();
+        const { exp } = JSON.parse(atob(savedToken.split('.')[1]));
+        const timeout = exp * 1000 - Date.now();
+        logoutTimer = window.setTimeout(() => logout(), timeout);
       }
     }
+
+    return () => {
+      if (logoutTimer) {
+        clearTimeout(logoutTimer);
+      }
+    };
   }, []);
 
   // Login function
@@ -160,6 +180,19 @@ export function UserProvider({ children }: UserProviderProps) {
     setError(null);
   };
 
+  // Authorization-aware fetch wrapper
+  const authFetch = async (input: RequestInfo, init: RequestInit = {}): Promise<Response> => {
+    if (!token || !isTokenValid(token)) {
+      logout();
+      return Promise.reject(new Error('Authentication token is missing or expired'));
+    }
+    const headers = {
+      ...init.headers,
+      Authorization: `Bearer ${token}`,
+    };
+    return fetch(input, { ...init, headers });
+  };
+
   return (
     <UserContext.Provider 
       value={{ 
@@ -170,7 +203,8 @@ export function UserProvider({ children }: UserProviderProps) {
         login,
         register,
         logout,
-        clearError
+        clearError,
+        authFetch
       }}
     >
       {children}
